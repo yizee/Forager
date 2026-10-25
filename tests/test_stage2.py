@@ -145,3 +145,25 @@ def test_free_text_baseline_offline():
     assert [i["label"] for i in profile["interests"]] == ["AI agents", "Sora 2"]
     assert all(i["type"] == "long_term" for i in profile["interests"])
     assert validate_profile(profile) == []
+
+
+def test_release_listed_as_direction_and_short_term_is_flagged():
+    # Seen in the first live call: "Sora 2" came back as a direction and as a short-term item.
+    data = clarification()
+    data["directions"].append({"id": "d4", "label": "Sora 2", "question": "How to cover Sora 2?",
+                               "options": ["release news", "comparisons", "policy"]})
+    data["adjacent"].append({"label": "sora 2", "why": "dup"})
+    errors = check_clarification(data)
+    assert any("'sora 2' is a specific release or event" in e for e in errors)
+    assert any("adjacent[2] repeats a direction or short-term item" in e for e in errors)
+
+
+def test_profile_never_lists_a_label_twice():
+    data = clarification()
+    data["directions"].append({"id": "d4", "label": "Sora 2", "question": "?", "options": ["a", "b", "c"]})
+    profile = build_profile(data, {"short_term": ["Sora 2"]}, TODAY)
+    assert [i["label"] for i in profile["interests"]].count("Sora 2") == 1
+    with pytest.raises(ValueError):
+        apply_edit(profile, "add ai AGENTS", TODAY)
+    profile["interests"].append(dict(profile["interests"][0], id="i99"))
+    assert "Each interest label may appear only once." in validate_profile(profile)

@@ -28,13 +28,16 @@
 
 - 提案已提交（`docs/proposal.pdf`），老师反馈见 `docs/feedback.md`。
 - GitHub 仓库 `yizee/Forager` 已建立。本地克隆在 `~/Desktop/Forager`，虚拟环境 `.venv`（Python 3.11）。
-- 第 1 阶段代码已完成，离线测试 9 个全部通过（`.venv/bin/python -m pytest`）。**还差一次真实调用**才算完成（`python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json`）。
-- 第 2 阶段代码已完成（`python -m forager onboard`，基线 `--baseline`），离线测试共 18 个全部通过。同样还差一次真实调用。
+- **第 1–3 阶段已完成**，离线测试共 40 个全部通过（`.venv/bin/python -m pytest`，只收集 `tests/`），2026-10-25 的真实调用也全部通过，花费 $0.0053。详情和给报告用的观察见 `docs/live-runs.md`。下一步：第 4 阶段。
+- `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
+- `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
+- 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
+- 第 2 阶段（`python -m forager onboard`，基线 `--baseline`）：
   - 档案由代码根据用户的选择生成（`build_profile`），模型给出的选项之外的内容一律忽略，保证"不凭空添加偏好"。
   - 用户接受的相邻领域权重 0.5；用户选中的短期关注 14 天后过期；新档案的所有追踪授权默认关闭。
   - 终端里用编号代替可点选的选项；Streamlit 界面在第 4 阶段复用 `onboarding.py`。
   - 综合查询的澄清（时间范围、时间线还是对比）暂未实现，放到第 4 阶段做界面时再做。
-- 第 3 阶段代码已完成（`consent` / `rate` / `like` / `review` / `profile` 命令），离线测试共 38 个全部通过。同样还差一次真实调用。设计要点：
+- 第 3 阶段（`consent` / `rate` / `like` / `review` / `profile` 命令）设计要点：
   - 授权三层保证：未授权的信号不记录；使用时按当前授权过滤（只看最近 30 天）；撤回授权时删除该类已收集的数据。新档案和默认档案的授权全部关闭。
   - 写入工具 `propose_profile_update` 用 `needs_approval=True`，由 SDK 暂停等待用户决定。审批前代码先检查：至少 2 条不同的已授权信号作为证据、目标合法、30 天内被拒绝过的修改不再提出、每次最多 3 条建议。不合格的建议直接拦截，不打扰用户，原因通过 `rejection_message` 告诉模型。工具本身写入前再检查一次。
   - 用户看到的"改动内容"和"证据"由代码根据参数和信号记录生成，和 agent 的措辞分开显示，防止措辞误导。
@@ -240,7 +243,7 @@ Forager/
 1. **仓库可见性**：`yizee/Forager` 目前是 Public。推送 Lab 代码前必须改成 Private（Settings → Danger Zone → Change visibility）。
 2. **额外预算**：是否向老师申请项目额度，或改用用户自己的 OpenRouter key。
 3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。
-4. **Lab 2 代码包**：用户需要把 `lab2.zip` 解压到项目的 `lab/` 目录。
+4. ~~Lab 2 代码包~~：已解决，`lab/` 已就位（见第 3 节）。
 
 ## 13. 相关文件
 

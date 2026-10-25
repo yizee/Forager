@@ -29,9 +29,9 @@ Each digest has two linked layers:
 
 Built incrementally, each stage runnable before the next starts:
 
-- [ ] Stage 1: minimal pipeline. One source (arXiv), single agent, two-layer digest
-- [ ] Stage 2: Idea 1. Clarification onboarding and JSON profile
-- [ ] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
+- [x] Stage 1: minimal pipeline. One source (arXiv), single agent, two-layer digest
+- [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
+- [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [ ] Stage 4: Idea 3. GitHub and news sources, source specialists, rules + Critic
 - [ ] Stage 5: evaluation. Week 6 harness test cases and think-aloud study
 
@@ -50,7 +50,7 @@ Fallback if time is short: drop Hugging Face first.
 
 ```
 CLAUDE.md        full project brief for development (read first)
-docs/            proposal, feedback and design notes
+docs/            proposal, feedback, design notes and live-run notes (live-runs.md)
 forager/         application code: sources/, digest.py, checks.py, render.py, profile.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)

@@ -36,12 +36,15 @@ Return ONLY one JSON object, no Markdown fences:
 }
 
 Rules:
-- directions: 1-5 fields the user actually mentioned or clearly implied. Never add
-  a field the user did not mention; that is what adjacent is for.
+- directions: 1-5 broad fields the user actually mentioned or clearly implied. Never
+  add a field the user did not mention; that is what adjacent is for. Directions are
+  topics only, never the user's role, level or preferred content format. A specific
+  model, release or event (e.g. "Sora 2") is not a direction: put it in short_term.
 - options: concrete sub-topics a digest could filter on (e.g. "video generation
   models", "editing tools and plugins"), not levels of enthusiasm. 3-6 per question.
-- adjacent: 1-3 neighbouring fields the user might want for breadth (e.g. "AI
-  copyright policy" for image generation). They are suggestions; the user decides.
+- adjacent: 1-3 neighbouring topic fields the user might want for breadth (e.g. "AI
+  copyright policy" for image generation), not source types such as papers or news.
+  They are suggestions; the user decides.
 - short_term: only specific, time-bound things the user explicitly mentioned (a
   model release, an event). Return [] if there are none.
 - Keep labels under 6 words and questions under 20 words. Write in English.
@@ -83,20 +86,24 @@ def check_clarification(data: dict) -> list[str]:
             errors.append(f"{label} needs 3-6 options.")
         elif len({str(o).strip().casefold() for o in options}) != len(options) or not all(str(o).strip() for o in options):
             errors.append(f"{label} options must be non-empty and distinct.")
-    adjacent = data.get("adjacent")
-    if not isinstance(adjacent, list) or not 1 <= len(adjacent) <= 3:
-        errors.append("'adjacent' must be a list of 1-3 suggestions.")
-    else:
-        direction_labels = set(_labels(directions))
-        for index, entry in enumerate(adjacent):
-            if not isinstance(entry, dict) or not str(entry.get("label", "")).strip():
-                errors.append(f"adjacent[{index}] needs a label.")
-            elif entry["label"].strip().casefold() in direction_labels:
-                errors.append(f"adjacent[{index}] repeats a direction; suggest a different field.")
+    direction_labels = set(_labels(directions))
     short_term = data.get("short_term", [])
     if not isinstance(short_term, list) or any(not isinstance(e, dict) or not str(e.get("label", "")).strip()
                                                for e in short_term):
         errors.append("'short_term' must be a list of objects with a label (or []).")
+        short_term = []
+    short_labels = set(_labels(short_term))
+    for label in sorted(short_labels & direction_labels):
+        errors.append(f"'{label}' is a specific release or event: keep it in short_term only, not in directions.")
+    adjacent = data.get("adjacent")
+    if not isinstance(adjacent, list) or not 1 <= len(adjacent) <= 3:
+        errors.append("'adjacent' must be a list of 1-3 suggestions.")
+    else:
+        for index, entry in enumerate(adjacent):
+            if not isinstance(entry, dict) or not str(entry.get("label", "")).strip():
+                errors.append(f"adjacent[{index}] needs a label.")
+            elif entry["label"].strip().casefold() in direction_labels | short_labels:
+                errors.append(f"adjacent[{index}] repeats a direction or short-term item; suggest a different field.")
     return errors
 
 
@@ -127,6 +134,7 @@ def build_profile(clarification: dict, answers: dict, today: str | None = None, 
     today = today or date.today().isoformat()
     expires = (date.fromisoformat(today) + timedelta(days=SHORT_TERM_DAYS)).isoformat()
     interests = []
+    add = _adder(interests)
     dropped = set(answers.get("drop", []))
     for direction in clarification["directions"]:
         if direction["id"] in dropped:
@@ -134,17 +142,24 @@ def build_profile(clarification: dict, answers: dict, today: str | None = None, 
         offered = {str(o) for o in direction["options"]}
         facets = [o for o in answers.get("facets", {}).get(direction["id"], []) if o in offered]
         facets += [c.strip() for c in answers.get("custom", {}).get(direction["id"], []) if c.strip()]
-        interests.append(_interest(len(interests) + 1, direction["label"], facets, origin="clarification"))
+        add(direction["label"], facets, origin="clarification")
     offered_adjacent = {a["label"] for a in clarification.get("adjacent", [])}
     for label in answers.get("adjacent", []):
         if label in offered_adjacent:
-            interests.append(_interest(len(interests) + 1, label, [], weight=ADJACENT_WEIGHT, origin="suggested"))
+            add(label, [], weight=ADJACENT_WEIGHT, origin="suggested")
     offered_short = {s["label"] for s in clarification.get("short_term", [])}
     for label in answers.get("short_term", []):
         if label in offered_short:
-            interests.append(_interest(len(interests) + 1, label, [], type_="short_term",
-                                       weight=SHORT_TERM_WEIGHT, expires=expires, origin="clarification"))
+            add(label, [], type_="short_term", weight=SHORT_TERM_WEIGHT, expires=expires, origin="clarification")
     return new_profile(interests, method="clarification", description=description, today=today)
+
+
+def _adder(interests: list):
+    """Append interests with sequential ids, skipping a label that is already present."""
+    def add(label, facets, **kwargs):
+        if label.strip().casefold() not in {i["label"].casefold() for i in interests}:
+            interests.append(_interest(len(interests) + 1, label, facets, **kwargs))
+    return add
 
 
 def new_profile(interests, *, method, description, today):
@@ -171,8 +186,10 @@ def profile_from_text(lab, description: str, today: str | None = None, *, on_eve
                           on_event=on_event, agent_id="baseline-extractor")
     outcome = ask_json(session, "User's description: " + description.strip(), check_baseline)
     if outcome["data"] is not None and not outcome["errors"]:
-        interests = [_interest(n, e["label"], [str(f) for f in e.get("facets", [])], origin="free_text")
-                     for n, e in enumerate(outcome["data"]["interests"], start=1)]
+        interests = []
+        add = _adder(interests)
+        for entry in outcome["data"]["interests"]:
+            add(entry["label"], [str(f) for f in entry.get("facets", [])], origin="free_text")
         outcome["profile"] = new_profile(interests, method="free_text", description=description, today=today)
     return outcome
 
@@ -187,6 +204,9 @@ def validate_profile(profile: dict) -> list[str]:
     ids = [i.get("id") for i in interests]
     if len(set(ids)) != len(ids):
         errors.append("Interest ids must be unique.")
+    labels = [str(i.get("label", "")).strip().casefold() for i in interests]
+    if len(set(labels)) != len(labels):
+        errors.append("Each interest label may appear only once.")
     for interest in interests:
         if not str(interest.get("label", "")).strip():
             errors.append(f"Interest {interest.get('id')} needs a label.")
@@ -249,6 +269,8 @@ def apply_edit(profile: dict, command: str, today: str | None = None) -> str:
     if verb == "add":
         if not rest:
             raise ValueError("Give a label, e.g. 'add AI safety'.")
+        if rest.casefold() in {i["label"].casefold() for i in interests}:
+            raise ValueError(f"{rest} is already in the profile.")
         number = max([int(i["id"][1:]) for i in interests if i["id"][1:].isdigit()] or [0]) + 1
         interests.append(_interest(number, rest, [], origin="manual"))
         return f"Added {rest}."

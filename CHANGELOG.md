@@ -2,6 +2,19 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-25 (live runs of Stages 1–3)
+
+### Added
+- `docs/live-runs.md`: first paid runs of Stages 1–3 with costs ($0.0053 in total), results and observations for the report.
+- `pytest.ini`: collect only `tests/`; the course package in `lab/` has its own test suite.
+
+### Fixed
+- Onboarding could create two interests with the same label when the clarifier listed a release (e.g. "Sora 2") both as a direction and as a short-term item, as happened in the first live run. A code check now sends it back for repair; `build_profile` and the free-text baseline skip duplicate labels; `validate_profile` rejects them; the `add` edit refuses an existing label.
+
+### Changed
+- Clarifier instructions: directions are topics only, never the user's role or preferred format; specific releases belong in `short_term`; adjacent suggestions are topic fields, not source types.
+- README roadmap: Stages 1–3 marked done (offline tests and live runs pass).
+
 ## 2026-10-25 (Stage 3, offline)
 
 ### Added
