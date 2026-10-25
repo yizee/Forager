@@ -2,6 +2,12 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-25 (plan update)
+
+### Changed
+- Roadmap: Stage 4 now starts with a hand-built set of cases where rules are expected to fail (irrelevant exploration items, near-duplicates under different labels, citations that exist but do not support the point), used while developing the Critic rather than only at evaluation time.
+- `CLAUDE.md` notes that the report must explain the move of breadth checks from the Critic (proposal) to code rules (response to feedback).
+
 ## 2026-10-25 (Stage 1, offline)
 
 ### Added
