@@ -54,6 +54,7 @@ docs/            proposal, feedback, design notes and live-run notes (live-runs.
 forager/         application code: sources/, digest.py, checks.py, render.py, profile.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)
+eval/            Critic case set (eval/cases/critic) and its builder
 lab/             course lab package, not committed (unzip lab2.zip here)
 CHANGELOG.md
 ```

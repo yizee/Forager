@@ -1,0 +1,392 @@
+{
+  "id": "uc-02",
+  "category": "unsupported_citation",
+  "origin": "constructed",
+  "base": "base-a",
+  "change": "Point 4 now claims a new open checkpoint beats commercial models, citing the lora-kit repository (r03).",
+  "why_rules_pass": "Every cited ID exists and is included; rules check IDs, not whether the item says what the point claims.",
+  "today": "2026-10-25",
+  "profile": {
+    "interests": [
+      {
+        "id": "i1",
+        "label": "AI agents",
+        "facets": [
+          "Agent frameworks and tooling",
+          "Agent benchmarks and evaluation",
+          "Coding agents"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i2",
+        "label": "Video editing",
+        "facets": [
+          "AI-assisted editing tools",
+          "Open-source editing pipelines"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i3",
+        "label": "Image generation",
+        "facets": [
+          "Diffusion model research",
+          "Controllable generation (editing, inpainting)",
+          "New model releases"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i4",
+        "label": "AI copyright policy",
+        "facets": [],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 0.5,
+        "expires": null
+      },
+      {
+        "id": "i5",
+        "label": "Lumen-V 2",
+        "facets": [],
+        "type": "short_term",
+        "source": "stated",
+        "weight": 0.8,
+        "expires": "2026-11-08"
+      }
+    ],
+    "exploration": 0.2
+  },
+  "available_types": [
+    "paper",
+    "news",
+    "repo"
+  ],
+  "history": [],
+  "digest": {
+    "date": "2026-10-25",
+    "items": [
+      {
+        "id": "p09",
+        "type": "paper",
+        "title": "EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence",
+        "url": "https://arxiv.org/abs/2610.31650v1",
+        "published": "2026-10-22",
+        "source_text": "Tool-using language model agents rely on environmental facts to decide whether an action is permitted. When a tool response omits a safety-relevant fact, an agent may carry out a prohibited action even though the user request is benign and every returned statement is true. We introduce \\bench{}, an executable benchmark for evaluating unsafe execution, safety boundaries, and evidence recovery in LLM agents under missing evidence. It contains 300 matched unsafe/safe task pairs across six domains. By systematically suppressing critical facts, the benchmark measures unsafe execution under critical evidence omission and determines the minimum observed failure cardinality, including failures with full evidence and cases with no observed failure after exhaustive testing. An independent audit tool tests whether agents seek missing facts and then withhold prohibited actions while completing permissible tasks. The benchmark reveals substantial variation across the ten models in omission robustness, evidence acquisition, and appropriate action. Resistance to missing evidence does not necessarily translate into useful recovery. Recovery access reduces unsafe execution for all ten models, but agents differ in whether they actively obtain the missing facts and use them to act appropriately in both worlds.",
+        "synthetic": false,
+        "summary": "EpiSEM-Bench is an executable benchmark of 300 matched unsafe/safe task pairs across six domains that tests tool-using agents when a tool response omits a safety-relevant fact. Giving agents a way to recover missing facts reduced unsafe actions for all ten models tested, though agents differed in actually obtaining the facts.",
+        "topics": [
+          "agent benchmarks",
+          "agent safety"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches your Agent benchmarks and evaluation focus: a new benchmark for tool-using agents."
+        }
+      },
+      {
+        "id": "p08",
+        "type": "paper",
+        "title": "BrickWright: Agentic Creation of Physically Feasible Brick Builds",
+        "url": "https://arxiv.org/abs/2610.31651v1",
+        "published": "2026-10-22",
+        "source_text": "Frontier coding agents are becoming increasingly adept at 3D modeling. Yet, they still face challenges when building objects meant to be assembled in the physical world, often creating invalid assemblies with floating, colliding, or disconnected parts. We argue that providing agents with tools for assembling builds and verifying their physical feasibility is sufficient for them to produce physically valid assemblies that still adhere to input prompts. Focusing on the domain of LEGO brick builds, we present BrickWright, a framework for generating physically feasible brick builds from text or image prompts using pre-trained agents, where a build is physically feasible if it uses only real parts, has no colliding or floating parts, and forms a connected structure if possible. BrickWright guides agents to create builds by writing code with BrickLayer, a Python toolkit with two main components: an ergonomic brick assembly API that halves inference cost compared to working in raw LDraw, and a validator that provides feedback on physical feasibility. Whereas baseline agents achieve physical validity rates ranging from only 9% (GPT-6 Luna) to 69% (GPT-6 Astra), BrickWright-guided agents achieve 100% validity on a sample of 512 prompts, while improving prompt adherence for lightweight agents and maintaining it for stronger agents. Additionally, they outperform specialized models on the text-to-brick task. Code is available on our project page: https://avalovelace1.github.io/brickwright/",
+        "synthetic": false,
+        "summary": "BrickWright gives coding agents a brick-assembly API and a physical-feasibility validator. With these tools, agents built physically valid models for all 512 test prompts, versus 9-69% validity without them.",
+        "topics": [
+          "coding agents",
+          "agent tooling"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches your Coding agents and Agent frameworks and tooling focus."
+        }
+      },
+      {
+        "id": "r02",
+        "type": "repo",
+        "title": "agentcheck: a test harness for tool-using agents",
+        "url": "https://example.com/repo/r02",
+        "published": "2026-10-20",
+        "source_text": "agentcheck is a lightweight test harness for tool-using LLM agents. It replays recorded tool responses, checks the agent's actions against expected outcomes and reports pass rates per task. It has about 800 stars and supports three agent frameworks.",
+        "synthetic": true,
+        "summary": "agentcheck replays recorded tool responses to test tool-using agents and reports pass rates per task; about 800 stars.",
+        "topics": [
+          "agent evaluation tooling"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches your Agent benchmarks and evaluation focus."
+        }
+      },
+      {
+        "id": "p14",
+        "type": "paper",
+        "title": "UniVOE: A Removal-Driven Framework for Interaction-Aware Universal Video Object Editing",
+        "url": "https://arxiv.org/abs/2610.31641v1",
+        "published": "2026-10-22",
+        "source_text": "Video object removal and injection are reciprocal editing operations between object-present and object-absent video states, yet they differ substantially in training difficulty. Removal can be effectively bootstrapped from video inpainting and further adapted to erase object-related interaction effects. Injection, however, requires large-scale paired supervision to model object appearance, dynamics, and scene-dependent effects, while perfectly aligned real-world pairs are difficult to collect and synthetic data lacks sufficient realism and diversity. To address this challenge, we present UniVOE, a removal-driven framework for training both video object removal and injection models. We first train an effect-aware remover by transferring video inpainting priors and finetuning on object-present/object-absent pairs. The trained remover converts real object-present videos into object-absent counterparts, creating large-scale paired supervision for injection. An injection model is trained on these pairs in the reverse direction to recover objects together with their dynamics and interaction effects. Moreover, since pixel-level reconstruction alone cannot adequately capture perceptual realism, we introduce a reward-based post-training method that aligns injection results with human preferences using a proprietary reward model. Experiments against strong open-source and commercial systems demonstrate that UniVOE achieves state-of-the-art performance on both object removal and injection, particularly in challenging interaction-effect cases.",
+        "synthetic": false,
+        "summary": "UniVOE trains a video object remover, uses it to turn real videos into paired training data, and trains object insertion on those pairs, including shadows and other interaction effects. It reports state-of-the-art removal and insertion against open-source and commercial systems.",
+        "topics": [
+          "video object editing"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i2",
+          "text": "Matches Video editing: object removal and insertion in real footage."
+        }
+      },
+      {
+        "id": "r01",
+        "type": "repo",
+        "title": "tidewater-labs/clipforge: transcript-based video cutting",
+        "url": "https://example.com/repo/r01",
+        "published": "2026-10-21",
+        "source_text": "clipforge is an open-source pipeline that transcribes a video, lets the user delete sentences from the transcript, and renders the matching cuts with ffmpeg. The repository gained about 1,200 stars in its first week. It supports English and Spanish transcription.",
+        "synthetic": true,
+        "summary": "clipforge is an open-source pipeline that cuts a video by editing its transcript and renders the cuts with ffmpeg; it gained about 1,200 stars in its first week.",
+        "topics": [
+          "open-source editing pipelines"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i2",
+          "text": "Matches your Open-source editing pipelines focus."
+        }
+      },
+      {
+        "id": "p24",
+        "type": "paper",
+        "title": "Beyond Best-of-$k$: Prior-Consistent DAPS for Ambiguous Nonlinear Inverse Problems",
+        "url": "https://arxiv.org/abs/2610.31592v1",
+        "published": "2026-10-22",
+        "source_text": "Diffusion models have become strong priors for solving inverse problems. However, nonlinear inverse problems such as phase retrieval remain challenging when multiple measurement-consistent solutions are distinguishable only by the prior; we call such measurements ambiguous. Existing diffusion-based samplers rely on local approximations during reconstruction. For an ambiguous measurement, these approximations can allow measurement guidance to favor a measurement-consistent mode that is close to a prior-supported mode but is itself not supported by the prior. Evaluation often masks this type of failure by reporting the best-of-$k$ runs, where the best is selected by comparison to the ground truth. We introduce Prior-Consistent DAPS (PC-DAPS), a variant of Decoupled Annealing Posterior Sampling (DAPS) designed to address this failure case by maintaining multiple candidate solutions within a single sampling run. As annealing noise decreases, PC-DAPS prunes and replaces weaker candidates according to their prior consistency, without any ground-truth access. PC-DAPS reduces the incidence of prior-inconsistent samples and improves sample quality on nonlinear inverse problems while preserving sample quality and diversity on linear inverse problems.",
+        "synthetic": false,
+        "summary": "PC-DAPS keeps several candidate solutions during diffusion posterior sampling and prunes those the diffusion prior does not support, without ground-truth access. It reduces prior-inconsistent samples on nonlinear inverse problems such as phase retrieval.",
+        "topics": [
+          "diffusion models",
+          "inverse problems"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i3",
+          "text": "Matches your Diffusion model research focus."
+        }
+      },
+      {
+        "id": "r03",
+        "type": "repo",
+        "title": "lora-kit: training scripts for image LoRA adapters",
+        "url": "https://example.com/repo/r03",
+        "published": "2026-10-19",
+        "source_text": "lora-kit collects training scripts for LoRA adapters on open text-to-image models, with presets for style and character fine-tuning. It includes dataset captioning helpers and a small evaluation notebook, and has about 2,000 stars.",
+        "synthetic": true,
+        "summary": "lora-kit collects LoRA training scripts for open text-to-image models, with style and character presets and captioning helpers; about 2,000 stars.",
+        "topics": [
+          "fine-tuning tools"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i3",
+          "text": "Matches Image generation: practical fine-tuning tools for open models."
+        }
+      },
+      {
+        "id": "p05",
+        "type": "paper",
+        "title": "SpectralCanary: Embarrassingly Simple Low-Frequency Traces for T2I Dataset-Use Auditing",
+        "url": "https://arxiv.org/abs/2610.31659v1",
+        "published": "2026-10-22",
+        "source_text": "Auditing whether a text-to-image (T2I) model was fine-tuned on a particular image collection is difficult: a model can absorb collection-level visual characteristics without reproducing training images. Proactive dataset-use auditing plants a shared signal in a dataset before release, then later checks whether that signal appears in a suspect model's generated outputs. Existing approaches often trade off verifiability, fidelity, robustness, and deployability. We introduce $\\textbf{SpectralCanary}$, which uses a smooth low-pass mask to blend a fixed canary image into every collection image while leaving captions unchanged and requiring neither auxiliary generation nor per-image optimization. A lightweight verifier detects the transferred signal in suspect-model outputs. Across eight tests on the Pokemon dataset and three realistic data transformations, spanning two architectures families, SpectralCanary achieves the highest average per-generation TPR@$1\\%$ FPR ($91.1\\%$) and fixed threshold model-level accuracy using 30 generations ($94.8\\%$) among the evaluated methods. Across five datasets spanning artistic, medical, satellite, and fashion domains with SD3.5, SpectralCanary averages $92.4\\%$ per-generation TPR@$1\\%$ FPR while preserving the released images (SSIM $0.989$, LPIPS $0.022$) with a near-zero mean change FID (mean $Δ$FID $0.05$) across datasets. Matched-energy ablations on Pokemon and ROCOv2 support our design choice, low-frequency placement transfers more reliably compared to mid/high-frequency placement. Under the evaluated adaptive attacks, the most effective removal requires aggressive modification and incurs more than $25$ $Δ$FID points. These results identify low-frequency visual signals as effective carriers for collection-level T2I audit traces.",
+        "synthetic": false,
+        "summary": "SpectralCanary lets a dataset owner check whether a text-to-image model was fine-tuned on their images by blending a faint low-frequency canary image into each one. It detected dataset use at about 92% true positives with 1% false positives across five datasets while leaving the images visually unchanged.",
+        "topics": [
+          "training data auditing",
+          "text-to-image"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i4",
+          "text": "Matches AI copyright policy: a technical way to show that images were used for training."
+        }
+      },
+      {
+        "id": "n04",
+        "type": "news",
+        "title": "Comment period opens on labels for AI-generated images",
+        "url": "https://example.com/news/n04",
+        "published": "2026-10-23",
+        "source_text": "The Digital Media Standards Office opened a 60-day public comment period on draft guidance for labeling AI-generated images. The draft asks platforms to show a visible label and to keep provenance metadata attached to generated files. Final guidance is expected next year.",
+        "synthetic": true,
+        "summary": "A standards office opened a 60-day comment period on draft guidance asking platforms to label AI-generated images visibly and keep provenance metadata.",
+        "topics": [
+          "AI labeling policy"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i4",
+          "text": "Matches AI copyright policy: rules for labeling and tracing AI-generated images."
+        }
+      },
+      {
+        "id": "n01",
+        "type": "news",
+        "title": "Northwind AI releases Lumen-V 2 video model",
+        "url": "https://example.com/news/n01",
+        "published": "2026-10-24",
+        "source_text": "Northwind AI released Lumen-V 2, a text-to-video model that generates clips of up to 60 seconds at 1080p. The company says the model keeps characters consistent across shots, and API access opens through a waitlist. No independent evaluation was published with the release.",
+        "synthetic": true,
+        "summary": "Northwind AI released Lumen-V 2, a text-to-video model for clips of up to 60 seconds at 1080p with consistent characters across shots. API access opens through a waitlist; no independent evaluation came with the release.",
+        "topics": [
+          "video generation",
+          "model release"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i5",
+          "text": "Your short-term focus: the Lumen-V 2 release itself."
+        }
+      },
+      {
+        "id": "p01",
+        "type": "paper",
+        "title": "A Unified Framework for Image-to-3D Part Generation via Variable Granularity",
+        "url": "https://arxiv.org/abs/2610.31671v1",
+        "published": "2026-10-22",
+        "source_text": "Controllable 3D part generation is pivotal for digital asset creation, yet existing methods lack the flexibility to accommodate diverse user workflows requiring varying levels of control. In this paper, we introduce FlexPart, a unified image-to-3D part generation framework that supports variable-granularity geometric conditions within a single model. By seamlessly integrating heterogeneous inputs, ranging from sparse points to dense bounding boxes and masks, via gated adaptive modulation, FlexPart unlocks a powerful cross-modal synergy. We also propose an asymmetric geometric guidance mechanism that leverages strong spatial priors to align representations across granularities, improving geometric consistency and facilitating inter-task synergy. Under mask conditioning on PartVerseXL, FlexPart reduces Part CD by 16.6% relative to TripoSG + SAM3D and by 10.5% relative to OmniPart, while maintaining competitive whole-mesh quality. The code can be found at https://github.com/Gucci233/FlexPart",
+        "synthetic": false,
+        "summary": "FlexPart generates 3D objects part by part from an image and accepts part conditions at different levels of detail, from sparse points to masks. It reduces part-level error by 10-17% compared with two recent methods.",
+        "topics": [
+          "3D generation"
+        ],
+        "reason": {
+          "kind": "breadth",
+          "interest_id": null,
+          "text": "3D asset generation sits next to your image generation interest and uses similar conditioning ideas."
+        }
+      },
+      {
+        "id": "p25",
+        "type": "paper",
+        "title": "VERA: A Responsible AI Dashboard for Assessing LLM Deployments in Light of the EU AI Act",
+        "url": "https://arxiv.org/abs/2610.31588v1",
+        "published": "2026-10-22",
+        "source_text": "Institutions that deploy large language models in regulated settings often need technical evidence of responsible AI practices before approving a deployment. COMPL-AI provides a technical interpretation of the EU AI Act that organises this evidence under six principle groups and eighteen technical requirements, twelve of which current benchmarks can measure. The benchmark suites that produce this evidence are typically operated from a command line, while the staff who approve deployments are non-engineers. We present VERA, an open-source self-hosted dashboard deployed to facilitate responsible AI processes within a large European bank. A reviewer selects a model and runs public benchmarks against it. VERA scores the twelve requirements that current benchmarks can measure and instruments the energy consumed by each evaluation, adding run-level evidence for environmental impact. We run four served open-weight models through the requirement pipeline, and the dashboard displays a score for each measurable requirement. A within-subject study then compares how participants read these benchmark results: from the raw output files in one condition, and through the VERA dashboard in the other. The dashboard reduced the time needed to perform the responsible AI assessment, reducing the time required from 56 seconds using raw files to 30 seconds using our dashboard, on average. Our dashboard scored highly (4.36 out of 5) on usefulness in the survey conducted within the organization. The dashboard and the study material are released publicly to promote replicability and reproducibility in different organisational contexts.",
+        "synthetic": false,
+        "summary": "VERA is an open-source dashboard, deployed at a large European bank, that maps public benchmark results onto the EU AI Act's measurable technical requirements. In a study it cut the time for a responsible-AI assessment from 56 to 30 seconds.",
+        "topics": [
+          "AI regulation"
+        ],
+        "reason": {
+          "kind": "breadth",
+          "interest_id": null,
+          "text": "AI regulation next to your AI copyright policy interest: how the EU AI Act turns into concrete checks."
+        }
+      }
+    ],
+    "brief": {
+      "points": [
+        {
+          "text": "EpiSEM-Bench tests tool-using agents when a tool response leaves out a safety-relevant fact; giving agents a way to recover the missing facts reduced unsafe actions for all ten models tested.",
+          "field": "AI agents",
+          "cites": [
+            "p09"
+          ]
+        },
+        {
+          "text": "With BrickWright's assembly API and feasibility validator, coding agents produced physically valid brick builds for all 512 test prompts, versus 9-69% validity without the tools.",
+          "field": "AI agents",
+          "cites": [
+            "p08"
+          ]
+        },
+        {
+          "text": "UniVOE trains video object insertion on pairs created by its own object remover, avoiding hard-to-collect paired footage, and reports state-of-the-art removal and insertion.",
+          "field": "Video editing",
+          "cites": [
+            "p14"
+          ]
+        },
+        {
+          "text": "clipforge, an open-source pipeline that cuts video by editing its transcript, gained about 1,200 GitHub stars in its first week.",
+          "field": "Video editing",
+          "cites": [
+            "r01"
+          ]
+        },
+        {
+          "text": "A new open checkpoint now beats commercial image models on prompt following.",
+          "field": "Image generation",
+          "cites": [
+            "r03"
+          ]
+        },
+        {
+          "text": "SpectralCanary lets dataset owners check whether a text-to-image model was fine-tuned on their images, detecting use at about 92% true positives with 1% false positives across five datasets.",
+          "field": "AI copyright policy",
+          "cites": [
+            "p05"
+          ]
+        },
+        {
+          "text": "Draft guidance asking platforms to label AI-generated images and keep provenance metadata is open for public comment for 60 days.",
+          "field": "AI copyright policy",
+          "cites": [
+            "n04"
+          ]
+        },
+        {
+          "text": "Northwind AI released Lumen-V 2, a text-to-video model for clips of up to 60 seconds; no independent evaluation came with the release.",
+          "field": "Lumen-V 2",
+          "cites": [
+            "n01"
+          ]
+        }
+      ],
+      "connections": [
+        {
+          "text": "FlexPart and UniVOE both let users work on individual parts or objects rather than whole scenes, FlexPart for 3D assets and UniVOE for video.",
+          "cites": [
+            "p01",
+            "p14"
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "text": "First digest: nothing earlier to compare with.",
+          "cites": []
+        }
+      ]
+    }
+  },
+  "expected": {
+    "verdict": "ADJUST",
+    "problems": [
+      {
+        "type": "unsupported_citation",
+        "refs": [
+          "points[4]"
+        ],
+        "explanation": "lora-kit is a set of training scripts; it says nothing about a checkpoint beating commercial models."
+      }
+    ],
+    "debatable": [
+      "p24"
+    ]
+  }
+}

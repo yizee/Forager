@@ -1,11 +1,20 @@
 """Deterministic digest checks, run in code on every digest (never left to the model).
 
-Stage 1 covers structure and citation IDs. Stage 4 adds topic share, 7-day
-interest coverage and source-type mix.
+Structure and citation IDs (Stage 1), plus the Stage 4 rules: topic share, 7-day
+coverage of long-term interests and source-type mix. Everything these rules cannot
+judge (relevance, duplicates, whether a citation supports a point) is the Critic's job.
 """
+
+from collections import Counter
+from datetime import date, timedelta
+
+from .profile import active_interests
 
 MIN_POINTS, MAX_POINTS = 5, 8
 REASON_KINDS = {"interest", "breadth"}
+MAX_TOPIC_SHARE = 0.40
+MIN_ITEMS_FOR_SHARE = 5
+COVERAGE_DAYS = 7
 
 
 def check_digest(digest: dict, candidate_ids: set[str]) -> list[str]:
@@ -67,3 +76,59 @@ def citation_stats(digest: dict) -> dict:
     valid = sum(1 for p in points if isinstance(p, dict) and p.get("cites")
                 and all(c in included for c in p["cites"]))
     return {"points": len(points), "points_with_valid_citations": valid}
+
+
+def topic_bucket(item: dict) -> str:
+    """Interest items count toward their interest; all breadth items share one bucket."""
+    reason = item.get("reason") or {}
+    if reason.get("kind") == "interest" and reason.get("interest_id"):
+        return reason["interest_id"]
+    return "breadth"
+
+
+def check_topic_share(digest: dict, limit: float = MAX_TOPIC_SHARE) -> list[str]:
+    items = digest.get("items") or []
+    if len(items) < MIN_ITEMS_FOR_SHARE:
+        return []
+    bucket, count = Counter(topic_bucket(i) for i in items).most_common(1)[0]
+    if count / len(items) > limit:
+        return [f"'{bucket}' has {count} of {len(items)} items ({count / len(items):.0%}); the limit is {limit:.0%}."]
+    return []
+
+
+def check_coverage(digest: dict, profile: dict, history=(), today: str | None = None,
+                   days: int = COVERAGE_DAYS) -> list[str]:
+    """Each active long-term interest needs an item in the last `days` days, this digest included."""
+    today = today or digest.get("date") or date.today().isoformat()
+    since = (date.fromisoformat(today) - timedelta(days=days - 1)).isoformat()
+    covered = {topic_bucket(i) for i in digest.get("items") or []}
+    for past in history:
+        if since <= past.get("date", "") <= today:
+            covered |= {topic_bucket(i) for i in past.get("items") or []}
+    return [f"Long-term interest '{i['label']}' ({i['id']}) has no item in the last {days} days."
+            for i in active_interests(profile, today) if i["type"] == "long_term" and i["id"] not in covered]
+
+
+def check_source_mix(digest: dict, available_types) -> list[str]:
+    """With two or more source types available, a digest must use at least two."""
+    available = set(available_types)
+    if len(available) < 2:
+        return []
+    used = {i.get("type") for i in digest.get("items") or []}
+    if len(used) < 2:
+        return [f"All items are of type {', '.join(sorted(map(str, used))) or 'none'}; "
+                f"use at least two of: {', '.join(sorted(available))}."]
+    return []
+
+
+def check_rules(digest: dict, profile: dict, candidate_ids: set[str], *, available_types,
+                history=(), today: str | None = None) -> dict[str, list[str]]:
+    """All code rules, by rule name. A digest passes when every list is empty."""
+    return {"structure_and_citations": check_digest(digest, candidate_ids),
+            "topic_share": check_topic_share(digest),
+            "coverage": check_coverage(digest, profile, history, today),
+            "source_mix": check_source_mix(digest, available_types)}
+
+
+def rule_errors(results: dict[str, list[str]]) -> list[str]:
+    return [error for errors in results.values() for error in errors]

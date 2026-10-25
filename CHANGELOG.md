@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-25 (Stage 4 started: code rules and Critic case set)
+
+### Added
+- Stage 4 code rules in `forager/checks.py`: topic share at most 40% (each interest is a bucket, all breadth items one bucket, applied from 5 items), 7-day coverage of every active long-term interest (with digest history), and source-type mix (applies only when two or more source types are available). `check_rules` reports results by rule. Applied to the first live digest, the coverage rule fires: no item covered AI copyright policy.
+- `eval/cases/critic/`: 21 cases for the Idea 3 question "does a Critic add value beyond rules?". Every case passes all code rules; 16 contain one semantic problem (irrelevant exploration 3, near-duplicates under different labels 3, citations that do not support the point 4, overstated connections 3, wrong interest labels 3), 4 are controls (2 of them hard negatives), and `live-01` is the unedited first live digest with the problems found in it. Each case is self-contained: profile, digest with each item's source text, and ground truth (verdict, problem type, refs, explanation, debatable refs). The index and proposed scoring are in `eval/cases/critic/README.md`.
+- `eval/build_critic_cases.py`: builds the cases from two clean base digests plus one targeted change per case; the build fails if any rule fires or a ground-truth ref does not exist. Papers are real arXiv entries from the snapshot; news and repo items are synthetic (fictional names, example.com links).
+- `eval/cases/critic/sources/live-digest-2026-10-25.json`: the first live digest, kept as a fixture.
+- Tests (71 in total): the rules; every case passes all rules with valid refs; the validator rejects broken cases; real papers are unaltered; the committed cases match a fresh build; in `ml-03` the wrong label is exactly what satisfies the coverage rule; `live-01` fails coverage without its added history.
+
 ## 2026-10-25 (live runs of Stages 1–3)
 
 ### Added

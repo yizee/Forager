@@ -1,0 +1,304 @@
+{
+  "date": "2026-10-25",
+  "brief": {
+    "points": [
+      {
+        "text": "FlexPart unifies image-to-3D part generation under one model that accepts variable-granularity controls, from sparse points to dense masks and boxes.",
+        "field": "Image generation",
+        "cites": [
+          "p01"
+        ]
+      },
+      {
+        "text": "Gate3DGen adds a degradation-aware preprocessing gate that purifies only messy real-world images before single-image 3D generation, leaving clean inputs untouched.",
+        "field": "Image generation",
+        "cites": [
+          "p10"
+        ]
+      },
+      {
+        "text": "SpectralCanary plants low-frequency canary traces in T2I training data to audit dataset use, addressing verifiability-fidelity tradeoffs in proactive watermarking.",
+        "field": "Image generation",
+        "cites": [
+          "p05"
+        ]
+      },
+      {
+        "text": "UniVOE treats video object removal and injection as reciprocal operations, bootstrapping injection from removal-trained models to cut paired-data needs.",
+        "field": "Video editing",
+        "cites": [
+          "p14"
+        ]
+      },
+      {
+        "text": "WorldForge V2 improves camera-trajectory control in video diffusion without task-specific fine-tuning, keeping generative quality while reducing artifacts.",
+        "field": "Video editing",
+        "cites": [
+          "p15"
+        ]
+      },
+      {
+        "text": "BrickWright shows frontier coding agents can produce physically valid LEGO assemblies when given assembly and feasibility-verification tools.",
+        "field": "AI agents",
+        "cites": [
+          "p08"
+        ]
+      },
+      {
+        "text": "EpiSEM-Bench measures unsafe agent execution when tool responses omit safety-critical facts, with 300 matched unsafe/safe task pairs across six domains.",
+        "field": "AI agents",
+        "cites": [
+          "p09"
+        ]
+      },
+      {
+        "text": "Checkpoint analysis of OLMo-3 finds no clear evidence that RLVR training induces power-seeking or other instrumentally convergent behaviors.",
+        "field": "AI agents",
+        "cites": [
+          "p19"
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "text": "BrickWright's tool-equipped coding agents and UniVOE's removal-driven bootstrapping both show that giving models structured verification or reciprocal training signals beats scaling raw supervision.",
+        "cites": [
+          "p08",
+          "p14"
+        ]
+      },
+      {
+        "text": "WorldForge V2's camera control in video diffusion and FlexPart's variable-granularity 3D conditions both tackle finer user control over generative models without retraining them from scratch.",
+        "cites": [
+          "p15",
+          "p01"
+        ]
+      }
+    ],
+    "changes": [
+      {
+        "text": "First digest: no prior brief to compare against.",
+        "cites": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "p01",
+      "type": "paper",
+      "title": "A Unified Framework for Image-to-3D Part Generation via Variable Granularity",
+      "url": "https://arxiv.org/abs/2610.31671v1",
+      "published": "2026-10-22",
+      "summary": "FlexPart is a unified image-to-3D part generation framework supporting variable-granularity geometric conditions, from sparse points to dense boxes and masks, via gated adaptive modulation within a single model. It also proposes an asymmetric geometric guidance mechanism.",
+      "topics": [
+        "3D generation",
+        "controllable generation",
+        "parts"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i3",
+        "text": "Directly fits controllable generation interests with a new conditioning framework for image-to-3D workflows."
+      }
+    },
+    {
+      "id": "p05",
+      "type": "paper",
+      "title": "SpectralCanary: Embarrassingly Simple Low-Frequency Traces for T2I Dataset-Use Auditing",
+      "url": "https://arxiv.org/abs/2610.31659v1",
+      "published": "2026-10-22",
+      "summary": "SpectralCanary embeds a fixed canary image into every collection image using a smooth low-pass mask, enabling auditing of whether a T2I model was fine-tuned on that collection without reproducing training images. It improves the verifiability-fidelity-robustness tradeoff.",
+      "topics": [
+        "dataset auditing",
+        "T2I",
+        "canary"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i3",
+        "text": "Relevant to diffusion model training data accountability, an adjacent concern for image generation practitioners."
+      }
+    },
+    {
+      "id": "p10",
+      "type": "paper",
+      "title": "Gate3DGen: A Pre-processing Model that Selectively Purifies Real-World Images for 3D Generation",
+      "url": "https://arxiv.org/abs/2610.31649v1",
+      "published": "2026-10-22",
+      "summary": "Gate3DGen is a selective preprocessing model that routes 3D-generation inputs: clean images pass through unchanged, while degraded images are purified by a degradation-aware router. It improves single-image 3D generation on real-world photos without retraining the generator.",
+      "topics": [
+        "3D generation",
+        "image purification",
+        "gating"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i3",
+        "text": "Bridges image quality control and 3D generation, a practical controllable-generation topic."
+      }
+    },
+    {
+      "id": "p14",
+      "type": "paper",
+      "title": "UniVOE: A Removal-Driven Framework for Interaction-Aware Universal Video Object Editing",
+      "url": "https://arxiv.org/abs/2610.31641v1",
+      "published": "2026-10-22",
+      "summary": "UniVOE is a removal-driven framework for interaction-aware universal video object editing, treating removal and injection as reciprocal operations. It bootstraps injection training from removal models to avoid costly paired real-world supervision.",
+      "topics": [
+        "video editing",
+        "object removal",
+        "inpainting"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i2",
+        "text": "Core open-source-style video editing pipeline work addressing object removal and injection jointly."
+      }
+    },
+    {
+      "id": "p15",
+      "type": "paper",
+      "title": "WorldForge V2: Eliciting Camera-Trajectory Alignment in Video Diffusion Models",
+      "url": "https://arxiv.org/abs/2610.31640v1",
+      "published": "2026-10-22",
+      "summary": "WorldForge V2 elicits camera-trajectory alignment in video diffusion models without task-specific fine-tuning, preserving generative capability while improving spatial and temporal consistency. It avoids artifacts of post-hoc warping approaches.",
+      "topics": [
+        "video diffusion",
+        "camera control",
+        "video generation"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i5",
+        "text": "Advances controllable video generation, the space Sora 2 occupies; relevant while tracking video model developments."
+      }
+    },
+    {
+      "id": "p08",
+      "type": "paper",
+      "title": "BrickWright: Agentic Creation of Physically Feasible Brick Builds",
+      "url": "https://arxiv.org/abs/2610.31651v1",
+      "published": "2026-10-22",
+      "summary": "BrickWright gives frontier coding agents tools for assembling builds and verifying physical feasibility, enabling physically valid LEGO assemblies from text or image inputs. It argues tooling, not model scale, closes the physical-validity gap.",
+      "topics": [
+        "coding agents",
+        "tooling",
+        "3D assembly"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i1",
+        "text": "A concrete coding-agent framework with tool-based verification, matching agent frameworks and coding agents facets."
+      }
+    },
+    {
+      "id": "p09",
+      "type": "paper",
+      "title": "EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence",
+      "url": "https://arxiv.org/abs/2610.31650v1",
+      "published": "2026-10-22",
+      "summary": "EpiSEM-Bench is an executable benchmark with 300 matched unsafe/safe task pairs across six domains, evaluating LLM agents when tool responses omit safety-relevant facts. It measures unsafe execution, safety boundaries, and evidence recovery.",
+      "topics": [
+        "agent safety",
+        "benchmarks",
+        "tool use"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i1",
+        "text": "Fits the agent benchmarks and evaluation facet, probing a novel failure mode of tool-using agents."
+      }
+    },
+    {
+      "id": "p17",
+      "type": "paper",
+      "title": "Can an Agent Debug a Web Corpus? Agentic Auditing of Slovak FineWeb2",
+      "url": "https://arxiv.org/abs/2610.31636v1",
+      "published": "2026-10-22",
+      "summary": "An LLM agent audits the Slovak FineWeb2 corpus through a budgeted read-only API, compiling findings into executable tests validated by a native speaker. Runs costing under $3 each found a 1.4M-document machine-generated content farm.",
+      "topics": [
+        "agents",
+        "corpus auditing",
+        "multilingual"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i1",
+        "text": "A novel agentic use case: agents as corpus debuggers with concrete cost-effectiveness numbers."
+      }
+    },
+    {
+      "id": "p19",
+      "type": "paper",
+      "title": "Questioning Instrumental Convergence in RLVR: Checkpoint Evidence from OLMo-3",
+      "url": "https://arxiv.org/abs/2610.31624v1",
+      "published": "2026-10-22",
+      "summary": "The paper examines OLMo-3 checkpoints to test whether RLVR training induces instrumentally convergent behaviors like power-seeking or deception. It questions the generality of instrumental convergence claims for RL-trained LLMs.",
+      "topics": [
+        "RLHF/RLVR",
+        "safety",
+        "instrumental convergence"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i1",
+        "text": "Empirical agent-behavior evaluation with direct bearing on expectations about RL-trained agents."
+      }
+    },
+    {
+      "id": "p03",
+      "type": "paper",
+      "title": "Reading, Writing, Sharing, and Interacting with the World through Video",
+      "url": "https://arxiv.org/abs/2610.31668v1",
+      "published": "2026-10-22",
+      "summary": "A survey organizing video foundation models and video world models under a world-modeling lens, treating video as a lossy projection of a latent temporal world. It structures the field around reading, writing, sharing, and interacting operations.",
+      "topics": [
+        "video models",
+        "world models",
+        "survey"
+      ],
+      "reason": {
+        "kind": "interest",
+        "interest_id": "i5",
+        "text": "Timely map of the video generation landscape amid Sora 2-era developments."
+      }
+    },
+    {
+      "id": "p02",
+      "type": "paper",
+      "title": "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success",
+      "url": "https://arxiv.org/abs/2610.31670v1",
+      "published": "2026-10-22",
+      "summary": "Sensorimotor Alignment proposes a training-free offline proxy for embodied policy capability: as sensory representations improve, they converge toward the structure of physical motion trajectories, per the Platonic Representation Hypothesis.",
+      "topics": [
+        "robotics",
+        "representation learning",
+        "evaluation"
+      ],
+      "reason": {
+        "kind": "breadth",
+        "interest_id": null,
+        "text": "A cheap evaluation proxy connecting representation geometry to agent success—interesting beyond the core profile."
+      }
+    },
+    {
+      "id": "p04",
+      "type": "paper",
+      "title": "Direct Pass@$k$ Optimization for Thought Pruning: Balancing Quality and Diversity in Test-Time Reasoning",
+      "url": "https://arxiv.org/abs/2610.31667v1",
+      "published": "2026-10-22",
+      "summary": "The paper directly optimizes pass@k for thought pruning in test-time reasoning, balancing quality and diversity when committing compute to surviving candidate solutions. It addresses limits of purely quality-based pruning.",
+      "topics": [
+        "test-time scaling",
+        "reasoning",
+        "pruning"
+      ],
+      "reason": {
+        "kind": "breadth",
+        "interest_id": null,
+        "text": "Adjacent inference-time compute work relevant to how agent systems allocate reasoning budget."
+      }
+    }
+  ],
+  "note": "Raw digest from the first live run (z-ai/glm-5.3-flash, 2026-10-25), generated from data/snapshot/arxiv-2026-10-25.json with the persona profile. Unedited model output after code merge."
+}

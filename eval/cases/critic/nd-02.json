@@ -1,0 +1,364 @@
+{
+  "id": "nd-02",
+  "category": "near_duplicate",
+  "origin": "constructed",
+  "base": "base-b",
+  "change": "Breadth item p03 replaced by a second article on the Harbor licensing announcement (n06), labeled 'creator economy'.",
+  "why_rules_pass": "Duplicates differ in title, source and topic label, so no rule sees them as the same; no topic bucket exceeds 40%.",
+  "today": "2026-10-25",
+  "profile": {
+    "interests": [
+      {
+        "id": "i1",
+        "label": "AI agents",
+        "facets": [
+          "Agent frameworks and tooling",
+          "Agent benchmarks and evaluation",
+          "Coding agents"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i2",
+        "label": "Video editing",
+        "facets": [
+          "AI-assisted editing tools",
+          "Open-source editing pipelines"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i3",
+        "label": "Image generation",
+        "facets": [
+          "Diffusion model research",
+          "Controllable generation (editing, inpainting)",
+          "New model releases"
+        ],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 1.0,
+        "expires": null
+      },
+      {
+        "id": "i4",
+        "label": "AI copyright policy",
+        "facets": [],
+        "type": "long_term",
+        "source": "stated",
+        "weight": 0.5,
+        "expires": null
+      },
+      {
+        "id": "i5",
+        "label": "Lumen-V 2",
+        "facets": [],
+        "type": "short_term",
+        "source": "stated",
+        "weight": 0.8,
+        "expires": "2026-11-08"
+      }
+    ],
+    "exploration": 0.2
+  },
+  "available_types": [
+    "paper",
+    "news",
+    "repo"
+  ],
+  "history": [],
+  "digest": {
+    "date": "2026-10-25",
+    "items": [
+      {
+        "id": "p23",
+        "type": "paper",
+        "title": "Simulated Control Evals",
+        "url": "https://arxiv.org/abs/2610.31593v1",
+        "published": "2026-10-22",
+        "source_text": "Control evaluations measure whether safeguards can prevent an AI model from causing undesired outcomes even when it is intentionally trying to do so. These evaluations typically use purpose-built control settings and extrapolate their results to a model's deployment. However, the effectiveness of safeguards in deployment can depend on features of environments and tasks that control settings do not represent. To broaden where control evaluations can be run, we introduce simulated control evaluations (SCEs), which use a language model to simulate tool responses in place of an environment. We evaluate SCEs on LinuxArena, where execution provides ground-truth outcomes. We compare SCE prediction errors with those from a separate control setting, BashArena, and with variation in control metrics within LinuxArena. For independently sampled evaluation and deployment task sets, SCEs predict safety with a root mean squared error of 3.6 percentage points across five monitors at a 5% audit budget, compared with 10.1 for BashArena. SCEs closely reproduce distributions of attack strategies, attacker reasoning, and monitor reasoning, with over tenfold lower KL divergence from execution than BashArena. SCEs explain 78-85% of the between-environment variance in attack success, monitor scores, and safety. This accuracy is sample efficient: SCEs predict safety with less error than BashArena using fewer than 5% as many task-pair draws as the deployment task set. Strategies discovered through simulation also improve monitor performance on held-out LinuxArena attacks, outperforming BashArena and approximately matching improvement from executed strategies. These results suggest that deployment-specific SCEs can be more predictive than control evaluations executed in separate control settings.",
+        "synthetic": false,
+        "summary": "Simulated control evaluations use a language model to simulate tool responses instead of a real environment. On LinuxArena they predicted safety with an error of 3.6 percentage points, compared with 10.1 for a separate control setting.",
+        "topics": [
+          "agent safety evaluation"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches your Agent benchmarks and evaluation focus: a cheaper way to evaluate safeguards for agents."
+        }
+      },
+      {
+        "id": "p17",
+        "type": "paper",
+        "title": "Can an Agent Debug a Web Corpus? Agentic Auditing of Slovak FineWeb2",
+        "url": "https://arxiv.org/abs/2610.31636v1",
+        "published": "2026-10-22",
+        "source_text": "Multilingual pipelines such as FineWeb2 apply one recipe across a thousand languages, leaving the failure modes of individual languages unanticipated. We use an LLM once, as a corpus debugger rather than a classifier: a tool-using agent explores the corpus through a read-only, budgeted API and compiles each finding into an executable test, which a native speaker then validates. On the 26.5M-document Slovak portion of FineWeb2, three runs costing \\$2.21-\\$2.84 each found seven findings over four phenomena. The largest is a machine-generated content farm of 1,408,437 documents (5.32%) that passed the pipeline's filters, 86.6% of it passing even stricter thresholds. Blinded labels support 6 of the 7 findings (defect rates .53-1.00 against .08 in a random control) and do not support one. The compiled suite scans the full corpus in 0.7 s of wall-clock time without a GPU, against \\$12k-\\$90k per LLM classification pass. The best static sampling baseline validates more selectors than any agent run, at under half the cost. The agent contributes exact prevalence, a precision estimate checked against sampled documents, an account of why the pipeline missed each slice, and a reusable test. We release the framework, Slovak test suite, validation data and agent trajectories.",
+        "synthetic": false,
+        "summary": "A tool-using agent audited the Slovak part of FineWeb2 through a read-only API and turned each finding into an executable test. Runs costing under $3 found a 1.4-million-document machine-generated content farm, though a static sampling baseline validated more selectors at under half the cost.",
+        "topics": [
+          "agent applications",
+          "data quality"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches AI agents: an agent used as a debugging tool, with an honest cost comparison."
+        }
+      },
+      {
+        "id": "n07",
+        "type": "news",
+        "title": "Relay 1.0 released: open-source framework for multi-agent workflows",
+        "url": "https://example.com/news/n07",
+        "published": "2026-10-23",
+        "source_text": "The open-source Relay project released version 1.0 of its framework for building multi-agent workflows. The release adds typed tool definitions, step-level tracing and a replay mode for debugging agent runs, and the maintainers declare the API stable.",
+        "synthetic": true,
+        "summary": "Relay 1.0, an open-source framework for multi-agent workflows, adds typed tool definitions, step-level tracing and a replay mode for debugging, and declares its API stable.",
+        "topics": [
+          "agent frameworks"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i1",
+          "text": "Matches your Agent frameworks and tooling focus."
+        }
+      },
+      {
+        "id": "n09",
+        "type": "news",
+        "title": "Cutline video editor adds text-based editing",
+        "url": "https://example.com/news/n09",
+        "published": "2026-10-22",
+        "source_text": "The desktop video editor Cutline added text-based editing: users edit a transcript and the cuts are applied to the video timeline. The update also adds automatic filler-word removal. The feature is part of the paid plan.",
+        "synthetic": true,
+        "summary": "The Cutline editor added transcript-based editing, where deleting words from the transcript cuts the video, plus automatic filler-word removal.",
+        "topics": [
+          "editing tools"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i2",
+          "text": "Matches your AI-assisted editing tools focus."
+        }
+      },
+      {
+        "id": "r05",
+        "type": "repo",
+        "title": "dubline: local subtitles and dubbing for video",
+        "url": "https://example.com/repo/r05",
+        "published": "2026-10-21",
+        "source_text": "dubline generates subtitles with speech recognition, translates them, and produces a dubbed audio track with voice cloning. It runs locally and exports to common editing formats. The repository gained about 900 stars this week.",
+        "synthetic": true,
+        "summary": "dubline creates subtitles, translates them and generates a dubbed voice track locally, exporting to common editing formats; about 900 stars this week.",
+        "topics": [
+          "subtitles and dubbing"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i2",
+          "text": "Matches your AI-assisted editing tools focus."
+        }
+      },
+      {
+        "id": "n10",
+        "type": "news",
+        "title": "Meridian-XL: open-weight image model released under a permissive license",
+        "url": "https://example.com/news/n10",
+        "published": "2026-10-24",
+        "source_text": "The Meridian project released Meridian-XL, an open-weight text-to-image model, under a permissive license. The release includes the training code and a model card that lists the licensed datasets used for training. The maintainers report scores on two public prompt-following benchmarks without comparing against other models.",
+        "synthetic": true,
+        "summary": "Meridian-XL, an open-weight text-to-image model, was released under a permissive license with its training code and a model card listing the licensed training datasets.",
+        "topics": [
+          "open image models"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i3",
+          "text": "Matches your New model releases focus."
+        }
+      },
+      {
+        "id": "r03",
+        "type": "repo",
+        "title": "lora-kit: training scripts for image LoRA adapters",
+        "url": "https://example.com/repo/r03",
+        "published": "2026-10-19",
+        "source_text": "lora-kit collects training scripts for LoRA adapters on open text-to-image models, with presets for style and character fine-tuning. It includes dataset captioning helpers and a small evaluation notebook, and has about 2,000 stars.",
+        "synthetic": true,
+        "summary": "lora-kit collects LoRA training scripts for open text-to-image models, with style and character presets and captioning helpers; about 2,000 stars.",
+        "topics": [
+          "fine-tuning tools"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i3",
+          "text": "Matches Image generation: practical fine-tuning tools for open models."
+        }
+      },
+      {
+        "id": "n05",
+        "type": "news",
+        "title": "Harbor Image Cooperative launches opt-in licensing for AI training",
+        "url": "https://example.com/news/n05",
+        "published": "2026-10-22",
+        "source_text": "Harbor Image Cooperative, a stock-photo cooperative, launched a program that lets member photographers license their images for AI model training and receive a share of the fees. Images are excluded from training sets unless the photographer opts in.",
+        "synthetic": true,
+        "summary": "Harbor Image Cooperative launched opt-in licensing that lets photographers license their images for AI training and share in the fees; images stay out of training sets unless their owners opt in.",
+        "topics": [
+          "training data licensing"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i4",
+          "text": "Matches AI copyright policy: a licensing model for training data."
+        }
+      },
+      {
+        "id": "n08",
+        "type": "news",
+        "title": "Independent test compares Lumen-V 2 with four earlier video models",
+        "url": "https://example.com/news/n08",
+        "published": "2026-10-25",
+        "source_text": "An independent evaluation group compared Lumen-V 2 with four earlier text-to-video models on 200 prompts. Lumen-V 2 scored highest on temporal consistency but ranked third on prompt adherence. The group published its prompts and scoring rubric.",
+        "synthetic": true,
+        "summary": "An independent group tested Lumen-V 2 against four earlier video models on 200 prompts: first on temporal consistency, third on prompt adherence. Prompts and rubric are public.",
+        "topics": [
+          "video model evaluation"
+        ],
+        "reason": {
+          "kind": "interest",
+          "interest_id": "i5",
+          "text": "Your short-term focus: the first independent measurements of Lumen-V 2."
+        }
+      },
+      {
+        "id": "p15",
+        "type": "paper",
+        "title": "WorldForge V2: Eliciting Camera-Trajectory Alignment in Video Diffusion Models",
+        "url": "https://arxiv.org/abs/2610.31640v1",
+        "published": "2026-10-22",
+        "source_text": "Video diffusion models have learned rich 3D/4D priors, making them promising for scene generation and video re-rendering. However, their use in spatial tasks is limited by imprecise camera control, spatial and temporal inconsistencies, and entangled camera motion with scene dynamics. Existing approaches, such as task-specific fine-tuning and post-process warping, often introduce visual artifacts, generalize poorly, or incur high computational costs. We propose WorldForge V2 to achieve accurate camera control while preserving the generative capabilities of pretrained video models. We first develop a training-free guidance framework using warped references to iteratively refine generation along a target camera path. Optical-flow analysis identifies motion-related latent channels for selective guidance, helping separate motion control from appearance. A dual-path strategy further compares guided and unguided predictions to correct artifacts from imperfect references. Together, these components guide viewpoint changes while preserving scene appearance and object motion. To reduce refinement costs, v-cache approximates the correction using the preceding denoising prediction, avoiding an additional model evaluation. We further extend motion localization from latent channels to network blocks and introduce Trajectory LoRA, which concentrates adaptation on blocks most responsive to trajectory guidance. A two-stage training strategy teaches these adapters to denoise the states encountered during guided generation, using limited supervision effectively. This enables reliable camera control with very little training data, with a single training scene already supporting generalization to unseen scenes. Quantitative and qualitative evaluations across multiple datasets show that our method achieves state-of-the-art generation quality and trajectory accuracy in camera-controlled video generation.",
+        "synthetic": false,
+        "summary": "WorldForge V2 improves camera control in pretrained video diffusion models with training-free guidance along a target camera path plus small trajectory adapters. It reports state-of-the-art trajectory accuracy and quality with very little training data.",
+        "topics": [
+          "video generation",
+          "camera control"
+        ],
+        "reason": {
+          "kind": "breadth",
+          "interest_id": null,
+          "text": "Video generation research next to your video editing interest: re-rendering a clip along a new camera path."
+        }
+      },
+      {
+        "id": "n06",
+        "type": "news",
+        "title": "Photographers can now license their work for AI training through Harbor",
+        "url": "https://example.com/news/n06",
+        "published": "2026-10-23",
+        "source_text": "Harbor Image Cooperative's new program lets photographers opt in to licensing their images for AI training and share in the fees. Images stay out of training sets unless their owners opt in. The article is based on the cooperative's announcement.",
+        "synthetic": true,
+        "summary": "Photographers in the Harbor cooperative can opt in to license their images for AI training and share the fees.",
+        "topics": [
+          "creator economy"
+        ],
+        "reason": {
+          "kind": "breadth",
+          "interest_id": null,
+          "text": "How photographers are starting to earn from AI training."
+        }
+      }
+    ],
+    "brief": {
+      "points": [
+        {
+          "text": "Simulated control evaluations replace the environment with a language model that simulates tool responses, and predicted safety on LinuxArena with a 3.6-point error, versus 10.1 for a separate control setting.",
+          "field": "AI agents",
+          "cites": [
+            "p23"
+          ]
+        },
+        {
+          "text": "An agent auditing the Slovak part of FineWeb2 found a 1.4-million-document content farm for under $3 per run, though a static sampling baseline validated more selectors at under half the cost.",
+          "field": "AI agents",
+          "cites": [
+            "p17"
+          ]
+        },
+        {
+          "text": "Relay 1.0, an open-source multi-agent framework, adds typed tool definitions, step-level tracing and replay for debugging, and declares its API stable.",
+          "field": "AI agents",
+          "cites": [
+            "n07"
+          ]
+        },
+        {
+          "text": "Cutline added transcript-based editing and filler-word removal, and the open-source dubline tool creates translated subtitles and dubbed audio locally.",
+          "field": "Video editing",
+          "cites": [
+            "n09",
+            "r05"
+          ]
+        },
+        {
+          "text": "Meridian-XL, an open-weight text-to-image model, was released under a permissive license with training code and a model card listing its licensed training data.",
+          "field": "Image generation",
+          "cites": [
+            "n10"
+          ]
+        },
+        {
+          "text": "Harbor Image Cooperative now lets photographers opt in to licensing their images for AI training and share in the fees; other images stay out of training sets.",
+          "field": "AI copyright policy",
+          "cites": [
+            "n05"
+          ]
+        },
+        {
+          "text": "An independent test on 200 prompts ranked Lumen-V 2 first of five video models on temporal consistency but third on prompt adherence.",
+          "field": "Lumen-V 2",
+          "cites": [
+            "n08"
+          ]
+        }
+      ],
+      "connections": [
+        {
+          "text": "Meridian-XL's model card lists licensed training data, and Harbor's program creates such licensed images: both are steps toward training image models on licensed data.",
+          "cites": [
+            "n10",
+            "n05"
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "text": "First digest: nothing earlier to compare with.",
+          "cites": []
+        }
+      ]
+    }
+  },
+  "expected": {
+    "verdict": "ADJUST",
+    "problems": [
+      {
+        "type": "near_duplicate",
+        "refs": [
+          "n05",
+          "n06"
+        ],
+        "explanation": "Two articles about the same Harbor announcement with the same facts."
+      }
+    ],
+    "debatable": []
+  }
+}

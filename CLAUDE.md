@@ -29,6 +29,12 @@
 - 提案已提交（`docs/proposal.pdf`），老师反馈见 `docs/feedback.md`。
 - GitHub 仓库 `yizee/Forager` 已建立。本地克隆在 `~/Desktop/Forager`，虚拟环境 `.venv`（Python 3.11）。
 - **第 1–3 阶段已完成**，离线测试共 40 个全部通过（`.venv/bin/python -m pytest`，只收集 `tests/`），2026-10-25 的真实调用也全部通过，花费 $0.0053。详情和给报告用的观察见 `docs/live-runs.md`。下一步：第 4 阶段。
+- **第 4 阶段进行中。** 已完成：
+  - 代码规则（`forager/checks.py` 的 `check_rules`）：话题占比 ≤ 40%（每个兴趣一个桶，所有广度补充合为一个桶，5 条以上才判断）、长期兴趣 7 天覆盖（可传入历史简报）、来源类型不单一（只有可用来源 ≥ 2 种时才生效）、引用 ID 存在。规则还没有接进简报流程。
+  - Critic 用例集 `eval/cases/critic/`（21 个，由 `eval/build_critic_cases.py` 生成，不要手改 JSON）。每个用例都通过全部代码规则：16 个带一个语义问题，4 个对照（含 2 个困难反例），外加未经修改的第一份真实简报 `live-01`。标注由 Claude 写成，**评估前需要作者本人核对**。
+  - **Critic 的输出格式由用例集决定**：`{"verdict": "PASS"|"ADJUST", "issues": [{"type": "irrelevant_exploration|near_duplicate|unsupported_citation|overstated_connection|mislabeled_interest", "refs": ["p30" | "points[2]" | "connections[0]"], "explanation": "..."}]}`。评分规则见 `eval/cases/critic/README.md`：点名问题位置算抓到（重复内容要点名至少两条），点名"可争议"位置不计分，其余点名算误报。
+  - Critic 需要看到每条内容的原文（`source_text`），才能判断引用是否支撑要点。简报流程目前在合并时丢掉了摘要原文，接入 Critic 时要保留。
+  - 下一步：GitHub 和新闻来源 → 三个来源专家和 Manager → 规则接入流程 → Critic → Streamlit 界面。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
