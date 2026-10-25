@@ -10,6 +10,7 @@ from datetime import date
 
 from .checks import check_digest
 from .jsonagent import ask_json, context_input, json_agent_factory, run_plain
+from .profile import active_interests
 
 ABSTRACT_CHARS = 600
 TYPE_PREFIX = {"paper": "p", "news": "n", "repo": "r"}
@@ -59,8 +60,9 @@ def prepare_candidates(raw_items: list[dict], limit: int = 20) -> list[dict]:
 
 
 def context_message(profile: dict, candidates: list[dict], previous: dict | None, today: str) -> str:
+    # Expired short-term interests stop counting until the user decides (memory review).
     interests = [{k: i.get(k) for k in ("id", "label", "facets", "type", "weight", "expires")}
-                 for i in profile.get("interests", [])]
+                 for i in active_interests(profile, today)]
     shown = [{"id": c["id"], "type": c["type"], "title": c["title"],
               "categories": c.get("categories", []), "published": c.get("published"),
               "abstract": c.get("abstract", "")[:ABSTRACT_CHARS]} for c in candidates]

@@ -15,7 +15,8 @@ import re
 from datetime import date, timedelta
 
 from .jsonagent import ask_json, context_input, json_agent_factory, run_plain
-from .profile import PROFILE_PATH
+from .profile import PROFILE_PATH, is_expired
+from .signals import SIGNALS
 
 SHORT_TERM_DAYS = 14
 ADJACENT_WEIGHT = 0.5
@@ -271,14 +272,26 @@ def apply_edit(profile: dict, command: str, today: str | None = None) -> str:
     raise ValueError("Unknown command.\n" + EDIT_HELP)
 
 
-def format_profile(profile: dict) -> str:
+def format_profile(profile: dict, today: str | None = None) -> str:
     lines = ["Your profile:"]
     for number, interest in enumerate(profile["interests"], start=1):
         facets = ", ".join(interest.get("facets") or []) or "whole field"
-        term = (f"short-term until {interest['expires']}" if interest["type"] == "short_term" else "long-term")
+        if interest["type"] == "long_term":
+            term = "long-term"
+        elif is_expired(interest, today):
+            term = f"short-term, expired {interest['expires']} (not used until you decide)"
+        else:
+            term = f"short-term until {interest['expires']}"
         lines.append(f"  {number}. {interest['label']} [{facets}] · {term} · {interest['source']}"
                      f" · weight {interest['weight']}")
+        for evidence in (interest.get("evidence") or [])[-3:]:
+            lines.append(f"       evidence: {evidence}")
+        if interest.get("approved_on"):
+            lines.append(f"       approved by you on {interest['approved_on']}")
     lines.append(f"  Exploration share: {profile['exploration']} · Delivery time: {profile['delivery_time']}")
+    consent = profile.get("consent", {})
+    lines.append("  Tracking: " + ", ".join(f"{info['label']} {'on' if consent.get(key) else 'off'}"
+                                           for key, info in SIGNALS.items()))
     return "\n".join(lines)
 
 

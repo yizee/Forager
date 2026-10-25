@@ -5,6 +5,12 @@
   python -m forager snapshot              fetch recent arXiv papers into data/snapshot/
   python -m forager digest                fetch arXiv now and write today's digest (paid call)
   python -m forager digest --snapshot P   use a fixed snapshot file instead of fetching
+  python -m forager consent               choose which feedback signals Forager may track (Idea 2)
+  python -m forager rate p03 5            rate an item in the latest digest (if ratings are on)
+  python -m forager like p03              like an item in the latest digest (if likes are on)
+  python -m forager review                review expired interests and the agent's proposals (paid call)
+  python -m forager review --silent-baseline   baseline: the agent updates the profile without asking
+  python -m forager profile               show the profile, what is tracked and recent decisions
 """
 
 import argparse
@@ -15,8 +21,11 @@ from pathlib import Path
 
 from . import PROJECT_ROOT, labkit
 from .checks import citation_stats
+from .memory import MIN_EVIDENCE, MemoryStore
+from .memory_cli import approval_prompt, ask_consent, find_item, review_expired
 from .profile import PROFILE_PATH, load_profile
 from .render import to_markdown
+from .signals import SIGNALS, describe, load_signals, purge_signal, record_signal
 from .sources import arxiv
 
 DIGEST_DIR = PROJECT_ROOT / "runtime" / "digests"
@@ -64,11 +73,84 @@ def cmd_onboard(args):
     if profile is None:
         print("Setup failed:", outcome["errors"])
         return
-    if edit_loop(profile, input, print):
-        save_profile(profile)
-        print(f"Saved {PROFILE_PATH.relative_to(PROJECT_ROOT)}")
-    else:
+    if not edit_loop(profile, input, print):
         print("Not saved.")
+        return
+    ask_consent(profile, MemoryStore().signals_path, input, print)
+    # Keep only signals the new profile allows; anything else collected before is deleted.
+    for key, allowed in profile["consent"].items():
+        if not allowed:
+            purge_signal(MemoryStore().signals_path, key)
+    save_profile(profile)
+    print(f"Saved {PROFILE_PATH.relative_to(PROJECT_ROOT)}")
+
+
+def require_profile() -> bool:
+    if PROFILE_PATH.exists():
+        return True
+    print("No profile yet. Run: python -m forager onboard")
+    return False
+
+
+def cmd_consent(args):
+    from .onboarding import save_profile
+    if not require_profile():
+        return
+    store = MemoryStore()
+    profile = store.profile()
+    ask_consent(profile, store.signals_path, input, print)
+    save_profile(profile, store.profile_path)
+
+
+def cmd_feedback(args):
+    if not require_profile():
+        return
+    store = MemoryStore()
+    signal, value = ("ratings", args.score) if args.command == "rate" else ("likes", 1)
+    try:
+        item, digest_date = find_item(DIGEST_DIR, args.item, args.date)
+        event = record_signal(store.signals_path, store.profile(), signal, item, digest_date, value)
+    except ValueError as exc:
+        print(exc)
+        return
+    if event is None:
+        print(f"Not recorded: {SIGNALS[signal]['label'].lower()} are off. Turn them on with: python -m forager consent")
+    else:
+        print("Recorded:", describe(event))
+
+
+def cmd_review(args):
+    from .memory import review
+    if not require_profile():
+        return
+    store = MemoryStore()
+    review_expired(store, input, print)
+    if len(store.usable()) < MIN_EVIDENCE:
+        print(f"Not enough consented feedback yet (need at least {MIN_EVIDENCE} signals from the last 30 days).")
+        return
+    with lab_connection() as lab:
+        outcome = review(lab, store, approval_prompt(input, print), silent=args.silent_baseline,
+                         on_event=print_turns)
+    print("\n" + (outcome["answer"] or outcome.get("error") or outcome.get("reason", "")))
+    for entry in outcome["proposals"]:
+        print(f"  [{entry['decision']}] {entry['change']}")
+
+
+def cmd_profile(args):
+    from .onboarding import format_profile
+    if not require_profile():
+        return
+    store = MemoryStore()
+    print(format_profile(store.profile()))
+    events = load_signals(store.signals_path)
+    print(f"\nStored signals ({len(events)}):" + ("" if events else " none"))
+    for event in events[-10:]:
+        print("  -", describe(event))
+    history = store.history()
+    if history:
+        print("\nRecent profile decisions:")
+        for entry in history[-5:]:
+            print(f"  {entry['time'][:10]} [{entry['decision']}] {entry['change']}")
 
 
 def cmd_snapshot(args):
@@ -113,6 +195,21 @@ def main():
     dig.add_argument("--snapshot", type=Path, help="snapshot JSON to use instead of fetching")
     dig.add_argument("--max-results", type=int, default=30)
     dig.set_defaults(func=cmd_digest)
+    sub.add_parser("consent", help="choose which feedback signals Forager may track").set_defaults(func=cmd_consent)
+    rate = sub.add_parser("rate", help="rate a digest item 1-5")
+    rate.add_argument("item")
+    rate.add_argument("score", type=int)
+    rate.add_argument("--date", help="digest date (default: latest)")
+    rate.set_defaults(func=cmd_feedback)
+    like = sub.add_parser("like", help="like a digest item")
+    like.add_argument("item")
+    like.add_argument("--date", help="digest date (default: latest)")
+    like.set_defaults(func=cmd_feedback)
+    rev = sub.add_parser("review", help="review expired interests and proposed profile updates")
+    rev.add_argument("--silent-baseline", action="store_true",
+                     help="evaluation baseline: apply the agent's updates without asking")
+    rev.set_defaults(func=cmd_review)
+    sub.add_parser("profile", help="show the profile, tracked signals and recent decisions").set_defaults(func=cmd_profile)
     args = parser.parse_args()
     args.func(args)
 

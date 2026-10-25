@@ -68,6 +68,10 @@ python3.11 -m venv .venv
 .venv/bin/python -m pytest                    # offline, free
 .venv/bin/python -m forager onboard           # set up your profile with option follow-ups (paid call)
 .venv/bin/python -m forager onboard --baseline   # free-text baseline, no follow-ups
+.venv/bin/python -m forager consent           # choose which feedback signals may be tracked
+.venv/bin/python -m forager rate p03 5        # rate an item in the latest digest (likewise: like p03)
+.venv/bin/python -m forager review            # approve or reject evidence-backed profile updates (paid call)
+.venv/bin/python -m forager profile           # see the profile, what is tracked and past decisions
 .venv/bin/python -m forager snapshot          # save recent arXiv papers to data/snapshot/
 .venv/bin/python -m forager digest            # fetch arXiv and write today's digest (paid call)
 .venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json

@@ -34,6 +34,12 @@
   - 用户接受的相邻领域权重 0.5；用户选中的短期关注 14 天后过期；新档案的所有追踪授权默认关闭。
   - 终端里用编号代替可点选的选项；Streamlit 界面在第 4 阶段复用 `onboarding.py`。
   - 综合查询的澄清（时间范围、时间线还是对比）暂未实现，放到第 4 阶段做界面时再做。
+- 第 3 阶段代码已完成（`consent` / `rate` / `like` / `review` / `profile` 命令），离线测试共 38 个全部通过。同样还差一次真实调用。设计要点：
+  - 授权三层保证：未授权的信号不记录；使用时按当前授权过滤（只看最近 30 天）；撤回授权时删除该类已收集的数据。新档案和默认档案的授权全部关闭。
+  - 写入工具 `propose_profile_update` 用 `needs_approval=True`，由 SDK 暂停等待用户决定。审批前代码先检查：至少 2 条不同的已授权信号作为证据、目标合法、30 天内被拒绝过的修改不再提出、每次最多 3 条建议。不合格的建议直接拦截，不打扰用户，原因通过 `rejection_message` 告诉模型。工具本身写入前再检查一次。
+  - 用户看到的"改动内容"和"证据"由代码根据参数和信号记录生成，和 agent 的措辞分开显示，防止措辞误导。
+  - 所有建议和结果记录在 `runtime/proposals.jsonl`，用于想法 2 的评估。静默更新基线：`review --silent-baseline`。
+  - 短期兴趣过期后不再用于简报（自动降权），在 `review` 时请用户选择：延长 14 天、转为长期或删除。
 - 所有"JSON 回复 + 代码检查 + 修改一次"的 agent 都用 `forager/jsonagent.py`。
 - Lab 代码由 `forager/labkit.py` 定位：默认 `lab/`（也接受 `lab/week3-lab-ta/`），可用环境变量 `FORAGER_LAB_DIR` 覆盖。
 - 候选内容超过 `session.run` 的 6000 字符上限，所以通过 `input_builder` 作为上下文消息传入，用户消息只放简短指令。
@@ -150,7 +156,18 @@ Forager/
   "delivery_time": "08:00",
   "setup": {"method": "clarification|free_text", "description": "...", "date": "2026-10-25"}
 }
-// 每条 interest 另有 "origin": "clarification|suggested|free_text|manual"（第 2 阶段加入）
+// 每条 interest 另有 "origin": "clarification|suggested|free_text|manual|proposal"（第 2、3 阶段加入）
+// 第 3 阶段：经建议写入的 interest 还有 "evidence"（从信号记录复制）和 "approved_on" 或 "updated_silently_on"
+
+// runtime/signals.jsonl 中的一条信号（只在授权时记录）
+{"id": "s1a2b3c", "time": "2026-10-25T09:00:00", "signal": "ratings|likes|clicks|reading_time",
+ "value": 5, "digest": "2026-10-25",
+ "item": {"id": "p03", "type": "paper", "title": "...", "topics": [], "reason_kind": "interest", "interest_id": "i2"}}
+
+// runtime/proposals.jsonl 中的一条记录
+{"time": "...", "mode": "approval|silent|expiry", "decision": "approved|rejected|blocked|silent|approved_not_applied|kept|made_long_term|removed",
+ "applied": true, "change": "<代码生成的改动描述>", "message": "<agent 的话>", "evidence_ids": ["s1a2b3c"],
+ "evidence": ["rated p03 ... 5/5 ..."], "errors": [], "proposal": {...}}
 
 // 一条内容
 {"id": "p03", "type": "paper|news|repo", "title": "...", "url": "...",
@@ -166,7 +183,7 @@ Forager/
 | 想法 | 核心指标 | 方法 |
 | --- | --- | --- |
 | 1 | 兴趣档案准确度（用户 1–7 分自评），对比自由文本基线 | 用户研究 |
-| 2 | 偏好更新是否附证据并等待批准的通过率 | LLM 判定的测试用例 |
+| 2 | 偏好更新是否附证据并等待批准的通过率（数据来自 `runtime/proposals.jsonl`；对照 `review --silent-baseline`） | LLM 判定的测试用例 |
 | 3 | 话题多样性与相关性的权衡，对比单 agent / 仅规则 / 规则 + Critic | 代码统计 + LLM 判定相关性 |
 | 3 | 速报要点的引用支撑率 | LLM 判定的测试用例 |
 
