@@ -6,10 +6,10 @@ with the exact problems; the result is returned either way, with its errors.
 """
 
 import json
-import re
 from datetime import date
 
 from .checks import check_digest
+from .jsonagent import ask_json, context_input, json_agent_factory, run_plain
 
 ABSTRACT_CHARS = 600
 TYPE_PREFIX = {"paper": "p", "news": "n", "repo": "r"}
@@ -74,25 +74,6 @@ def context_message(profile: dict, candidates: list[dict], previous: dict | None
                        "candidates": shown}, ensure_ascii=False)
 
 
-def create_digest_agent(model):
-    from agents import Agent
-    return Agent(name="Digest writer", model=model, instructions=INSTRUCTIONS, tools=[])
-
-
-def run_digest_agent(agent, messages, run_config=None):
-    from agents import Runner
-    return Runner.run_sync(agent, messages, max_turns=3, run_config=run_config)
-
-
-def parse_json(text: str) -> dict:
-    """Extract the JSON object from a model answer, tolerating code fences."""
-    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text.strip())
-    start, end = text.find("{"), text.rfind("}")
-    if start < 0 or end <= start:
-        raise ValueError("No JSON object found in the answer.")
-    return json.loads(text[start:end + 1])
-
-
 def generate_digest(lab, profile: dict, raw_items: list[dict], *, previous=None,
                     today=None, on_event=None, max_repairs=1) -> dict:
     """Run the single-agent digest on an open lab connection.
@@ -104,37 +85,16 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, previous=None,
     candidates = prepare_candidates(raw_items)
     candidate_ids = {c["id"] for c in candidates}
     context = context_message(profile, candidates, previous, today)
-
-    def build_input(history, user_input, files):
-        # The candidates exceed session.run's 6,000-character limit, so they go in
-        # as context on the first turn; later turns reuse the history.
-        if not history:
-            history = [{"role": "user", "content": "Digest context (JSON):\n" + context}]
-        return history + [{"role": "user", "content": user_input}]
-
-    session = lab.session(agent_factory=create_digest_agent, runner=run_digest_agent,
-                          input_builder=build_input, on_event=on_event, agent_id="digest-writer")
-    request = "Write today's digest as the JSON object described in your instructions."
-    turns, digest, errors = [], None, []
-    for attempt in range(max_repairs + 1):
-        result = session.run(request)
-        turns.append(result.to_dict())
-        if result.status != "completed":
-            errors = [f"Agent turn {result.status}: {result.error or 'no answer'}"]
-            break
-        try:
-            digest = parse_json(result.answer)
-            errors = check_digest(digest, candidate_ids)
-        except ValueError as exc:
-            digest, errors = None, [f"Answer is not valid JSON: {exc}"]
-        if not errors:
-            break
-        request = ("Your digest failed these checks. Return the corrected full JSON object only.\n- "
-                   + "\n- ".join(errors[:15]))
+    session = lab.session(agent_factory=json_agent_factory("Digest writer", INSTRUCTIONS),
+                          runner=run_plain, input_builder=context_input("Digest context", context),
+                          on_event=on_event, agent_id="digest-writer")
+    outcome = ask_json(session, "Write today's digest as the JSON object described in your instructions.",
+                       lambda data: check_digest(data, candidate_ids), max_repairs=max_repairs)
+    digest = outcome["data"]
     if digest is not None:
         digest = merge_items(digest, candidates, today)
-    return {"digest": digest, "candidates": candidates, "errors": errors,
-            "attempts": len(turns), "turns": turns}
+    return {"digest": digest, "candidates": candidates, "errors": outcome["errors"],
+            "attempts": outcome["attempts"], "turns": outcome["turns"]}
 
 
 def merge_items(digest: dict, candidates: list[dict], today: str) -> dict:

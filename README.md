@@ -66,6 +66,8 @@ Requires Python 3.10+ and the course lab package unzipped into `lab/` (with its 
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest                    # offline, free
+.venv/bin/python -m forager onboard           # set up your profile with option follow-ups (paid call)
+.venv/bin/python -m forager onboard --baseline   # free-text baseline, no follow-ups
 .venv/bin/python -m forager snapshot          # save recent arXiv papers to data/snapshot/
 .venv/bin/python -m forager digest            # fetch arXiv and write today's digest (paid call)
 .venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json

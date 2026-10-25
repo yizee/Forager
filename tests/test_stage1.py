@@ -10,7 +10,8 @@ import pytest
 
 from forager import labkit
 from forager.checks import check_digest, citation_stats
-from forager.digest import context_message, generate_digest, parse_json, prepare_candidates
+from forager.digest import context_message, generate_digest, prepare_candidates
+from forager.jsonagent import parse_json
 from forager.profile import DEFAULT_PROFILE
 from forager.render import to_markdown
 from forager.sources.arxiv import load_snapshot, parse_feed

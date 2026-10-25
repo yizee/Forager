@@ -2,6 +2,20 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-25 (Stage 2, offline)
+
+### Added
+- `forager/onboarding.py` (Idea 1): one sentence → the clarifier agent returns 1–5 directions, each with one question and 3–6 options, 1–3 adjacent-field suggestions, and any short-term focus the user explicitly mentioned. Checked in code, one repair turn.
+- `build_profile`: the profile is built in code from the user's selections only; options the agent did not offer are ignored, so the model cannot add preferences. Adjacent fields the user accepts get weight 0.5; selected short-term focuses expire after 14 days.
+- Free-text baseline (`profile_from_text`, `onboard --baseline`) for the Idea 1 comparison.
+- Profile editing (remove, weight, facets, add, short/long, exploration, delivery time) and validation before saving to `runtime/profile.json`.
+- `forager/onboarding_cli.py` and `python -m forager onboard`: numbered options in the terminal stand in for clickable ones until the Streamlit UI (Stage 4).
+- `forager/jsonagent.py`: shared JSON-answer, code-check and one-repair loop, used by the digest writer and the onboarding agents.
+- `tests/test_stage2.py`: 9 offline tests (18 in total).
+
+### Changed
+- Profile schema: interests gain `origin` (`clarification`, `suggested`, `free_text`, `manual`); the profile gains `setup` (`method`, `description`, `date`). A new profile starts with every consent signal off until the user opts in (Stage 3).
+
 ## 2026-10-25 (plan update)
 
 ### Changed

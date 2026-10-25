@@ -29,6 +29,12 @@
 - 提案已提交（`docs/proposal.pdf`），老师反馈见 `docs/feedback.md`。
 - GitHub 仓库 `yizee/Forager` 已建立。本地克隆在 `~/Desktop/Forager`，虚拟环境 `.venv`（Python 3.11）。
 - 第 1 阶段代码已完成，离线测试 9 个全部通过（`.venv/bin/python -m pytest`）。**还差一次真实调用**才算完成（`python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json`）。
+- 第 2 阶段代码已完成（`python -m forager onboard`，基线 `--baseline`），离线测试共 18 个全部通过。同样还差一次真实调用。
+  - 档案由代码根据用户的选择生成（`build_profile`），模型给出的选项之外的内容一律忽略，保证"不凭空添加偏好"。
+  - 用户接受的相邻领域权重 0.5；用户选中的短期关注 14 天后过期；新档案的所有追踪授权默认关闭。
+  - 终端里用编号代替可点选的选项；Streamlit 界面在第 4 阶段复用 `onboarding.py`。
+  - 综合查询的澄清（时间范围、时间线还是对比）暂未实现，放到第 4 阶段做界面时再做。
+- 所有"JSON 回复 + 代码检查 + 修改一次"的 agent 都用 `forager/jsonagent.py`。
 - Lab 代码由 `forager/labkit.py` 定位：默认 `lab/`（也接受 `lab/week3-lab-ta/`），可用环境变量 `FORAGER_LAB_DIR` 覆盖。
 - 候选内容超过 `session.run` 的 6000 字符上限，所以通过 `input_builder` 作为上下文消息传入，用户消息只放简短指令。
 - 用户本机已有 Week 6 包：`~/Desktop/Human-AI/week6/week6/evaluation/`（含 `run_eval.py`、`harness.py`、`graders.py`），第 5 阶段使用。
@@ -141,8 +147,10 @@ Forager/
   ],
   "consent": {"ratings": true, "likes": true, "clicks": false, "reading_time": false},
   "exploration": 0.2,
-  "delivery_time": "08:00"
+  "delivery_time": "08:00",
+  "setup": {"method": "clarification|free_text", "description": "...", "date": "2026-10-25"}
 }
+// 每条 interest 另有 "origin": "clarification|suggested|free_text|manual"（第 2 阶段加入）
 
 // 一条内容
 {"id": "p03", "type": "paper|news|repo", "title": "...", "url": "...",
