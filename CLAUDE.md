@@ -27,8 +27,11 @@
 ## 3. 当前状态
 
 - 提案已提交（`docs/proposal.pdf`），老师反馈见 `docs/feedback.md`。
-- GitHub 仓库 `yizee/Forager` 已建立，目前只有 README、CHANGELOG 和文档，**还没有代码**。
-- 下一步：第 1 阶段（见第 8 节）。
+- GitHub 仓库 `yizee/Forager` 已建立。本地克隆在 `~/Desktop/Forager`，虚拟环境 `.venv`（Python 3.11）。
+- 第 1 阶段代码已完成，离线测试 9 个全部通过（`.venv/bin/python -m pytest`）。**还差一次真实调用**才算完成（`python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json`）。
+- Lab 代码由 `forager/labkit.py` 定位：默认 `lab/`（也接受 `lab/week3-lab-ta/`），可用环境变量 `FORAGER_LAB_DIR` 覆盖。
+- 候选内容超过 `session.run` 的 6000 字符上限，所以通过 `input_builder` 作为上下文消息传入，用户消息只放简短指令。
+- 用户本机已有 Week 6 包：`~/Desktop/Human-AI/week6/week6/evaluation/`（含 `run_eval.py`、`harness.py`、`graders.py`），第 5 阶段使用。
 
 ## 4. 产品功能
 
@@ -210,7 +213,7 @@ Forager/
 
 1. **仓库可见性**：`yizee/Forager` 目前是 Public。推送 Lab 代码前必须改成 Private（Settings → Danger Zone → Change visibility）。
 2. **额外预算**：是否向老师申请项目额度，或改用用户自己的 OpenRouter key。
-3. **Week 6 评估框架**：向用户要 `week6/evaluation` 文件夹（`run_eval.py` 等）。
+3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。
 4. **Lab 2 代码包**：用户需要把 `lab2.zip` 解压到项目的 `lab/` 目录。
 
 ## 13. 相关文件

@@ -49,11 +49,29 @@ Fallback if time is short: drop Hugging Face first.
 ## Repository layout
 
 ```
-CLAUDE.md   full project brief for development (read first)
-docs/       proposal, feedback and design notes
-src/        application code (from Stage 1)
+CLAUDE.md        full project brief for development (read first)
+docs/            proposal, feedback and design notes
+forager/         application code: sources/, digest.py, checks.py, render.py, profile.py
+data/snapshot/   fixed content snapshots for offline tests and evaluation
+tests/           offline tests (scripted model replies, no key needed)
+lab/             course lab package, not committed (unzip lab2.zip here)
 CHANGELOG.md
 ```
+
+## Running
+
+Requires Python 3.10+ and the course lab package unzipped into `lab/` (with its `.env`).
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m pytest                    # offline, free
+.venv/bin/python -m forager snapshot          # save recent arXiv papers to data/snapshot/
+.venv/bin/python -m forager digest            # fetch arXiv and write today's digest (paid call)
+.venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json
+```
+
+Digests are written to `runtime/digests/<date>.json` and `.md`.
 
 ## Key dates
 
