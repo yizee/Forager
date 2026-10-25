@@ -49,6 +49,7 @@ Fallback if time is short: drop Hugging Face first.
 ## Repository layout
 
 ```
+CLAUDE.md   full project brief for development (read first)
 docs/       proposal, feedback and design notes
 src/        application code (from Stage 1)
 CHANGELOG.md

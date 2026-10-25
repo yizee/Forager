@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-25
+
+### Added
+- `CLAUDE.md`: full project brief for handing off to Claude engineering mode (problem and solution, three design ideas, Lab 2 base code and budget constraints, data structure drafts, evaluation plan, staged roadmap with target dates, video outline, working rules, open questions).
+
+### Changed
+- `.gitignore` now excludes `.lab-state/`, `runtime/` and `lab/` (course code stays out of the repo while it is public).
+- README layout section lists `CLAUDE.md`.
+
 ## 2026-10-15
 
 ### Added

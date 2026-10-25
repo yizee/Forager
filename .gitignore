@@ -3,3 +3,7 @@ __pycache__/
 .venv/
 .env
 data/cache/
+.lab-state/
+runtime/
+# Course lab code: keep out of the repo while it is public
+lab/
