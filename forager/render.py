@@ -37,4 +37,29 @@ def to_markdown(digest: dict, profile: dict | None = None) -> str:
                   item.get("summary", ""), "",
                   f"- Source: [{item['url']}]({item['url']}) · {item.get('published', '')}",
                   f"- Why you see this: {_reason(item.get('reason', {}), labels)}", ""]
+    if digest.get("checks"):
+        lines += _checks(digest["checks"])
     return "\n".join(lines)
+
+
+def _checks(checks: dict) -> list[str]:
+    """How the digest was checked: code rules, uncovered interests and the Critic's review."""
+    rules = "passed" if checks.get("rules_passed") else "not all passed"
+    scope = "structure and citations" if checks.get("mode") == "single" else \
+        "structure, citations, topic share, coverage and source mix"
+    lines = ["## How this digest was checked", "", f"- Code rules ({scope}): {rules}."]
+    lines += [f"- Not covered: {warning}" for warning in checks.get("warnings") or []]
+    critic = checks.get("critic")
+    if critic is None:
+        return lines + [""]
+    if critic.get("errors"):
+        lines.append("- Critic: no usable review this time; the digest passed the code rules.")
+    elif critic.get("verdict") == "PASS":
+        lines.append("- Critic: no problems found.")
+    else:
+        outcome = ("the writer revised the digest once" if critic.get("revised") else
+                   "the revision broke a code rule, so the checked draft is shown")
+        lines.append(f"- Critic: {len(critic['issues'])} issue(s); {outcome}.")
+        lines += [f"  - {issue['type'].replace('_', ' ')} ({', '.join(issue['refs'])}): {issue['explanation']}"
+                  for issue in critic["issues"]]
+    return lines + [""]

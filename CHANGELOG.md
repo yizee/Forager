@@ -2,6 +2,21 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-26 (Stage 4: Critic, offline)
+
+### Added
+- `forager/critic.py` (Idea 3): an independent Critic agent with its own context. It sees the profile, the brief with refs (`points[i]`, `connections[i]`) and each item's source text, and judges only the five semantic problem types. Its answer (`PASS`/`ADJUST` with typed issues) is checked in code: valid types, refs that exist, each type naming the right kind of thing (e.g. irrelevant exploration only for breadth items, duplicates as groups of two or more); one repair turn.
+- Digest pipeline modes, which are also the Idea 3 evaluation conditions: `single` (structure and citations, the Stage 1 baseline), `rules` (plus topic share, coverage and source mix, one repair turn) and `critic` (plus the Critic; on ADJUST the writer revises once and the rules run again; if the revision still breaks a rule, the rule-passing draft is kept).
+- `python -m forager digest --mode critic|rules|single` (default `critic`); coverage uses the saved digests of the last 7 days.
+- The digest Markdown ends with "How this digest was checked": code rules, uncovered interests and the Critic's issues.
+- `eval/run_critic_cases.py`: runs the Critic on the case set (fresh session per review, `--repeats`, cost estimate and confirmation before paid calls), scores it as described in the case README, and prints rules-only next to rules + Critic.
+- `tests/test_stage4_critic.py`: 14 offline tests (85 in total), including that the ground truth of every case is itself a valid Critic answer, that the Critic's view contains no ground truth, every pipeline branch, and the scorer.
+
+### Changed
+- Writer instructions now state the balance rules and say never to mark an unrelated item as matching an interest just to cover it.
+- Coverage is a soft rule: after its repair turn an uncovered interest becomes a warning shown in the digest, not a failure. With some candidate sets it cannot be met honestly, and forcing it would push the writer to mislabel items.
+- Digest items keep their source text (`source_text`) so the Critic can check claims against it.
+
 ## 2026-10-25 (Stage 4 started: code rules and Critic case set)
 
 ### Added

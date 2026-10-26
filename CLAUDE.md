@@ -33,8 +33,12 @@
   - 代码规则（`forager/checks.py` 的 `check_rules`）：话题占比 ≤ 40%（每个兴趣一个桶，所有广度补充合为一个桶，5 条以上才判断）、长期兴趣 7 天覆盖（可传入历史简报）、来源类型不单一（只有可用来源 ≥ 2 种时才生效）、引用 ID 存在。规则还没有接进简报流程。
   - Critic 用例集 `eval/cases/critic/`（21 个，由 `eval/build_critic_cases.py` 生成，不要手改 JSON）。每个用例都通过全部代码规则：16 个带一个语义问题，4 个对照（含 2 个困难反例），外加未经修改的第一份真实简报 `live-01`。标注由 Claude 写成，**评估前需要作者本人核对**。
   - **Critic 的输出格式由用例集决定**：`{"verdict": "PASS"|"ADJUST", "issues": [{"type": "irrelevant_exploration|near_duplicate|unsupported_citation|overstated_connection|mislabeled_interest", "refs": ["p30" | "points[2]" | "connections[0]"], "explanation": "..."}]}`。评分规则见 `eval/cases/critic/README.md`：点名问题位置算抓到（重复内容要点名至少两条），点名"可争议"位置不计分，其余点名算误报。
-  - Critic 需要看到每条内容的原文（`source_text`），才能判断引用是否支撑要点。简报流程目前在合并时丢掉了摘要原文，接入 Critic 时要保留。
-  - 下一步：GitHub 和新闻来源 → 三个来源专家和 Manager → 规则接入流程 → Critic → Streamlit 界面。
+  - **Critic 已完成（离线测通，2026-10-26）**：`forager/critic.py`。Critic 是上下文独立的 agent，只看档案、带位置编号的速报和每条内容的原文（`source_text`），看不到任何标注答案。它的输出由代码检查（类型、位置、类型与对象是否匹配），格式不对可修改一次。
+  - **简报流程三种模式**（也是想法 3 的三个对照条件）：`single`（只查结构和引用，即第 1 阶段基线）、`rules`（加代码规则，违规修改一次）、`critic`（再加 Critic；ADJUST 时写作 agent 修改一次，修改后重新跑规则；修改版违反规则就保留通过规则的草稿）。命令：`python -m forager digest --mode critic|rules|single`，默认 `critic`。目前写作 agent 还是第 1 阶段的单 agent，Manager 和来源专家接入后流程不变。
+  - **覆盖规则是软规则**：修改一次后仍未覆盖的长期兴趣变成警告，显示在简报里，而不是判失败。只有 arXiv 时，有些兴趣（如版权政策）根本没有对应内容；硬性要求会逼写作 agent 乱贴标签，正是 Critic 要抓的问题。这一点写进报告。
+  - 简报 Markdown 末尾有"How this digest was checked"，显示规则结果、未覆盖的兴趣和 Critic 的问题（想法 3 对用户可见的部分之一）。
+  - **用例集评估脚本**：`eval/run_critic_cases.py`（每个用例用全新的 Critic 会话，可 `--repeats`，付费前先显示估算并确认）。评分与用例 README 一致，同时输出"仅规则"（按构造全部为 0）和"规则 + Critic"。**还没有跑过真实调用**，要等作者核对完标注。估算：21 个用例 × 3 次 ≈ 63 次调用，约 $0.13。
+  - 下一步：作者核对标注 → 用例集真实评估 → GitHub 和新闻来源 → 三个来源专家和 Manager → Streamlit 界面。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。

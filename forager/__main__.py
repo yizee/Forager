@@ -3,7 +3,8 @@
   python -m forager onboard               set up your interest profile (Idea 1; paid call)
   python -m forager onboard --baseline    free-text baseline: no follow-up questions
   python -m forager snapshot              fetch recent arXiv papers into data/snapshot/
-  python -m forager digest                fetch arXiv now and write today's digest (paid call)
+  python -m forager digest                fetch arXiv and write today's digest with rules + Critic (paid calls)
+  python -m forager digest --mode rules   evaluation baselines: --mode rules (no Critic), --mode single (Stage 1)
   python -m forager digest --snapshot P   use a fixed snapshot file instead of fetching
   python -m forager consent               choose which feedback signals Forager may track (Idea 2)
   python -m forager rate p03 5            rate an item in the latest digest (if ratings are on)
@@ -16,7 +17,7 @@
 import argparse
 import json
 from contextlib import contextmanager
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 from . import PROJECT_ROOT, labkit
@@ -160,6 +161,12 @@ def cmd_snapshot(args):
     print(f"Saved {len(papers)} papers to {path.relative_to(PROJECT_ROOT)}")
 
 
+def recent_digests(today: str, days: int = 7) -> list[dict]:
+    """Saved digests from the coverage window before today."""
+    since = (date.fromisoformat(today) - timedelta(days=days - 1)).isoformat()
+    return [json.loads(p.read_text()) for p in sorted(DIGEST_DIR.glob("*.json")) if since <= p.stem < today]
+
+
 def cmd_digest(args):
     from .digest import generate_digest
 
@@ -167,19 +174,29 @@ def cmd_digest(args):
     today = date.today().isoformat()
     profile = load_profile()
     with lab_connection() as lab:
-        outcome = generate_digest(lab, profile, raw, previous=latest_digest(today), today=today,
-                                  on_event=print_turns)
+        outcome = generate_digest(lab, profile, raw, mode=args.mode, previous=latest_digest(today),
+                                  history=recent_digests(today), today=today, on_event=print_turns)
 
     digest = outcome["digest"]
     DIGEST_DIR.mkdir(parents=True, exist_ok=True)
     record = {**(digest or {}), "date": today, "check_errors": outcome["errors"],
-              "attempts": outcome["attempts"], "usage": [t["usage"] for t in outcome["turns"]]}
+              "revision_errors": outcome["revision_errors"], "attempts": outcome["attempts"],
+              "usage": [t["usage"] for t in outcome["turns"]]}
     (DIGEST_DIR / f"{today}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
     if digest:
         (DIGEST_DIR / f"{today}.md").write_text(to_markdown(digest, profile) + "\n")
         print(citation_stats(digest))
-    print("Checks:", "PASS" if not outcome["errors"] else outcome["errors"])
-    print(f"Saved runtime/digests/{today}.json and .md (attempts: {outcome['attempts']})")
+    print("Code rules:", "PASS" if not outcome["errors"] else outcome["errors"])
+    for warning in outcome["warnings"]:
+        print("Not covered:", warning)
+    critic = outcome["critic"]
+    if critic:
+        print("Critic:", critic["verdict"] or f"no usable review {critic['errors']}")
+        for issue in critic["issues"]:
+            print(f"  - {issue['type']} {issue['refs']}: {issue['explanation']}")
+        if critic["verdict"] == "ADJUST":
+            print("Revised:", "yes" if outcome["revised"] else f"no, kept the checked draft {outcome['revision_errors']}")
+    print(f"Saved runtime/digests/{today}.json and .md (mode: {outcome['mode']}, writer turns: {outcome['attempts']})")
 
 
 def main():
@@ -191,9 +208,11 @@ def main():
     snap = sub.add_parser("snapshot", help="save recent arXiv papers as a fixed snapshot")
     snap.add_argument("--max-results", type=int, default=30)
     snap.set_defaults(func=cmd_snapshot)
-    dig = sub.add_parser("digest", help="generate today's digest (one or two paid model calls)")
+    dig = sub.add_parser("digest", help="generate today's digest (paid calls: writer, Critic, one revision)")
     dig.add_argument("--snapshot", type=Path, help="snapshot JSON to use instead of fetching")
     dig.add_argument("--max-results", type=int, default=30)
+    dig.add_argument("--mode", choices=("critic", "rules", "single"), default="critic",
+                     help="critic: rules + Critic (default); rules: code rules only; single: Stage 1 baseline")
     dig.set_defaults(func=cmd_digest)
     sub.add_parser("consent", help="choose which feedback signals Forager may track").set_defaults(func=cmd_consent)
     rate = sub.add_parser("rate", help="rate a digest item 1-5")
