@@ -209,7 +209,7 @@ def test_perfect_critic_and_rules_only_bracket_the_scores():
     rules = runner.summarize([runner.score_case(c, runner.RULES_ONLY) for c in cases])
     assert best["recall"] == 1.0 and best["type_match"] == 1.0 and best["false_alarm_issues"] == 0
     assert rules["recall"] == 0.0 and rules["false_alarm_issues"] == 0
-    assert best["problems"] == rules["problems"] == 19 and best["control_reviews"] == 4   # 16 cases x 1 + live-01 x 3
+    assert best["problems"] == rules["problems"] == 20 and best["control_reviews"] == 4   # 16 cases x 1 + live-01 x 4
 
 
 def test_run_reviews_offline_records_scores_and_usage():

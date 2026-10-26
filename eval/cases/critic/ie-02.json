@@ -155,7 +155,7 @@
         "title": "dubline: local subtitles and dubbing for video",
         "url": "https://example.com/repo/r05",
         "published": "2026-10-21",
-        "source_text": "dubline generates subtitles with speech recognition, translates them, and produces a dubbed audio track with voice cloning. It runs locally and exports to common editing formats. The repository gained about 900 stars this week.",
+        "source_text": "dubline is an open-source tool that generates subtitles with speech recognition, translates them, and produces a dubbed audio track with voice cloning. It runs locally and exports to common editing formats. The repository gained about 900 stars this week.",
         "synthetic": true,
         "summary": "dubline creates subtitles, translates them and generates a dubbed voice track locally, exporting to common editing formats; about 900 stars this week.",
         "topics": [

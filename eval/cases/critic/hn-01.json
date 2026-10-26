@@ -140,7 +140,7 @@
         "published": "2026-10-22",
         "source_text": "Video object removal and injection are reciprocal editing operations between object-present and object-absent video states, yet they differ substantially in training difficulty. Removal can be effectively bootstrapped from video inpainting and further adapted to erase object-related interaction effects. Injection, however, requires large-scale paired supervision to model object appearance, dynamics, and scene-dependent effects, while perfectly aligned real-world pairs are difficult to collect and synthetic data lacks sufficient realism and diversity. To address this challenge, we present UniVOE, a removal-driven framework for training both video object removal and injection models. We first train an effect-aware remover by transferring video inpainting priors and finetuning on object-present/object-absent pairs. The trained remover converts real object-present videos into object-absent counterparts, creating large-scale paired supervision for injection. An injection model is trained on these pairs in the reverse direction to recover objects together with their dynamics and interaction effects. Moreover, since pixel-level reconstruction alone cannot adequately capture perceptual realism, we introduce a reward-based post-training method that aligns injection results with human preferences using a proprietary reward model. Experiments against strong open-source and commercial systems demonstrate that UniVOE achieves state-of-the-art performance on both object removal and injection, particularly in challenging interaction-effect cases.",
         "synthetic": false,
-        "summary": "UniVOE trains a video object remover, uses it to turn real videos into paired training data, and trains object insertion on those pairs, including shadows and other interaction effects. It reports state-of-the-art removal and insertion against open-source and commercial systems.",
+        "summary": "UniVOE trains a video object remover, uses it to turn real videos into paired training data, and trains object insertion on those pairs, so inserted objects come with their motion and interaction effects. It reports state-of-the-art removal and insertion against open-source and commercial systems.",
         "topics": [
           "video object editing"
         ],
@@ -227,19 +227,19 @@
       {
         "id": "n04",
         "type": "news",
-        "title": "Comment period opens on labels for AI-generated images",
+        "title": "Copyright office opens comment period on AI training opt-outs",
         "url": "https://example.com/news/n04",
         "published": "2026-10-23",
-        "source_text": "The Digital Media Standards Office opened a 60-day public comment period on draft guidance for labeling AI-generated images. The draft asks platforms to show a visible label and to keep provenance metadata attached to generated files. Final guidance is expected next year.",
+        "source_text": "A national copyright office opened a 60-day public comment period on draft guidance about using copyrighted images to train AI models. The draft proposes a machine-readable opt-out that rights holders can attach to their images and asks AI developers to honor it. Final guidance is expected next year.",
         "synthetic": true,
-        "summary": "A standards office opened a 60-day comment period on draft guidance asking platforms to label AI-generated images visibly and keep provenance metadata.",
+        "summary": "A copyright office opened a 60-day comment period on draft guidance that would let rights holders opt their images out of AI training with a machine-readable signal.",
         "topics": [
-          "AI labeling policy"
+          "training data opt-out"
         ],
         "reason": {
           "kind": "interest",
           "interest_id": "i4",
-          "text": "Matches AI copyright policy: rules for labeling and tracing AI-generated images."
+          "text": "Matches AI copyright policy: proposed rules on using copyrighted images for AI training."
         }
       },
       {
@@ -269,7 +269,7 @@
         "published": "2026-10-22",
         "source_text": "Controllable 3D part generation is pivotal for digital asset creation, yet existing methods lack the flexibility to accommodate diverse user workflows requiring varying levels of control. In this paper, we introduce FlexPart, a unified image-to-3D part generation framework that supports variable-granularity geometric conditions within a single model. By seamlessly integrating heterogeneous inputs, ranging from sparse points to dense bounding boxes and masks, via gated adaptive modulation, FlexPart unlocks a powerful cross-modal synergy. We also propose an asymmetric geometric guidance mechanism that leverages strong spatial priors to align representations across granularities, improving geometric consistency and facilitating inter-task synergy. Under mask conditioning on PartVerseXL, FlexPart reduces Part CD by 16.6% relative to TripoSG + SAM3D and by 10.5% relative to OmniPart, while maintaining competitive whole-mesh quality. The code can be found at https://github.com/Gucci233/FlexPart",
         "synthetic": false,
-        "summary": "FlexPart generates 3D objects part by part from an image and accepts part conditions at different levels of detail, from sparse points to masks. It reduces part-level error by 10-17% compared with two recent methods.",
+        "summary": "FlexPart generates 3D objects part by part from an image and accepts part conditions at different levels of detail, from sparse points to masks. It reduces part-level error by 10.5% and 16.6% compared with two recent methods.",
         "topics": [
           "3D generation"
         ],
@@ -322,7 +322,7 @@
           ]
         },
         {
-          "text": "clipforge, an open-source pipeline that cuts video by editing its transcript, gained about 1,200 GitHub stars in its first week.",
+          "text": "clipforge, an open-source pipeline that cuts video by editing its transcript, gained about 1,200 stars in its first week.",
           "field": "Video editing",
           "cites": [
             "r01"
@@ -343,7 +343,7 @@
           ]
         },
         {
-          "text": "Draft guidance asking platforms to label AI-generated images and keep provenance metadata is open for public comment for 60 days.",
+          "text": "Draft copyright guidance that would let rights holders opt their images out of AI training is open for public comment for 60 days.",
           "field": "AI copyright policy",
           "cites": [
             "n04"
@@ -379,7 +379,8 @@
     "verdict": "PASS",
     "problems": [],
     "debatable": [
-      "p24"
+      "p24",
+      "points[4]"
     ]
   }
 }

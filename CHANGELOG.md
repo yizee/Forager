@@ -2,6 +2,19 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-26 (Critic case set: label audit)
+
+### Fixed
+- Critic case labels, after two audits (Claude against every source text, and an independent reviewer agent that saw only the cases and the Critic's definitions; both found the first two items on their own):
+  - `live-01` points[7] is now a labeled problem (unsupported_citation): the OLMo-3 study reports the instrumental rate rising from 25.0% to 46.1% before it falls, not "no clear evidence".
+  - Base A item n04 was about labeling AI-generated images but was filed under AI copyright policy; it is now a copyright item (training opt-outs). Base B point 3 called dubline open-source, which its source did not say; the source now says so.
+  - "GitHub stars" is now "stars" (the source does not say GitHub); FlexPart's numbers are exact (10.5% and 16.6%); UniVOE's summary no longer adds "shadows".
+- New debatable refs: points[4] in base-A cases (the point that files p24 under Image generation); p04 and p14 in `live-01`.
+
+### Changed
+- The Critic sees each source text in full (`SOURCE_CHARS` 2,000; arXiv abstracts are at most 1,920 characters). Before, 15 of 30 abstracts were cut at 1,500 characters.
+- `eval/cases/critic/README.md` has a "Label audit" section with these changes and what was kept on purpose (stretched labels on the `nd-01` duplicates count toward the duplicate problem; SpectralCanary under AI copyright policy stays correct).
+
 ## 2026-10-26 (Stage 4: Critic, offline)
 
 ### Added

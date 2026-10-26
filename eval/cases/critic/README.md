@@ -26,8 +26,8 @@ fails if any rule fires on a case or if a ground-truth reference does not exist.
 - **Debatable labels**: a few labels a careful reader could reasonably dispute are listed
   in `expected.debatable` and not scored either way. Every case built on `base-a` lists
   p24 (diffusion posterior sampling for inverse problems, filed under Image generation
-  through the facet "Diffusion model research"); `live-01` lists several (see its
-  `why_rules_pass`).
+  through the facet "Diffusion model research") and points[4], which files it there;
+  `live-01` lists several (see its `why_rules_pass`).
 
 ## Ground truth and scoring
 
@@ -43,8 +43,29 @@ and an explanation. Proposed scoring for the Stage 5 evaluation:
   its issues name only debatable refs.
 - Rules-only flags nothing on any case, by construction.
 
-Labels were written by Claude while constructing the cases and still need a check by the
-project author before the evaluation.
+## Label audit (2026-10-26)
+
+Labels were written by Claude while constructing the cases, then audited twice: by Claude
+against every source text, and by an independent reviewer (a separate Claude agent that
+saw only the case files and the Critic's definitions, not the first audit). Both found
+the first two problems below on their own. Changes made:
+
+- `live-01` points[7] became a problem (unsupported_citation): the OLMo-3 study reports the
+  instrumental rate rising from 25.0% to 46.1% before falling, not "no clear evidence".
+- Base A: n04 was about labeling AI-generated images but was filed under AI copyright
+  policy; it is now a copyright item (training opt-outs). Base B: point 3 called dubline
+  open-source, which its source did not say; the source now says so.
+- Base A: "GitHub stars" became "stars" (the source does not say GitHub); FlexPart's
+  "10-17%" became the exact 10.5% and 16.6%; UniVOE's summary no longer adds "shadows".
+- Debatable additions: points[4] in base-A cases (it files p24); p04 and p14 in `live-01`.
+- The Critic now sees each source text in full (up to 2,000 characters); before, 15 of 30
+  abstracts were cut at 1,500.
+
+Kept on purpose: in `nd-01` the duplicate items also carry stretched interest labels;
+they are not separate problems, but a flag on them counts toward the duplicate problem.
+SpectralCanary filed under AI copyright policy (base A) is kept as correct.
+
+The project author's own check is still pending.
 
 ## Cases
 
@@ -70,4 +91,4 @@ project author before the evaluation.
 | `ml-01` | mislabeled_interest | base-a | Breadth item p25 replaced by WorldForge V2 (p15) labeled as the short-term interest Lumen-V 2, as the live run did with Sora 2. | ADJUST | mislabeled_interest: p15 |
 | `ml-02` | mislabeled_interest | base-a | lora-kit (r03) replaced by a study of diffusion language models (p28) labeled Image generation. | ADJUST | mislabeled_interest: p28 |
 | `ml-03` | mislabeled_interest | base-b | The only AI copyright policy item (n05) replaced by Social-HUMINT (p29), labeled AI copyright policy; the connection that cited n05 is removed. | ADJUST | mislabeled_interest: p29 |
-| `live-01` | live | live | None: the digest from the first live run (2026-10-25), unedited. | ADJUST | mislabeled_interest: p15; mislabeled_interest: p03; overstated_connection: connections[0] |
+| `live-01` | live | live | None: the digest from the first live run (2026-10-25), unedited. | ADJUST | mislabeled_interest: p15; mislabeled_interest: p03; overstated_connection: connections[0]; unsupported_citation: points[7] |

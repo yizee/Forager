@@ -4,7 +4,7 @@
   "origin": "live-2026-10-25",
   "base": null,
   "change": "None: the digest from the first live run (2026-10-25), unedited.",
-  "why_rules_pass": "With the history entry, every rule passes (only papers were available, so the source-mix rule does not apply). Debatable: p01/p10 are 3D generation filed under Image generation, and p05 (dataset auditing) could belong under AI copyright policy (points 0-2 follow these labels); p19 is RL-trained LLM behaviour filed under AI agents (point 7); p02 is an embodied-policy paper justified as relevant to agent success; point 4 files WorldForge V2 under Video editing; connection 1 says FlexPart avoids retraining.",
+  "why_rules_pass": "With the history entry, every rule passes (only papers were available, so the source-mix rule does not apply). Debatable: p01/p10 are 3D generation filed under Image generation, and p05 (dataset auditing) could belong under AI copyright policy (points 0-2 follow these labels); p19 is RL-trained LLM behaviour filed under AI agents; p02 (embodied policies) and p04 (pass@k pruning for reasoning models) are breadth items justified through 'agents', which their sources never mention; p14's reason calls UniVOE 'open-source-style', but the source mentions a proprietary reward model and no code release; point 4 files WorldForge V2 under Video editing and says it needs no task-specific fine-tuning although it trains small trajectory adapters; connection 1 says FlexPart avoids retraining, which its abstract does not say.",
   "today": "2026-10-25",
   "profile": {
     "interests": [
@@ -435,6 +435,13 @@
           "connections[0]"
         ],
         "explanation": "Neither BrickWright nor UniVOE shows that structured verification or reciprocal training 'beats scaling raw supervision'."
+      },
+      {
+        "type": "unsupported_citation",
+        "refs": [
+          "points[7]"
+        ],
+        "explanation": "The study reports that the instrumental rate rose from 25.0% to 46.1% around RLVR step 200 before falling to 11.8%; 'no clear evidence that RLVR training induces' these behaviours misstates a non-monotonic finding."
       }
     ],
     "debatable": [
@@ -442,12 +449,13 @@
       "p10",
       "p19",
       "p02",
+      "p04",
       "p05",
+      "p14",
       "points[0]",
       "points[1]",
       "points[2]",
       "points[4]",
-      "points[7]",
       "connections[1]"
     ]
   }

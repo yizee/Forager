@@ -15,7 +15,7 @@ from .jsonagent import ask_json, context_input, json_agent_factory, run_plain
 ISSUE_TYPES = ("irrelevant_exploration", "near_duplicate", "unsupported_citation",
                "overstated_connection", "mislabeled_interest")
 VERDICTS = ("PASS", "ADJUST")
-SOURCE_CHARS = 1500
+SOURCE_CHARS = 2000  # arXiv abstracts are at most 1,920 characters, so the Critic sees all of them
 MAX_ISSUES = 8
 
 INSTRUCTIONS = """You are Forager's Critic. Another agent wrote today's digest for one user. Code has

@@ -31,7 +31,7 @@
 - **第 1–3 阶段已完成**，离线测试共 40 个全部通过（`.venv/bin/python -m pytest`，只收集 `tests/`），2026-10-25 的真实调用也全部通过，花费 $0.0053。详情和给报告用的观察见 `docs/live-runs.md`。下一步：第 4 阶段。
 - **第 4 阶段进行中。** 已完成：
   - 代码规则（`forager/checks.py` 的 `check_rules`）：话题占比 ≤ 40%（每个兴趣一个桶，所有广度补充合为一个桶，5 条以上才判断）、长期兴趣 7 天覆盖（可传入历史简报）、来源类型不单一（只有可用来源 ≥ 2 种时才生效）、引用 ID 存在。规则还没有接进简报流程。
-  - Critic 用例集 `eval/cases/critic/`（21 个，由 `eval/build_critic_cases.py` 生成，不要手改 JSON）。每个用例都通过全部代码规则：16 个带一个语义问题，4 个对照（含 2 个困难反例），外加未经修改的第一份真实简报 `live-01`。标注由 Claude 写成，**评估前需要作者本人核对**。
+  - Critic 用例集 `eval/cases/critic/`（21 个，由 `eval/build_critic_cases.py` 生成，不要手改 JSON）。每个用例都通过全部代码规则：16 个带一个语义问题，4 个对照（含 2 个困难反例），外加未经修改的第一份真实简报 `live-01`（4 个问题），共 20 个标注问题。标注由 Claude 写成，2026-10-26 经过两轮审计：Claude 逐条对照原文自审，另有一个独立审计员（只看用例和 Critic 的判断标准）。结论和改动见用例 README 的"Label audit"一节。**作者本人的核对仍待完成**。
   - **Critic 的输出格式由用例集决定**：`{"verdict": "PASS"|"ADJUST", "issues": [{"type": "irrelevant_exploration|near_duplicate|unsupported_citation|overstated_connection|mislabeled_interest", "refs": ["p30" | "points[2]" | "connections[0]"], "explanation": "..."}]}`。评分规则见 `eval/cases/critic/README.md`：点名问题位置算抓到（重复内容要点名至少两条），点名"可争议"位置不计分，其余点名算误报。
   - **Critic 已完成（离线测通，2026-10-26）**：`forager/critic.py`。Critic 是上下文独立的 agent，只看档案、带位置编号的速报和每条内容的原文（`source_text`），看不到任何标注答案。它的输出由代码检查（类型、位置、类型与对象是否匹配），格式不对可修改一次。
   - **简报流程三种模式**（也是想法 3 的三个对照条件）：`single`（只查结构和引用，即第 1 阶段基线）、`rules`（加代码规则，违规修改一次）、`critic`（再加 Critic；ADJUST 时写作 agent 修改一次，修改后重新跑规则；修改版违反规则就保留通过规则的草稿）。命令：`python -m forager digest --mode critic|rules|single`，默认 `critic`。目前写作 agent 还是第 1 阶段的单 agent，Manager 和来源专家接入后流程不变。

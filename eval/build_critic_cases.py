@@ -65,10 +65,11 @@ SYNTHETIC = {
             "A recap of Northwind AI's Lumen-V 2 announcement: clips of up to 60 seconds at 1080p, consistent "
             "characters across shots, and an API waitlist. The article summarizes the launch blog post and embeds "
             "the official demo videos."),
-    "n04": ("news", "Comment period opens on labels for AI-generated images", "2026-10-23",
-            "The Digital Media Standards Office opened a 60-day public comment period on draft guidance for "
-            "labeling AI-generated images. The draft asks platforms to show a visible label and to keep provenance "
-            "metadata attached to generated files. Final guidance is expected next year."),
+    "n04": ("news", "Copyright office opens comment period on AI training opt-outs", "2026-10-23",
+            "A national copyright office opened a 60-day public comment period on draft guidance about using "
+            "copyrighted images to train AI models. The draft proposes a machine-readable opt-out that rights "
+            "holders can attach to their images and asks AI developers to honor it. Final guidance is expected "
+            "next year."),
     "n05": ("news", "Harbor Image Cooperative launches opt-in licensing for AI training", "2026-10-22",
             "Harbor Image Cooperative, a stock-photo cooperative, launched a program that lets member photographers "
             "license their images for AI model training and receive a share of the fees. Images are excluded from "
@@ -114,8 +115,8 @@ SYNTHETIC = {
             "A curated list of Lumen-V 2 launch demos and the prompts used to make them, collected from Northwind "
             "AI's announcement and social media posts on release day. It adds no tools or evaluations of its own."),
     "r05": ("repo", "dubline: local subtitles and dubbing for video", "2026-10-21",
-            "dubline generates subtitles with speech recognition, translates them, and produces a dubbed audio "
-            "track with voice cloning. It runs locally and exports to common editing formats. The repository "
+            "dubline is an open-source tool that generates subtitles with speech recognition, translates them, and "
+            "produces a dubbed audio track with voice cloning. It runs locally and exports to common editing formats. The repository "
             "gained about 900 stars this week."),
 }
 
@@ -142,8 +143,8 @@ def breadth(text):
 
 VIEWS = {
     "p01": ("FlexPart generates 3D objects part by part from an image and accepts part conditions at different "
-            "levels of detail, from sparse points to masks. It reduces part-level error by 10-17% compared with two "
-            "recent methods.", ["3D generation"],
+            "levels of detail, from sparse points to masks. It reduces part-level error by 10.5% and 16.6% compared "
+            "with two recent methods.", ["3D generation"],
             breadth("3D asset generation sits next to your image generation interest and uses similar conditioning ideas.")),
     "p03": ("A survey that treats video understanding and video generation models as models of an underlying world, "
             "organizing work into reading, writing, sharing and interacting with video. It traces a shift toward "
@@ -164,8 +165,8 @@ VIEWS = {
             "obtaining the facts.", ["agent benchmarks", "agent safety"],
             interest("i1", "Matches your Agent benchmarks and evaluation focus: a new benchmark for tool-using agents.")),
     "p14": ("UniVOE trains a video object remover, uses it to turn real videos into paired training data, and trains "
-            "object insertion on those pairs, including shadows and other interaction effects. It reports "
-            "state-of-the-art removal and insertion against open-source and commercial systems.",
+            "object insertion on those pairs, so inserted objects come with their motion and interaction effects. "
+            "It reports state-of-the-art removal and insertion against open-source and commercial systems.",
             ["video object editing"],
             interest("i2", "Matches Video editing: object removal and insertion in real footage.")),
     "p15": ("WorldForge V2 improves camera control in pretrained video diffusion models with training-free guidance "
@@ -211,9 +212,9 @@ VIEWS = {
             "announced 60-second clips and consistent characters.", ["hands-on review"], None),
     "n03": ("A recap of the Lumen-V 2 announcement: 60-second 1080p clips, consistent characters and an API waitlist.",
             ["new model releases"], None),
-    "n04": ("A standards office opened a 60-day comment period on draft guidance asking platforms to label AI-generated "
-            "images visibly and keep provenance metadata.", ["AI labeling policy"],
-            interest("i4", "Matches AI copyright policy: rules for labeling and tracing AI-generated images.")),
+    "n04": ("A copyright office opened a 60-day comment period on draft guidance that would let rights holders opt "
+            "their images out of AI training with a machine-readable signal.", ["training data opt-out"],
+            interest("i4", "Matches AI copyright policy: proposed rules on using copyrighted images for AI training.")),
     "n05": ("Harbor Image Cooperative launched opt-in licensing that lets photographers license their images for AI "
             "training and share in the fees; images stay out of training sets unless their owners opt in.",
             ["training data licensing"],
@@ -280,15 +281,15 @@ def base_a() -> dict:
             point("Video editing", "UniVOE trains video object insertion on pairs created by its own object remover, "
                   "avoiding hard-to-collect paired footage, and reports state-of-the-art removal and insertion.", "p14"),
             point("Video editing", "clipforge, an open-source pipeline that cuts video by editing its transcript, gained "
-                  "about 1,200 GitHub stars in its first week.", "r01"),
+                  "about 1,200 stars in its first week.", "r01"),
             point("Image generation", "PC-DAPS keeps several candidate solutions during diffusion posterior sampling and "
                   "prunes those the prior does not support, reducing implausible results on problems such as phase "
                   "retrieval.", "p24"),
             point("AI copyright policy", "SpectralCanary lets dataset owners check whether a text-to-image model was "
                   "fine-tuned on their images, detecting use at about 92% true positives with 1% false positives "
                   "across five datasets.", "p05"),
-            point("AI copyright policy", "Draft guidance asking platforms to label AI-generated images and keep "
-                  "provenance metadata is open for public comment for 60 days.", "n04"),
+            point("AI copyright policy", "Draft copyright guidance that would let rights holders opt their images out "
+                  "of AI training is open for public comment for 60 days.", "n04"),
             point("Lumen-V 2", "Northwind AI released Lumen-V 2, a text-to-video model for clips of up to 60 seconds; "
                   "no independent evaluation came with the release.", "n01"),
         ],
@@ -327,8 +328,8 @@ def base_b() -> dict:
 BASES = {"base-a": base_a, "base-b": base_b}
 # Labels a careful reader could reasonably dispute; flags on them are not scored.
 # p24: diffusion posterior sampling for inverse problems, filed under Image generation
-# through the facet "Diffusion model research".
-BASE_DEBATABLE = {"base-a": ["p24"]}
+# through the facet "Diffusion model research"; points[4] is the point that files it there.
+BASE_DEBATABLE = {"base-a": ["p24", "points[4]"]}
 
 
 # ---- edits ----
@@ -376,8 +377,9 @@ def build_cases() -> list[dict]:
             digest = BASES[base]()
             if edit:
                 edit(digest)
+        problem_refs = {ref for entry in problems for ref in entry["refs"]}
         debatable = list(debatable) + [ref for ref in BASE_DEBATABLE.get(base, [])
-                                       if ref in refs_in(digest) and ref not in debatable]
+                                       if ref in refs_in(digest) and ref not in debatable and ref not in problem_refs]
         cases.append({
             "id": case_id, "category": category, "origin": origin, "base": base, "change": change,
             "why_rules_pass": why or WHY[category], "today": TODAY,
@@ -428,7 +430,8 @@ def build_cases() -> list[dict]:
     add("nd-01", "near_duplicate", "base-a", "Three more items about the Lumen-V 2 launch (hands-on n02, recap n03, "
         "demo list r04) replace r02, r03 and p25, each under a different label (i2, i3, breadth).", nd01,
         [problem("near_duplicate", ["n01", "n02", "n03", "r04"], "Four items report the same launch with the same "
-                 "facts; one (n01) is enough.")])
+                 "facts; one (n01) is enough. Their interest labels are also stretched; a flag on any of these items "
+                 "counts toward this problem, not as a false alarm.")])
     add("nd-02", "near_duplicate", "base-b", "Breadth item p03 replaced by a second article on the Harbor licensing "
         "announcement (n06), labeled 'creator economy'.",
         lambda d: swap(d, "p03", item("n06", breadth("How photographers are starting to earn from AI training."))),
@@ -524,9 +527,12 @@ def build_cases() -> list[dict]:
             problem("mislabeled_interest", ["p03"], "Labeled Sora 2; a survey of video world models, not about Sora 2."),
             problem("overstated_connection", ["connections[0]"], "Neither BrickWright nor UniVOE shows that structured "
                     "verification or reciprocal training 'beats scaling raw supervision'."),
+            problem("unsupported_citation", ["points[7]"], "The study reports that the instrumental rate rose from "
+                    "25.0% to 46.1% around RLVR step 200 before falling to 11.8%; 'no clear evidence that RLVR training "
+                    "induces' these behaviours misstates a non-monotonic finding."),
         ],
-        debatable=["p01", "p10", "p19", "p02", "p05", "points[0]", "points[1]", "points[2]", "points[4]",
-                   "points[7]", "connections[1]"],
+        debatable=["p01", "p10", "p19", "p02", "p04", "p05", "p14", "points[0]", "points[1]", "points[2]",
+                   "points[4]", "connections[1]"],
         origin="live-2026-10-25", profile=persona("Sora 2"),
         digest={"date": live["date"], "items": live["items"], "brief": live["brief"]},
         available_types=["paper"],
@@ -536,8 +542,12 @@ def build_cases() -> list[dict]:
         why="With the history entry, every rule passes (only papers were available, so the source-mix rule does not "
             "apply). Debatable: p01/p10 are 3D generation filed under Image generation, and p05 (dataset auditing) "
             "could belong under AI copyright policy (points 0-2 follow these labels); p19 is RL-trained LLM behaviour "
-            "filed under AI agents (point 7); p02 is an embodied-policy paper justified as relevant to agent success; "
-            "point 4 files WorldForge V2 under Video editing; connection 1 says FlexPart avoids retraining.")
+            "filed under AI agents; p02 (embodied policies) and p04 (pass@k pruning for reasoning models) are breadth "
+            "items justified through 'agents', which their sources never mention; p14's reason calls UniVOE "
+            "'open-source-style', but the source mentions a proprietary reward model and no code release; point 4 "
+            "files WorldForge V2 under Video editing and says it needs no task-specific fine-tuning although it "
+            "trains small trajectory adapters; connection 1 says FlexPart avoids retraining, which its abstract does "
+            "not say.")
     return cases
 
 
@@ -605,8 +615,8 @@ fails if any rule fires on a case or if a ground-truth reference does not exist.
 - **Debatable labels**: a few labels a careful reader could reasonably dispute are listed
   in `expected.debatable` and not scored either way. Every case built on `base-a` lists
   p24 (diffusion posterior sampling for inverse problems, filed under Image generation
-  through the facet "Diffusion model research"); `live-01` lists several (see its
-  `why_rules_pass`).
+  through the facet "Diffusion model research") and points[4], which files it there;
+  `live-01` lists several (see its `why_rules_pass`).
 
 ## Ground truth and scoring
 
@@ -622,8 +632,29 @@ and an explanation. Proposed scoring for the Stage 5 evaluation:
   its issues name only debatable refs.
 - Rules-only flags nothing on any case, by construction.
 
-Labels were written by Claude while constructing the cases and still need a check by the
-project author before the evaluation.
+## Label audit (2026-10-26)
+
+Labels were written by Claude while constructing the cases, then audited twice: by Claude
+against every source text, and by an independent reviewer (a separate Claude agent that
+saw only the case files and the Critic's definitions, not the first audit). Both found
+the first two problems below on their own. Changes made:
+
+- `live-01` points[7] became a problem (unsupported_citation): the OLMo-3 study reports the
+  instrumental rate rising from 25.0% to 46.1% before falling, not "no clear evidence".
+- Base A: n04 was about labeling AI-generated images but was filed under AI copyright
+  policy; it is now a copyright item (training opt-outs). Base B: point 3 called dubline
+  open-source, which its source did not say; the source now says so.
+- Base A: "GitHub stars" became "stars" (the source does not say GitHub); FlexPart's
+  "10-17%" became the exact 10.5% and 16.6%; UniVOE's summary no longer adds "shadows".
+- Debatable additions: points[4] in base-A cases (it files p24); p04 and p14 in `live-01`.
+- The Critic now sees each source text in full (up to 2,000 characters); before, 15 of 30
+  abstracts were cut at 1,500.
+
+Kept on purpose: in `nd-01` the duplicate items also carry stretched interest labels;
+they are not separate problems, but a flag on them counts toward the duplicate problem.
+SpectralCanary filed under AI copyright policy (base A) is kept as correct.
+
+The project author's own check is still pending.
 
 ## Cases
 
