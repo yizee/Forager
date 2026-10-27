@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Stage 5 evaluation plan)
+
+### Added
+- `docs/stage5-eval-plan.md`: the plan for the four core metrics, with sample sizes, judge criteria, calibration against the author's labels, a budget of about $0.47 of the $0.90 left, and a schedule up to the video on 11-03. Nothing has been run yet.
+
+### Changed
+- README roadmap and CLAUDE.md point to the plan. The judges follow the Week 6 rubric design but run in Forager's `eval/` on the Lab 2 connection and ledger.
+
 ## 2026-10-27 (Interest headings must match; the runner keeps the reviewed draft)
 
 ### Added

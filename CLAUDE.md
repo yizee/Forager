@@ -82,7 +82,7 @@
     - 兴趣标题检查 `check_headings`（`forager/checks.py`）：要点的领域名等于某个兴趣的标签时，必须引用匹配该兴趣的条目，否则 Manager 修改一次。它属于 `Team.check`，只管团队写作；单 agent 只统计、不强制。Manager 指令同步改为"只有引用了匹配该兴趣的条目，才用兴趣名做标题"，单 agent 指令一字未改。
     - 它不在 `check_rules` 里，所以 Critic 用例集"每个用例都通过全部代码规则"的前提不变。放到 live-01 上会在 points[4] 触发：Video editing 标题下是被标成 Sora 2 的 WorldForge V2。
     - `generate_digest` 返回 Critic 审查的草稿 `reviewed_draft`；对比脚本保存它，报告列出修改改了什么（删掉或新增的条目、改了的标签、被改写或删掉的速报原文）。
-  - 下一步：第 5 阶段评估和录视频素材，重复运行时顺便验证上面两处改动。想法 3 可以用 `eval/run_digest_modes.py --repeats N` 比较三种模式的多样性（代码统计）和相关性（加 LLM 判定，先用少量人工标注校准）。可选：在新的真实简报上评估 Critic（先标注后运行）。
+  - 下一步：第 5 阶段，按 `docs/stage5-eval-plan.md` 执行（2026-10-27 制定，预计花费约 $0.47，待作者批准）。想法 3：两组快照上三种模式共 30 份简报，代码统计多样性，LLM 判定标签是否正确、条目是否值得看、要点是否有引用支撑，判定先用作者标注的 30 条内容和 30 条要点校准；可选：作者先标注 3 份 rules 简报，再让 Critic 审查。想法 2：8 个场景比较审批和静默更新。想法 1 和 think-aloud：2–3 人的用户研究。重复运行时顺便验证上面两处改动。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
@@ -247,6 +247,7 @@ Forager/
 - 所有自动化测试使用 `data/snapshot/` 里的**固定快照**，保证结果可复现，不用实时数据。
 - **必须设计规则一定会失败的用例**，来检验 Critic 的价值：不相关的探索内容、标签不同但实际重复的内容、引用存在但并不支撑要点。真实快照里不一定恰好有这些情况，所以要人工构造，并在第 4 阶段开头就做好，开发 Critic 时直接用来测试。
 - 报告要说明想法 3 相对提案的变化：提案中广度检查（话题占比、7 天覆盖）也由 Critic 做，现在改为代码规则，Critic 只做语义判断。这是对老师反馈的直接回应。
+- 详细执行计划（判定标准、样本量、预算、日程）见 `docs/stage5-eval-plan.md`。
 - LLM 判定要用一小批人工标注的样本校准，报告里写明这一步。
 - Think-aloud 用户研究（2–3 人）作为补充的质性证据，任务包括：从零设置兴趣档案、审阅一条偏好更新建议、找出某条内容为什么出现并修正一条不想要的推荐。记录时把观察和解读分开。
 - Week 6 的评估框架（`run_eval.py`）还没有拿到；拿到前用 `project_examples.py` 的 `evaluation_example` 模式自己写评估脚本。
@@ -296,7 +297,7 @@ Forager/
 
 1. **仓库可见性**：`yizee/Forager` 目前是 Public。推送 Lab 代码前必须改成 Private（Settings → Danger Zone → Change visibility）。
 2. **额外预算**：是否向老师申请项目额度，或改用用户自己的 OpenRouter key。
-3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。
+3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。第 5 阶段计划的做法：沿用 Week 6 的判定方式（每条标准给出是否通过和理由，格式不对算错误，总分由代码算），但在 Forager 的 `eval/` 里实现，用 Lab 2 的连接和同一个账本，不直接跑 Week 6 的 harness。
 4. ~~Lab 2 代码包~~：已解决，`lab/` 已就位（见第 3 节）。
 
 ## 13. 相关文件
