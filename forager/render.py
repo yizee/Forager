@@ -33,21 +33,35 @@ def to_markdown(digest: dict, profile: dict | None = None) -> str:
         lines.append("")
     lines += ["## Full items", ""]
     for item in digest.get("items", []):
+        outlet = f"{item['source']} · " if item.get("source") else ""
         lines += [f'<a id="{item["id"]}"></a>', f"### {item['id']} · {item['title']}", "",
                   item.get("summary", ""), "",
-                  f"- Source: [{item['url']}]({item['url']}) · {item.get('published', '')}",
+                  f"- Source: {outlet}[{item['url']}]({item['url']}) · {item.get('published', '')}",
                   f"- Why you see this: {_reason(item.get('reason', {}), labels)}", ""]
     if digest.get("checks"):
         lines += _checks(digest["checks"])
     return "\n".join(lines)
 
 
+def team_line(checks: dict) -> str | None:
+    """Who wrote the digest: the Manager from its specialists' notes, or a single agent."""
+    if checks.get("team"):
+        parts = [f"{t['specialist']} reported {len(t['reported'])} of {t['candidates']} {t['plural']} "
+                 f"({len(t['used'])} used)" for t in checks["team"]]
+        return "Written by the Manager from its specialists' notes: " + "; ".join(parts) + "."
+    if checks.get("writer") == "single":
+        return "Written by a single agent that read every candidate."
+    return None
+
+
 def _checks(checks: dict) -> list[str]:
-    """How the digest was checked: code rules, uncovered interests and the Critic's review."""
+    """How the digest was checked: who wrote it, code rules, uncovered interests and the Critic's review."""
     rules = "passed" if checks.get("rules_passed") else "not all passed"
     scope = "structure and citations" if checks.get("mode") == "single" else \
         "structure, citations, topic share, coverage and source mix"
-    lines = ["## How this digest was checked", "", f"- Code rules ({scope}): {rules}."]
+    writer = team_line(checks)
+    lines = ["## How this digest was checked", ""] + ([f"- {writer}"] if writer else []) + \
+        [f"- Code rules ({scope}): {rules}."]
     lines += [f"- Not covered: {warning}" for warning in checks.get("warnings") or []]
     critic = checks.get("critic")
     if critic is None:

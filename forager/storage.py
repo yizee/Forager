@@ -50,9 +50,10 @@ def recent_digests(today: str, days: int = 7) -> list[dict]:
 def save_digest(outcome: dict, profile: dict, today: str) -> dict:
     """Save a pipeline outcome as runtime/digests/<today>.json and .md; return the record."""
     digest = outcome["digest"]
-    record = {**(digest or {}), "date": today, "mode": outcome["mode"], "check_errors": outcome["errors"],
-              "revision_errors": outcome["revision_errors"], "attempts": outcome["attempts"],
-              "usage": [t["usage"] for t in outcome["turns"]]}
+    record = {**(digest or {}), "date": today, "mode": outcome["mode"], "writer": outcome.get("writer"),
+              "check_errors": outcome["errors"], "revision_errors": outcome["revision_errors"],
+              "attempts": outcome["attempts"], "usage": [t["usage"] for t in outcome["turns"]],
+              "team_calls": outcome.get("team_calls") or []}
     digest_dir().mkdir(parents=True, exist_ok=True)
     (digest_dir() / f"{today}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
     if digest:

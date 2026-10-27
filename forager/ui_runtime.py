@@ -17,6 +17,10 @@ from datetime import date, timedelta
 from . import labkit
 from .memory import review
 from .profile import is_expired
+from .team import SPECIALISTS
+
+ASKS = {spec["tool"]: spec["name"] for spec in SPECIALISTS.values()}         # the Manager's as_tool() calls
+READS = {spec["reader"]: spec["plural"] for spec in SPECIALISTS.values()}    # each specialist's own tool
 
 
 @contextmanager
@@ -81,17 +85,38 @@ class ReviewWorker:
             self.error = str(exc)
 
 
+def _question(arguments) -> str:
+    """The Manager's question from an as_tool() call's arguments ('{"input": "..."}')."""
+    try:
+        question = json.loads(arguments).get("input", "")
+    except (TypeError, ValueError, AttributeError):
+        question = ""
+    question = " ".join(str(question).split())
+    return question if len(question) <= 160 else question[:157] + "..."
+
+
 def event_line(event: dict) -> str:
     """One readable line per lab event, for the progress log."""
     kind = event.get("type", "")
     agent = event.get("agent") or "agent"
+    tool = event.get("tool", "")
+    result = event.get("result")
     if kind == "turn_started":
         return f"{agent}: working..."
     if kind == "turn_completed":
         cost = (event.get("usage") or {}).get("cost_usd")
         return f"{agent}: {event.get('status')}" + (f" (${cost:.4f})" if cost else "")
+    if tool in ASKS and kind == "tool_started":
+        return f"{agent} asks the {ASKS[tool]}: {_question(event.get('arguments'))}"
+    if tool in ASKS and kind == "tool_completed":
+        items = result.get("items") if isinstance(result, dict) else None
+        return f"{ASKS[tool]} reported {len(items or [])} items."
+    if tool in READS and kind == "tool_started":
+        return f"{agent}: reading today's {READS[tool]}..."
+    if tool in READS and kind == "tool_completed":
+        return f"{agent}: read {len(result) if isinstance(result, list) else 'the'} {READS[tool]}."
     if kind.startswith("tool_"):
-        return f"{agent}: {kind.replace('_', ' ')} {event.get('tool', '')}".rstrip()
+        return f"{agent}: {kind.replace('_', ' ')} {tool}".rstrip()
     return f"{agent}: {kind}"
 
 

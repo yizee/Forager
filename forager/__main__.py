@@ -2,8 +2,9 @@
 
   python -m forager onboard               set up your interest profile (Idea 1; paid call)
   python -m forager onboard --baseline    free-text baseline: no follow-up questions
-  python -m forager snapshot              save recent arXiv papers and GitHub repos into data/snapshot/
-  python -m forager digest                fetch arXiv and write today's digest with rules + Critic (paid calls)
+  python -m forager snapshot              save recent arXiv papers, GitHub repos and tech news into data/snapshot/
+  python -m forager digest                fetch all sources; the Manager and its specialists write today's
+                                          digest, checked by the rules and the Critic (paid calls)
   python -m forager digest --mode rules   evaluation baselines: --mode rules (no Critic), --mode single (Stage 1)
   python -m forager digest --snapshot P [P ...]   use fixed snapshot files instead of fetching
   python -m forager consent               choose which feedback signals Forager may track (Idea 2)
@@ -25,10 +26,10 @@ from .memory import MIN_EVIDENCE, MemoryStore
 from .memory_cli import approval_prompt, ask_consent, find_item, review_expired
 from .profile import PROFILE_PATH, load_profile
 from .signals import SIGNALS, describe, load_signals, purge_signal, record_signal
-from .sources import arxiv, github, load_snapshot, save_snapshot
+from .sources import arxiv, github, load_snapshot, news, save_snapshot
 from .storage import SNAPSHOT_DIR, digest_dir, latest_digest, recent_digests, save_digest
 
-SOURCES = ("arxiv", "github")
+SOURCES = ("arxiv", "github", "news")
 
 
 def print_turns(event):
@@ -149,7 +150,7 @@ def cmd_profile(args):
 
 def fetch_sources(names, max_results=30) -> dict[str, list[dict]]:
     """Fetch live items from each named source (free; no model calls)."""
-    fetchers = {"arxiv": lambda: arxiv.fetch(max_results=max_results), "github": github.fetch}
+    fetchers = {"arxiv": lambda: arxiv.fetch(max_results=max_results), "github": github.fetch, "news": news.fetch}
     return {name: fetchers[name]() for name in names}
 
 
@@ -160,8 +161,16 @@ def cmd_snapshot(args):
         print(f"Saved {len(items)} {name} items to {path.relative_to(PROJECT_ROOT)}")
 
 
+def print_digest_event(event):
+    """Turns plus the Manager's delegation: questions asked, items read and reported."""
+    from .ui_runtime import event_line
+    if event.get("type") in {"turn_started", "turn_completed"} or event.get("type", "").startswith("tool_"):
+        print("  " + event_line(event))
+
+
 def cmd_digest(args):
     from .digest import generate_digest
+    from .render import team_line
 
     if args.snapshot:
         raw = [item for path in args.snapshot for item in load_snapshot(path)]
@@ -170,12 +179,14 @@ def cmd_digest(args):
     today = date.today().isoformat()
     profile = load_profile()
     with lab_connection() as lab:
-        outcome = generate_digest(lab, profile, raw, mode=args.mode, previous=latest_digest(today),
-                                  history=recent_digests(today), today=today, on_event=print_turns)
+        outcome = generate_digest(lab, profile, raw, mode=args.mode, writer=args.writer,
+                                  previous=latest_digest(today), history=recent_digests(today), today=today,
+                                  on_event=print_digest_event)
 
     digest = outcome["digest"]
     save_digest(outcome, profile, today)
     if digest:
+        print(team_line(digest["checks"]) or "")
         print(citation_stats(digest))
     print("Code rules:", "PASS" if not outcome["errors"] else outcome["errors"])
     for warning in outcome["warnings"]:
@@ -187,7 +198,8 @@ def cmd_digest(args):
             print(f"  - {issue['type']} {issue['refs']}: {issue['explanation']}")
         if critic["verdict"] == "ADJUST":
             print("Revised:", "yes" if outcome["revised"] else f"no, kept the checked draft {outcome['revision_errors']}")
-    print(f"Saved runtime/digests/{today}.json and .md (mode: {outcome['mode']}, writer turns: {outcome['attempts']})")
+    print(f"Saved runtime/digests/{today}.json and .md (mode: {outcome['mode']}, writer: {outcome['writer']}, "
+          f"writer turns: {outcome['attempts']})")
 
 
 def main():
@@ -200,12 +212,16 @@ def main():
     snap.add_argument("--max-results", type=int, default=30, help="arXiv papers to fetch")
     snap.add_argument("--sources", nargs="+", choices=SOURCES, default=list(SOURCES))
     snap.set_defaults(func=cmd_snapshot)
-    dig = sub.add_parser("digest", help="generate today's digest (paid calls: writer, Critic, one revision)")
+    dig = sub.add_parser("digest", help="generate today's digest (paid calls: Manager and specialists, Critic, "
+                                        "one revision)")
     dig.add_argument("--snapshot", type=Path, nargs="+", help="snapshot files to use instead of fetching")
     dig.add_argument("--sources", nargs="+", choices=SOURCES, default=list(SOURCES), help="sources to fetch live")
     dig.add_argument("--max-results", type=int, default=30)
     dig.add_argument("--mode", choices=("critic", "rules", "single"), default="critic",
                      help="critic: rules + Critic (default); rules: code rules only; single: Stage 1 baseline")
+    dig.add_argument("--writer", choices=("team", "single"),
+                     help="team: the Manager and its specialists; single: one writer (default: single in "
+                          "single mode, team otherwise)")
     dig.set_defaults(func=cmd_digest)
     sub.add_parser("consent", help="choose which feedback signals Forager may track").set_defaults(func=cmd_consent)
     rate = sub.add_parser("rate", help="rate a digest item 1-5")

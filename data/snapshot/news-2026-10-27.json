@@ -1,0 +1,213 @@
+[
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "How OpenAI turned its coding tools into dots, an always-on personal assistant",
+    "url": "https://techcrunch.com/2026/10/26/how-openai-turned-its-coding-tools-into-dots-an-always-on-personal-assistant/",
+    "abstract": "[TechCrunch] Alexander Embiricos, the OpenAI executive responsible for dots, never wants to have a meeting with someone else's AI agent.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Disrupt",
+      "Exclusive"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "OpenAI announces three big science discoveries and a new way to work with academics",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1019143/openai-eth-kaseya-science-math-physics",
+    "abstract": "[The Verge] Less than a month after its mass release of hundreds of manuscripts that it said contained solutions to long-standing mathematics questions, OpenAI is back with three more \"major\" discoveries in math, computer science, and physics . What's different this time is the choice to have external experts that OpenAI describes as \"shepherds\" guiding the results in computer science and physics, while for the math problem it says that they advised it to release the AI output for researchers to work through their own explanations. OpenAI results added to GitHub today: Local smoothing for the Euclidean wave equation. The proof uses an auxiliary par … Read the full story at The Verge.",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "News",
+      "OpenAI",
+      "Science"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "MIT Technology Review",
+    "title": "Will the real Anthropic please stand up",
+    "url": "https://www.technologyreview.com/2026/10/26/1147672/will-the-real-anthropic-please-stand-up/",
+    "abstract": "[MIT Technology Review] This story originally appeared in The Algorithm, our weekly newsletter on AI. To get stories like this in your inbox first, sign up here . After weeks of frenzied speculation, Anthropic has filed its IPO prospectus. The 335-page document (100 pages or so are focused on risks) lays out the company’s unique view of the technology it is building and the ways it believes it will change the world. But Anthropic has been honing its storytelling skills for years. In fact, its public messaging is a master class in narrative capture. Earlier this month, Jack Clark, the company’s cofounder and head of policy, gave a speech at the IMF meeting in Bangkok in which he announced to the assembled economists, bankers, and lawmakers that the singularity is already here. Introduced by the science fiction wri",
+    "published": "2026-10-26",
+    "topics": [
+      "Artificial intelligence",
+      "App"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "Apple releases iOS and macOS 27.2 with new Siri AI features, new Music logo",
+    "url": "https://arstechnica.com/apple/2026/10/apple-releases-ios-and-macos-27-2-with-new-siri-ai-features-new-music-logo/",
+    "abstract": "[Ars Technica] Today, Apple rolled out the 27.2 updates for its operating systems, including iOS, macOS, watchOS, tvOS, visionOS, and so on. Let's start with iOS 27.2. This update is heavily focused on Siri AI. It adds a memory feature to Siri, so it can \"recall your past conversations\" and reference them when chatting with you. It also expands what data sources Siri can access when giving responses to include voicemails, Messages attachments, and more. Read full article Comments",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "Apple",
+      "iOS",
+      "iOS 27.2",
+      "MacOS",
+      "macOS 27.2"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "GPT-6.1 Terra halves OpenAI's API prices and still gains ground on its larger models",
+    "url": "https://the-decoder.com/gpt-6-1-terra-halves-openais-api-prices-and-still-gains-ground-on-its-larger-models/",
+    "abstract": "[The Decoder] OpenAI has released GPT-6.1 Terra, a mid-range model that cuts API prices in half compared to its predecessor. Analysts say it sets a new standard for intelligence per dollar, especially for everyday computing tasks and AI-driven computer control. The article GPT-6.1 Terra halves OpenAI's API prices and still gains ground on its larger models appeared first on The Decoder .",
+    "published": "2026-10-26",
+    "topics": [
+      "AI in practice",
+      "Artificial Intelligence",
+      "GPT-6.1",
+      "GPT-6.1 Terra",
+      "OpenAI"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "Cohere says Alibaba’s Qwen model tried to send a file to Beijing",
+    "url": "https://techcrunch.com/2026/10/26/cohere-says-alibabas-qwen-model-tried-to-send-a-file-to-beijing/",
+    "abstract": "[TechCrunch] An AI model said it wouldn’t use any tools, then tried to send something to a server in Beijing anyway, and while researchers say it’s probably a training quirk and not espionage, the whole thing has people asking how much to trust free Chinese AI.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "TC"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "Anthropic is burning gas to feed the AI boom",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1018994/anthropic-ipo-ai-data-center-energy-climate-risk",
+    "abstract": "[The Verge] As it prepares to go public , Anthropic's S-1 filing makes generative AI's methane dependency glaringly obvious. \"Competition for access to electrical supply and data center locations with adequate power availability is intense.\" In documents filed with the US Securities and Exchange Commission Monday, Anthropic acknowledges that data centers are becoming increasingly reliant on \"natural gas\" - the fossil fuel industry's marketing term for what is primarily methane - leaving the company's AI data center buildout vulnerable to rising fuel costs and existing supply chain constraints. And in a possible catch-22, Anthropic admits that rising gl … Read the full story at The Verge.",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "Anthropic",
+      "Energy",
+      "Environment",
+      "Science"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "MIT Technology Review",
+    "title": "The focus on AI safety disasters ignores everyday harms",
+    "url": "https://www.technologyreview.com/2026/10/26/1147645/the-focus-on-ai-safety-disasters-ignores-everyday-harms/",
+    "abstract": "[MIT Technology Review] Consider what passes for success in technology policy. An AI company promises that its chatbot will not encourage suicide . A social media platform makes it more difficult for children to buy fentanyl . These are important protections, and they should have existed all along. But companies can clear these low bars while continuing to make products that leave young people dependent on simulated friendships or trapped in feeds built to keep them scrolling. We have historically allowed the debate over technology to be defined by the worst thing a product might do, with remarkably little discussion of the insidious damage it does every day. As we transition into an era defined by powerful AI products, we should demand that the tech industry do more than merely address catastrophic harms. We sho",
+    "published": "2026-10-26",
+    "topics": [
+      "Artificial intelligence",
+      "AI",
+      "App"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "ICE plan to buy robot dogs spurs protest from hundreds of Boston Dynamics employees",
+    "url": "https://arstechnica.com/ai/2026/10/boston-dynamics-employees-want-to-block-sale-of-robot-dogs-to-ice/",
+    "abstract": "[Ars Technica] Hundreds of employees at the US robotics firm Boston Dynamics signed a petition calling for executives to halt a sale of the company’s robot dogs to US Immigration and Customs Enforcement—but executives stood by the deal, while saying the robots would not be weaponized. On September 25, the Department of Homeland Security contract awarded $1.3 million to a Connecticut company called Radeco to provide ICE with modified versions of Boston Dynamics’ quadruped robots. But Boston Dynamics workers sent the petition letter with more than 300 signatures—half of them anonymous—to the company’s executives in early September and shared copies with The Boston Globe and WBUR public radio station . “Many of us have gotten messages from friends and family, asking us in disbelief and horror if this news i",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "boston dynamics",
+      "Department of Homeland Security",
+      "ice",
+      "immigration and customs enforcement",
+      "Robotics"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "Anthropic opens its books for Wall Street, showing record revenue and mounting obligations",
+    "url": "https://the-decoder.com/anthropic-opens-its-books-for-wall-street-showing-record-revenue-and-mounting-obligations/",
+    "abstract": "[The Decoder] Anthropic is the first major AI lab to file an S-1 with the SEC, planning to list on the Nasdaq under the ticker \"ANT.\" The numbers are strong, with $11.6 billion in quarterly revenue, a first-ever operating profit, and existing customers spending nine times more year over year. But the company also carries roughly $800 billion in long-term compute commitments. The article Anthropic opens its books for Wall Street, showing record revenue and mounting obligations appeared first on The Decoder .",
+    "published": "2026-10-26",
+    "topics": [
+      "AI in practice",
+      "Artificial Intelligence",
+      "Anthropic"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "Anthropic’s IPO filing reveals its strategy for keeping enterprise customers hooked",
+    "url": "https://techcrunch.com/2026/10/26/anthropics-ipo-filing-reveals-its-strategy-for-keeping-enterprise-customers-hooked/",
+    "abstract": "[TechCrunch] Anthropic’s S-1 shows more than half of its $100,000-plus customers now use both the Claude Platform and a first-party app, a cross-selling playbook reminiscent of Amazon that’s making enterprise customers stickier.",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "Enterprise",
+      "Anthropic",
+      "anthropic ipo",
+      "Enterprise AI"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "The RealReal won’t let AI agents hog designer clothing",
+    "url": "https://www.theverge.com/news/1018713/meta-muse-agentic-shopping-ai-the-realreal",
+    "abstract": "[The Verge] The RealReal, a secondhand luxury fashion consignment retailer, said it's updating its bot defense system, effectively making it harder for AI agents to shop on its site. The change comes days after The Verge reported that an AI agent could be used to take advantage of The RealReal's item reserve system. On the retailer's website, an item goes \"on hold\" and is unavailable for other customers to buy for 20 minutes once it's placed in a user's shopping cart. Using Meta's Muse, The Verge was able to instruct the AI agent to continuously re-add The RealReal listings in a shopping cart as soon as the 20-minute hold had expired, effectively block … Read the full story at The Verge.",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "Business",
+      "Culture",
+      "Entertainment",
+      "Internet Culture",
+      "Meta"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "Highway thieves are spoofing GPS to steal millions in data center-bound cargo",
+    "url": "https://arstechnica.com/tech-policy/2026/10/highway-thieves-are-spoofing-gps-to-steal-millions-in-data-center-bound-cargo/",
+    "abstract": "[Ars Technica] Highway thieves are using sophisticated digital tactics that investigators worry make it easy to rob trucks carrying millions in expensive data center equipment. NBC News spoke to “several industry leaders, consultants, and investigators advising law enforcement” offices probing the biggest thefts yet and reported that since June, thieves have “made away with more than $100 million in data center freight.” Here’s how they said thieves get away with it: First, thieves hack freight brokers’ accounts on shipment-listing websites and post fake shipments to lure real bids, then send a malicious link to any trucking companies that respond. Once victims click, thieves install software to take control of their accounts and start bidding on real shipments. Sometimes, a real delivery driver is hired",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "Policy",
+      "ai data center",
+      "ai theft",
+      "data center infrastructure"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "Researchers find six patterns that make AI text so exhausting to read",
+    "url": "https://the-decoder.com/researchers-find-six-patterns-that-make-ai-text-so-exhausting-to-read/",
+    "abstract": "[The Decoder] A study from New York University and the University of Texas at Austin shows that frontier language models systematically overuse linguistic patterns that are hard for humans to parse. The researchers trace the problem to training on code and math, where correctness gets rewarded but clarity doesn't. Smaller models, by contrast, write more like humans. The article Researchers find six patterns that make AI text so exhausting to read appeared first on The Decoder .",
+    "published": "2026-10-26",
+    "topics": [
+      "AI research",
+      "Artificial Intelligence",
+      "AI and language"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "SpaceX locks in $40B GPU financing deal with Apollo",
+    "url": "https://techcrunch.com/2026/10/26/spacex-locks-in-40b-gpu-financing-deal-with-apollo/",
+    "abstract": "[TechCrunch] The financing gives SpaceX another way to fund its rapidly expanding AI ambitions without relying solely on traditional debt markets.",
+    "published": "2026-10-26",
+    "topics": [
+      "AI",
+      "apollo",
+      "SpaceX"
+    ]
+  }
+]

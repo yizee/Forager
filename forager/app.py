@@ -1,6 +1,6 @@
 """Forager in the browser. Run from the project folder: .venv/bin/streamlit run forager/app.py
 
-Pages: Digest (two-layer brief, ratings, how it was checked), Set up (Idea 1), Memory
+Pages: Digest (two-layer brief, ratings, how it was made and checked), Set up (Idea 1), Memory
 (Idea 2: consent, visible profile, evidence-backed updates you approve) and Topics
 (Idea 3: this week's topic mix, exploration share). Paid model calls happen only on
 buttons marked "paid".
@@ -21,10 +21,11 @@ from forager.digest import generate_digest  # noqa: E402
 from forager.memory import MIN_EVIDENCE, MemoryStore, resolve_expired  # noqa: E402
 from forager.onboarding import build_profile, clarify, profile_from_text, save_profile, validate_profile  # noqa: E402
 from forager.profile import active_interests, expired_interests, is_expired, load_profile  # noqa: E402
+from forager.render import team_line  # noqa: E402
 from forager.signals import SIGNALS, describe, load_signals, purge_signal, record_signal, set_consent  # noqa: E402
-from forager.sources import arxiv, github, load_snapshot  # noqa: E402
+from forager.sources import arxiv, github, load_snapshot, news  # noqa: E402
 
-MODES = {"critic": "Rules + Critic", "rules": "Rules only", "single": "Single agent"}
+MODES = {"critic": "Team + rules + Critic", "rules": "Team + rules", "single": "Single agent"}
 ISSUE_NAMES = {"irrelevant_exploration": "Irrelevant exploration", "near_duplicate": "Near-duplicate",
                "unsupported_citation": "Citation does not support the point",
                "overstated_connection": "Overstated connection", "mislabeled_interest": "Wrong interest label"}
@@ -65,8 +66,10 @@ def digest_page():
         snapshots = storage.latest_snapshots()
         use_snapshots = st.toggle("Use the saved snapshots (same items every time)", value=True, key="use_snapshots")
         st.caption("Snapshots: " + ", ".join(p.name for p in snapshots) if use_snapshots
-                   else "Fetches recent arXiv papers and GitHub repositories now.")
-        mode = st.segmented_control("Checks", list(MODES), format_func=MODES.get, default="critic", key="mode")
+                   else "Fetches recent arXiv papers, GitHub repositories and tech news now.")
+        mode = st.segmented_control("Pipeline", list(MODES), format_func=MODES.get, default="critic", key="mode")
+        st.caption("Team: a Manager delegates to a Paper, an Open-source and a News researcher, each reading "
+                   "only its own source. Single agent: one writer reads everything (the baseline).")
         if st.button("Make digest (paid model calls)", type="primary", key="make_digest"):
             make_digest(profile, snapshots if use_snapshots else None, mode or "critic")
     if not days:
@@ -81,8 +84,8 @@ def make_digest(profile: dict, snapshots, mode: str):
         if snapshots:
             raw = [item for path in snapshots for item in load_snapshot(path)]
         else:
-            status.write("Fetching arXiv and GitHub...")
-            raw = arxiv.fetch() + github.fetch()
+            status.write("Fetching arXiv, GitHub and tech news...")
+            raw = arxiv.fetch() + github.fetch() + news.fetch()
         try:
             with ui_runtime.open_connection() as lab:
                 outcome = generate_digest(lab, profile, raw, mode=mode, previous=storage.latest_digest(day),
@@ -132,7 +135,9 @@ def show_item(item: dict, labels: dict, day: str):
             st.badge(f"Interest match: {label}", icon=":material/target:", color="blue")
         st.caption(f"Why you see this: {md(reason.get('text'))}")
         st.write(md(item.get("summary")))
-        st.markdown(f"[{item.get('type', 'item')} · {item.get('published', '')}]({item.get('url', '')})")
+        where = " · ".join(str(part) for part in (item.get("type", "item"), item.get("source"), item.get("published"))
+                           if part)
+        st.markdown(f"[{md(where)}]({item.get('url', '')})")
         with st.container(horizontal=True, vertical_alignment="center", gap="medium"):
             st.feedback("stars", key=f"rate-{day}-{item['id']}", on_change=rate, args=(item, day))
             st.button("Like", icon=":material/thumb_up:", key=f"like-{day}-{item['id']}", on_click=like,
@@ -162,6 +167,18 @@ def show_checks(checks: dict | None):
     if not checks:
         return
     st.subheader("How this digest was checked")
+    writer = team_line(checks)
+    if writer:
+        st.markdown(f"- {md(writer)}")
+    if checks.get("team"):
+        with st.expander("What the Manager asked its specialists"):
+            for row in checks["team"]:
+                st.markdown(f"**{row['specialist']}** · {row['candidates']} {row['plural']}, "
+                            f"{len(row['reported'])} reported, {len(row['used'])} used")
+                for question in row["questions"] or ["(not asked)"]:
+                    st.markdown(f"> {md(question)}")
+                if row.get("overview"):
+                    st.caption(md(row["overview"]))
     scope = ("structure and citations" if checks.get("mode") == "single"
              else "structure, citations, topic share, coverage and source mix")
     st.markdown(f"- Code rules ({scope}): {'passed' if checks.get('rules_passed') else 'not all passed'}.")

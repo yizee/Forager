@@ -19,6 +19,7 @@ from forager.memory import MemoryStore
 from forager.onboarding import save_profile
 from forager.signals import load_signals, record_signal
 from forager.sources import load_snapshot
+from forager.team import SPECIALISTS
 
 try:
     labkit.ensure_importable()
@@ -193,9 +194,12 @@ def test_setup_page_builds_and_saves_a_profile(runtime, monkeypatch):
     assert saved["consent"] == {"ratings": True, "likes": False, "clicks": False, "reading_time": False}
 
 
+def snapshot_candidates():
+    return prepare_candidates([item for path in storage.latest_snapshots() for item in load_snapshot(path)])
+
+
 def writer_draft():
-    raw = [item for path in storage.latest_snapshots() for item in load_snapshot(path)]
-    ids = [c["id"] for c in prepare_candidates(raw)][:6]            # p01, r01, p02, r02, p03, r03
+    ids = [c["id"] for c in snapshot_candidates()][:6]              # interleaved: p01, r01, (n01,) p02, ...
     reasons = ["i1", "i1", "i2", "i2", None, None]
     items = [{"id": i, "summary": "Core contribution.", "topics": ["t"],
               "reason": {"kind": "interest", "interest_id": r, "text": "match"} if r
@@ -206,18 +210,32 @@ def writer_draft():
                  "items": items}
 
 
+def team_replies(draft):
+    """The Manager asks every specialist with candidates; each reports the draft's items of its source."""
+    types = {c["id"]: c["type"] for c in snapshot_candidates()}
+    kinds = [k for k in SPECIALISTS if k in types.values()]
+    replies = [scripted_reply(calls=[(SPECIALISTS[k]["tool"], {"input": "What is new?"}) for k in kinds])]
+    for kind in kinds:
+        notes = [{"id": i["id"], "summary": i["summary"], "topics": i["topics"], "fit": i["reason"]["kind"],
+                  "interest_id": i["reason"]["interest_id"], "why": "w"} for i in draft["items"] if types[i["id"]] == kind]
+        replies += [scripted_reply(calls=[(SPECIALISTS[kind]["reader"], {})]), reply({"items": notes, "overview": "o"})]
+    return replies + [reply(draft)]
+
+
 def test_digest_page_makes_and_shows_a_digest(runtime, monkeypatch):
     save_profile(profile(likes=True), storage.profile_path())
     ids, draft = writer_draft()
-    use_replies(monkeypatch, [reply(draft), reply({"verdict": "PASS", "issues": []})])
+    use_replies(monkeypatch, team_replies(draft) + [reply({"verdict": "PASS", "issues": []})])
     at = app()
     at.button(key="make_digest").click().run()
     assert not at.exception, [e.value for e in at.exception]
     record = storage.load_digest(TODAY)
-    assert record["mode"] == "critic" and record["checks"]["critic"]["verdict"] == "PASS"
+    assert record["mode"] == "critic" and record["writer"] == "team" and record["checks"]["critic"]["verdict"] == "PASS"
+    assert {c["kind"] for c in record["team_calls"]} == {c["type"] for c in snapshot_candidates()}
     subheaders = [h.value for h in at.subheader]
     assert "How this digest was checked" in subheaders and any(h.startswith(f"{ids[1]} · ") for h in subheaders)
     assert any("Critic: no problems found." in m.value for m in at.markdown)
+    assert any("Written by the Manager from its specialists' notes" in m.value for m in at.markdown)
     at.button(key=f"like-{TODAY}-{ids[0]}").click().run()
     [event] = load_signals(runtime / "signals.jsonl")
     assert event["signal"] == "likes" and event["item"]["id"] == ids[0]

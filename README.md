@@ -10,9 +10,11 @@ Forager delivers a daily digest at a time the user chooses, drawn from three sou
 
 | Source type | Where it comes from |
 | --- | --- |
-| News | Tech news via RSS or a news API |
-| Papers | arXiv and AI-lab research blogs |
-| Open source | Trending GitHub repositories and Hugging Face models |
+| News | AI coverage from tech-news RSS and Atom feeds (TechCrunch, The Verge, MIT Technology Review, Ars Technica, The Decoder) |
+| Papers | arXiv (cs.AI, cs.CL, cs.CV) |
+| Open source | GitHub repositories created in the last 7 days, most stars first, with README excerpts |
+
+AI-lab research blogs and Hugging Face models were in the proposal and were dropped for time, as planned.
 
 Each digest has two linked layers:
 
@@ -23,7 +25,7 @@ Each digest has two linked layers:
 
 1. **Clarification-based interest elicitation** (Week 1, intent expression). The user describes themselves in one rough sentence; the agent asks follow-ups as clickable options and shows an editable profile. Baseline: free-text description.
 2. **Consented, evidence-backed preference memory** (Week 4, memory). Users opt in to each tracked signal. Profile entries are marked stated or inferred, long-term or expiring short-term. The agent proposes updates with evidence and waits for approval. Baseline: silent updates.
-3. **Source specialists with a breadth-and-evidence critic** (Week 6, multiple agents). A Manager delegates to News, Paper and Open-Source Researchers. Deterministic checks (topic share, 7-day coverage, citation IDs) run in code; a Critic agent handles semantic checks that rules cannot (is an exploration item relevant, are items duplicates, do citations support a point). Baselines: single agent; rules only.
+3. **Source specialists with a breadth-and-evidence critic** (Week 6, multiple agents). A Manager, which sees only an index of the day's candidates, asks focused questions of a News, a Paper and an Open-Source Researcher through `as_tool()`; each reads only its own source with its own tool. Code checks that the Manager asked them, used only items they reported, and labels an item with an interest only when the specialist who read it named that interest. Deterministic checks (topic share, 7-day coverage, source mix, citation IDs) run in code; a Critic agent handles semantic checks that rules cannot (is an exploration item relevant, are items duplicates, do citations support a point). Baselines: single agent; rules only.
 
 ## Roadmap
 
@@ -51,10 +53,11 @@ Fallback if time is short: drop Hugging Face first.
 ```
 CLAUDE.md        full project brief for development (read first)
 docs/            proposal, feedback, design notes, live-run notes and the Critic evaluation
-forager/         application code: app.py (Streamlit), sources/, digest.py, critic.py, memory.py, checks.py
+forager/         application code: app.py (Streamlit), sources/ (arXiv, GitHub, news), digest.py (pipeline),
+                 team.py (Manager and specialists), critic.py, checks.py, memory.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)
-eval/            Critic case set (eval/cases/critic) and its builder
+eval/            Critic case set (eval/cases/critic) and its builder; runners for the case set and the three digest modes
 lab/             course lab package, not committed (unzip lab2.zip here)
 CHANGELOG.md
 ```
@@ -74,11 +77,13 @@ python3.11 -m venv .venv
 .venv/bin/python -m forager rate p03 5        # rate an item in the latest digest (likewise: like p03)
 .venv/bin/python -m forager review            # approve or reject evidence-backed profile updates (paid call)
 .venv/bin/python -m forager profile           # see the profile, what is tracked and past decisions
-.venv/bin/python -m forager snapshot          # save recent arXiv papers and GitHub repos to data/snapshot/
-.venv/bin/python -m forager digest            # fetch arXiv, write today's digest, rules + Critic (paid calls)
-.venv/bin/python -m forager digest --mode rules   # baselines: --mode rules (no Critic), --mode single
-.venv/bin/python eval/run_critic_cases.py     # Critic on the case set, scored (paid; asks first)
+.venv/bin/python -m forager snapshot          # save recent arXiv papers, GitHub repos and tech news to data/snapshot/
+.venv/bin/python -m forager digest            # fetch all sources; the Manager and its specialists write today's
+                                              # digest, checked by the rules and the Critic (paid calls)
+.venv/bin/python -m forager digest --mode rules   # baselines: --mode rules (no Critic), --mode single (one writer)
 .venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json
+.venv/bin/python eval/run_critic_cases.py     # Critic on the case set, scored (paid; asks first)
+.venv/bin/python eval/run_digest_modes.py     # the three digest modes on the same snapshots (paid; asks first)
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

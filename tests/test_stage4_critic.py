@@ -110,7 +110,7 @@ def test_critique_offline_repairs_a_bad_ref():
     assert outcome["data"]["issues"][0]["refs"] == ["p30"] and "p31" in repair
 
 
-# ---- pipeline modes (writer + rules + Critic) ----
+# ---- pipeline modes (writer + rules + Critic); the team writer has its own tests ----
 
 def draft(ids=IDS, reasons=("i1", "i1", "i2", "i2", "i3", "i3", None, None)):
     items = [{"id": i, "summary": "Core contribution.", "topics": ["t"],
@@ -128,7 +128,7 @@ REVISED = draft(ids=IDS[:6] + IDS[8:10])                                 # bread
 
 def run(mode, replies, profile=DEFAULT_PROFILE):
     with offline_lab(replies) as lab:
-        outcome = generate_digest(lab, profile, RAW, mode=mode, today=TODAY)
+        outcome = generate_digest(lab, profile, RAW, mode=mode, writer="single", today=TODAY)
         return outcome, lab.client.requests
 
 

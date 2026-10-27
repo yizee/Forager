@@ -2,6 +2,22 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Stage 4: Manager, source specialists and news)
+
+### Added
+- `forager/team.py` (Idea 3, as designed): the Manager writes the digest but sees only an index of the candidates (ID, type, title). Through `as_tool()` it asks focused questions of three specialists, each with its own instructions and one tool that returns only its own source: the Paper researcher (core contributions), the Open-source researcher (what a project does, stars per day computed in code) and the News researcher (what happened and why it matters; reports one story per event). The specialists inherit the lab's model settings and ledger.
+- Code checks on the team, run on every Manager answer with one repair turn: every specialist whose source has candidates was asked; every item in the digest was reported by its specialist; an item is labelled with an interest only if the specialist who read it named that interest (the Manager never sees the text, so it cannot add a match). Specialist answers are checked too: notes count only if the specialist called its tool in that run, only on its own source's items, and an interest outside the profile becomes breadth.
+- `forager/sources/news.py`: AI stories from five RSS/Atom feeds (TechCrunch, The Verge, MIT Technology Review, Ars Technica, The Decoder), last 3 days, one outlet at a time up to 15; source text is the feed's longest text without HTML, cut to 800 characters (snapshots are public) and prefixed with the outlet. A feed that fails is skipped. `data/snapshot/news-2026-10-27.json` (15 stories).
+- `eval/run_digest_modes.py`: runs single, rules and critic on the same snapshots and profile with fresh sessions on one connection, and saves every digest with code metrics (source and topic mix, largest topic share, breadth share, uncovered interests, citations, Critic verdict, requests, cost, time) to `eval/results/digest-modes-<timestamp>.jsonl` and `.md`. `--save critic` also makes that run today's digest.
+- `tests/test_stage4_team.py`: 11 offline tests (112 in total): news parsing and fetching, the specialists' scoped views, a full Manager run with every request inspected, each team check, a Critic ADJUST going back to the same Manager session, cleaning of specialist answers, progress lines and the modes runner.
+
+### Changed
+- Pipeline modes: `rules` and `critic` use the team; `single` keeps the single writer that reads every candidate (the baseline). `generate_digest(..., writer="team"|"single")` and `python -m forager digest --writer` override this.
+- Digest records keep the writer and every specialist answer (`team_calls`); "How this digest was checked" starts with who wrote it ("Written by the Manager from its specialists' notes: Paper researcher reported 5 of 8 papers (4 used); ...").
+- Items carry their source (outlet, arXiv or GitHub), shown in the app and the Markdown.
+- The app's progress log shows the delegation ("Manager asks the News researcher: ...", "Paper researcher: read 8 papers."), and the digest page has "What the Manager asked its specialists". Live fetching includes news; `python -m forager snapshot` and `digest --sources` accept `news`.
+- The single writer's instructions are unchanged; the output format and rules are now shared with the Manager's (`OUTPUT_RULES`).
+
 ## 2026-10-27 (Stage 4: Streamlit app)
 
 ### Added
