@@ -35,7 +35,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
-- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud
+- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; no evaluation run yet
 
 Fallback if time is short: drop Hugging Face first.
 
@@ -57,7 +57,8 @@ forager/         application code: app.py (Streamlit), sources/ (arXiv, GitHub, 
                  team.py (Manager and specialists), critic.py, checks.py, memory.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)
-eval/            Critic case set (eval/cases/critic) and its builder; runners for the case set and the three digest modes
+eval/            Critic case set (eval/cases/critic) and its builder; runners for the case set, the three digest
+                 modes and the memory scenarios; LLM judges and judge calibration
 lab/             course lab package, not committed (unzip lab2.zip here)
 CHANGELOG.md
 ```
@@ -84,6 +85,9 @@ python3.11 -m venv .venv
 .venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json
 .venv/bin/python eval/run_critic_cases.py     # Critic on the case set, scored (paid; asks first)
 .venv/bin/python eval/run_digest_modes.py     # the three digest modes on the same snapshots (paid; asks first)
+.venv/bin/python eval/run_memory_cases.py     # the memory agent on eight scenarios, approval vs silent (paid; asks first)
+.venv/bin/python eval/judge_runs.py RUNS      # LLM judges on saved runs (paid; asks first)
+.venv/bin/python eval/calibration.py make RUNS --out eval/labels/NAME   # blinded labelling sheet (free)
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

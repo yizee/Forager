@@ -155,10 +155,17 @@ def fetch_sources(names, max_results=30) -> dict[str, list[dict]]:
 
 
 def cmd_snapshot(args):
-    for name, items in fetch_sources(args.sources, args.max_results).items():
-        path = SNAPSHOT_DIR / f"{name}-{date.today().isoformat()}.json"
-        save_snapshot(items, path)
-        print(f"Saved {len(items)} {name} items to {path.relative_to(PROJECT_ROOT)}")
+    """Save today's items per source. Results name their snapshots, so an existing file is kept
+    unless --overwrite says otherwise (a second fetch on the same day would replace it)."""
+    path = lambda name: SNAPSHOT_DIR / f"{name}-{date.today().isoformat()}.json"
+    shown = lambda p: p.relative_to(PROJECT_ROOT) if p.is_relative_to(PROJECT_ROOT) else p
+    names = [name for name in args.sources if args.overwrite or not path(name).exists()]
+    for name in args.sources:
+        if name not in names:
+            print(f"Kept {shown(path(name))}: it already exists (use --overwrite to replace it).")
+    for name, items in fetch_sources(names, args.max_results).items():
+        save_snapshot(items, path(name))
+        print(f"Saved {len(items)} {name} items to {shown(path(name))}")
 
 
 def print_digest_event(event):
@@ -211,6 +218,7 @@ def main():
     snap = sub.add_parser("snapshot", help="save recent items from each source as fixed snapshots")
     snap.add_argument("--max-results", type=int, default=30, help="arXiv papers to fetch")
     snap.add_argument("--sources", nargs="+", choices=SOURCES, default=list(SOURCES))
+    snap.add_argument("--overwrite", action="store_true", help="replace today's snapshot files if they exist")
     snap.set_defaults(func=cmd_snapshot)
     dig = sub.add_parser("digest", help="generate today's digest (paid calls: Manager and specialists, Critic, "
                                         "one revision)")

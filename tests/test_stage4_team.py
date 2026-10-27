@@ -308,7 +308,7 @@ def test_digest_modes_runner_offline():
         "largest_bucket": "AI agents", "largest_share": 0.33, "breadth_share": 0.22, "rule_problems": 0,
         "heading_problems": 0, "uncovered": 0, "points": 5, "points_with_valid_citations": 5, "critic_verdict": None,
         "critic_issues": 0, "revised": False}
-    assert rules["reviewed_draft"] is None
+    assert rules["reviewed_draft"] is None and rules["profile"] == DEFAULT_PROFILE     # the judges need no runtime/
     table = modes_runner.summary_table(records)
     assert "| 1 | rules | team | PASS | 9 | news 3, paper 3, repo 3 | AI agents 33% | 22% | 0 |" in table
     text = modes_runner.report(records, DEFAULT_PROFILE, ["news-2026-10-27.json"], "test")

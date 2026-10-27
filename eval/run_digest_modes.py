@@ -8,7 +8,8 @@ Code measures what it can without a model: source and topic mix, breadth share, 
 the code rules and the interest-heading check applied to every mode's digest (single mode
 does not enforce them, but they are measured the same way), the Critic's verdict, cost
 and time. Critic runs also keep the draft the Critic reviewed (reviewed_draft), and the
-report lists what the revision changed in it.
+report lists what the revision changed in it. Each saved record also keeps the profile and
+the snapshot file names, so the judges (eval/judge_runs.py) need nothing from runtime/.
 
 Usage (paid; prints an estimate and asks before starting):
   .venv/bin/python eval/run_digest_modes.py
@@ -74,7 +75,7 @@ def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, t
             outcome = generate_digest(lab, profile, raw, mode=mode, previous=previous, history=history,
                                       today=today, on_event=on_event)
             after = lab.ledger.data
-            record = {"repeat": repeat, "mode": mode, "writer": outcome["writer"], "today": today,
+            record = {"repeat": repeat, "mode": mode, "writer": outcome["writer"], "today": today, "profile": profile,
                       "candidates": dict(Counter(c["type"] for c in outcome["candidates"])),
                       "errors": outcome["errors"], "warnings": outcome["warnings"],
                       "revision_errors": outcome["revision_errors"], "attempts": outcome["attempts"],
@@ -190,7 +191,7 @@ def main():
     path = RESULT_DIR / f"digest-modes-{stamp}.jsonl"
 
     def save(record):
-        kept = {k: v for k, v in record.items() if k != "outcome"}
+        kept = {"snapshots": [Path(p).name for p in snapshots], **{k: v for k, v in record.items() if k != "outcome"}}
         with path.open("a") as out:
             out.write(json.dumps(kept, ensure_ascii=False) + "\n")
         m = record["metrics"]

@@ -2,6 +2,33 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Stage 5 offline preparation: judges, calibration sheet, memory scenarios)
+
+### Added
+- `eval/judge_runs.py`: LLM judges for saved runs, in the Week 6 rubric style.
+  - Items: `label_correct` and `worth_showing`. Brief: `supported` and `not_overstated`. Memory proposals: `evidence_supports_change` and `message_matches_change`.
+  - Blinded views: no mode, writer or checks section, and items shuffled in an order fixed by their content.
+  - One repair turn; a judgement that still fails is recorded as an error, never as a pass. Identical views are judged once.
+  - The report gives per-mode means with bootstrap 95% intervals, critic minus rules, rules minus single, and the paired effect of the revision.
+  - Diversity measures are computed from each digest: breadth share, largest topic share, normalized entropy, interests covered and source types.
+- `eval/calibration.py`.
+  - `make` writes a blinded labelling sheet spread evenly over the modes: CSVs without the mode, a README with the criteria word for word, and a key file.
+  - `score` gives agreement, Cohen's kappa and a confusion table per criterion.
+- `eval/run_memory_cases.py`: eight memory scenarios built from real digest items and their snapshot texts.
+  - Scenarios: strong, weak, unconsented, mixed, mislabelled, rejected within 30 days, negative, expired.
+  - Each runs in approval mode, where a scripted user approves everything, and in the silent baseline, with code measures.
+  - Each proposal that was shown or written keeps a blinded view for the judge.
+- `data/snapshot/arxiv-2026-10-27.json`: the arXiv half of the second snapshot set (30 papers, none of them in the first set).
+  - GitHub and news follow on 10-28. Fetched on the evening of 10-27, they overlapped the first set (13 of 15 repositories, 7 of 15 stories), and their files would have replaced it.
+- Ten offline tests (127 in total).
+
+### Changed
+- `eval/run_digest_modes.py` saves the profile and the snapshot file names with every record, so the judges need nothing from `runtime/`.
+- `python -m forager snapshot` keeps an existing snapshot file unless `--overwrite` is given.
+- `docs/stage5-eval-plan.md` now matches the scripts.
+  - The memory scenarios are concrete, and a runbook lists every command.
+  - Costs follow measured figures: the digest judges go up to about $0.10 and the memory reviews down to about $0.05, for a total of about $0.50.
+
 ## 2026-10-27 (Stage 5 evaluation plan)
 
 ### Added

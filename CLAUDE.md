@@ -82,7 +82,14 @@
     - 兴趣标题检查 `check_headings`（`forager/checks.py`）：要点的领域名等于某个兴趣的标签时，必须引用匹配该兴趣的条目，否则 Manager 修改一次。它属于 `Team.check`，只管团队写作；单 agent 只统计、不强制。Manager 指令同步改为"只有引用了匹配该兴趣的条目，才用兴趣名做标题"，单 agent 指令一字未改。
     - 它不在 `check_rules` 里，所以 Critic 用例集"每个用例都通过全部代码规则"的前提不变。放到 live-01 上会在 points[4] 触发：Video editing 标题下是被标成 Sora 2 的 WorldForge V2。
     - `generate_digest` 返回 Critic 审查的草稿 `reviewed_draft`；对比脚本保存它，报告列出修改改了什么（删掉或新增的条目、改了的标签、被改写或删掉的速报原文）。
-  - 下一步：第 5 阶段，按 `docs/stage5-eval-plan.md` 执行（2026-10-27 制定，预计花费约 $0.47，待作者批准）。想法 3：两组快照上三种模式共 30 份简报，代码统计多样性，LLM 判定标签是否正确、条目是否值得看、要点是否有引用支撑，判定先用作者标注的 30 条内容和 30 条要点校准；可选：作者先标注 3 份 rules 简报，再让 Critic 审查。想法 2：8 个场景比较审批和静默更新。想法 1 和 think-aloud：2–3 人的用户研究。重复运行时顺便验证上面两处改动。
+- **第 5 阶段离线准备已完成（2026-10-27 晚）**，离线测试共 127 个全部通过，没有做付费调用。计划 `docs/stage5-eval-plan.md` 已按实际脚本更新（预计花费约 $0.50，待作者批准），末尾的 Runbook 列出每一步的命令。
+  - 想法 3：两组快照上三种模式共 30 份简报，代码统计多样性，LLM 判定标签是否正确、条目是否值得看、要点是否有引用支撑；判定先用作者标注的 30 条内容和 30 条要点校准。可选：作者先标注 3 份 rules 简报，再让 Critic 审查（还没准备，需要一个把作者标注转成用例文件的小脚本）。想法 2：8 个场景比较审批和静默更新。想法 1 和 think-aloud：2–3 人的用户研究。
+  - `eval/judge_runs.py`：三个 LLM 判定，沿用 Week 6 的判定方式（每条标准给出 true/false 和理由，格式不对修改一次，仍不对记为错误，不算通过）。条目：`label_correct`（只看兴趣匹配，兴趣的 facets 也算）、`worth_showing`；速报：`supported`、`not_overstated`（只看跨领域关联）；偏好建议：`evidence_supports_change`（按条目实际内容而不是标签判断，并参考用户的其他已授权信号）、`message_matches_change`。判定看不到模式、写作方式和"How this digest was checked"，条目按内容固定的顺序打乱；完全相同的输入只判一次（如 Critic 判 PASS 的草稿）。报告给出每种模式的均值和 bootstrap 95% 区间、critic − rules、rules − single 和修改前后的配对差。多样性（广度占比、最大话题占比、归一化熵、覆盖兴趣数、来源类型数）也由它计算。判定标准原文在 `CRITERIA`，标注表逐字复用。
+  - `eval/calibration.py`：`make` 生成盲标注表（CSV 不含模式；README 列出用户兴趣和判定标准；`key.json` 记录每行来自哪次运行和模式，标完再看），按模式均分，条目约三分之一是广度补充，要点约 30% 是跨领域关联，相同内容只出现一次；`score` 输出一致率、Cohen's kappa、混淆表和不一致的行。偏好建议的标注表在记忆场景跑完后单独生成（`make --memory`）。已有的标注表不会被覆盖。
+  - `eval/run_memory_cases.py`：8 个场景（强证据、弱证据、未授权信号、矛盾证据、错误标签、30 天内被拒绝、负面证据、短期兴趣过期），用 10-25、10-27 简报里的真实条目和快照原文，场景 1 和 5 重现 10-25 那次真实审查（3D generation 的证据是真的，Sora 2 的证据来自标错的条目）。过期场景用 Critic 用例集虚构的 Lumen-V 2，"今天"设为 11-12。审批模式下脚本化用户批准所有建议（对审批最不利），静默基线直接写入。代码统计建议数、展示数、写入数、未经批准写入数、被拦截数和原因、未授权信号是否进入上下文或被引用、是否重复被拒绝的修改。每条展示或写入的建议都保存给判定用的盲视图（不含模式和结果）。注意：拒绝记录只拦截完全相同的修改，换个标签名（如"3D asset generation"）就能绕过，场景 6 的报告会列出所有修改供人工检查。
+  - 对比脚本的每条记录另存档案和快照文件名，判定不再依赖 `runtime/`。`python -m forager snapshot` 不再覆盖已有文件（加 `--overwrite` 才覆盖）。
+  - 第二组快照：arXiv 已保存（`arxiv-2026-10-27.json`，30 篇，与第一组没有重复）。GitHub 和新闻如果当晚再抓，会和第一组大量重复（GitHub 13/15，新闻 7/15），而且同一天的文件名会覆盖第一组，所以留到 10-28 早上抓（免费）。GitHub 只取近 7 天，相邻几天本来就会大量重复。
+  - 下一步：10-28 早上抓 GitHub 和新闻；作者批准后跑 30 份简报（约 $0.20）。重复运行时顺便验证第 4 阶段最后两处改动（兴趣标题检查、`reviewed_draft`）。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
@@ -100,7 +107,7 @@
 - 所有"JSON 回复 + 代码检查 + 修改一次"的 agent 都用 `forager/jsonagent.py`。
 - Lab 代码由 `forager/labkit.py` 定位：默认 `lab/`（也接受 `lab/week3-lab-ta/`），可用环境变量 `FORAGER_LAB_DIR` 覆盖。
 - 候选内容超过 `session.run` 的 6000 字符上限，所以通过 `input_builder` 作为上下文消息传入，用户消息只放简短指令。
-- 用户本机已有 Week 6 包：`~/Desktop/Human-AI/week6/week6/evaluation/`（含 `run_eval.py`、`harness.py`、`graders.py`），第 5 阶段使用。
+- 用户本机已有 Week 6 包：`~/Desktop/Human-AI/week6/week6/evaluation/`（含 `run_eval.py`、`harness.py`、`graders.py`）。第 5 阶段沿用 `graders.py` 的判定方式，实现在 `eval/judge_runs.py`。
 
 ## 4. 产品功能
 
@@ -297,7 +304,7 @@ Forager/
 
 1. **仓库可见性**：`yizee/Forager` 目前是 Public。推送 Lab 代码前必须改成 Private（Settings → Danger Zone → Change visibility）。
 2. **额外预算**：是否向老师申请项目额度，或改用用户自己的 OpenRouter key。
-3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。第 5 阶段计划的做法：沿用 Week 6 的判定方式（每条标准给出是否通过和理由，格式不对算错误，总分由代码算），但在 Forager 的 `eval/` 里实现，用 Lab 2 的连接和同一个账本，不直接跑 Week 6 的 harness。
+3. **Week 6 评估框架**：已在本机找到 `~/Desktop/Human-AI/week6/week6/evaluation/`。注意 Week 6 包里的 `lab_support` 比 Lab 2 新（多了 `_session_lock.py`，少了 `_runtime.py`），第 5 阶段前确认用哪一版。已决定并实现：沿用 Week 6 的判定方式（每条标准给出是否通过和理由，格式不对算错误，总分由代码算），在 Forager 的 `eval/judge_runs.py` 里实现，用 Lab 2 的连接和同一个账本，不直接跑 Week 6 的 harness。
 4. ~~Lab 2 代码包~~：已解决，`lab/` 已就位（见第 3 节）。
 
 ## 13. 相关文件
