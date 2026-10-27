@@ -73,11 +73,11 @@ python3.11 -m venv .venv
 .venv/bin/python -m forager rate p03 5        # rate an item in the latest digest (likewise: like p03)
 .venv/bin/python -m forager review            # approve or reject evidence-backed profile updates (paid call)
 .venv/bin/python -m forager profile           # see the profile, what is tracked and past decisions
-.venv/bin/python -m forager snapshot          # save recent arXiv papers to data/snapshot/
+.venv/bin/python -m forager snapshot          # save recent arXiv papers and GitHub repos to data/snapshot/
 .venv/bin/python -m forager digest            # fetch arXiv, write today's digest, rules + Critic (paid calls)
 .venv/bin/python -m forager digest --mode rules   # baselines: --mode rules (no Critic), --mode single
 .venv/bin/python eval/run_critic_cases.py     # Critic on the case set, scored (paid; asks first)
-.venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json
+.venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

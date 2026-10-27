@@ -1,10 +1,10 @@
 """arXiv source: recent papers from selected categories via the public Atom API."""
 
-import json
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from pathlib import Path
+
+from . import load_snapshot, save_snapshot  # noqa: F401  (shared helpers, kept importable here)
 
 API = "https://export.arxiv.org/api/query"
 ATOM = {"a": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
@@ -47,12 +47,3 @@ def fetch(categories=DEFAULT_CATEGORIES, max_results=30, timeout=30) -> list[dic
     request = urllib.request.Request(f"{API}?{params}", headers={"User-Agent": "Forager/0.1 (course project)"})
     with urllib.request.urlopen(request, timeout=timeout) as response:
         return parse_feed(response.read().decode("utf-8"))
-
-
-def save_snapshot(papers: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(papers, ensure_ascii=False, indent=2) + "\n")
-
-
-def load_snapshot(path: Path) -> list[dict]:
-    return json.loads(Path(path).read_text())

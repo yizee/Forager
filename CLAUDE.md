@@ -43,7 +43,8 @@
     - 构造用例 45/48（94%），真实简报 live-01 是 0/12。构造用例高估了真实场景的效果，这是报告里必须讲的局限。
     - 最弱的是兴趣标签错误（47%）：虚构的 Lumen-V 2 抓到 2/3，真实的 Sora 2 一次也没抓到。
     - 不要在看过结果后改标注（会抬高 Critic 的分数）；要改进 Critic，需用新的用例或新的真实简报来评估。
-  - 下一步：GitHub 和新闻来源 → 三个来源专家和 Manager → Streamlit 界面。可选：在新的真实简报上评估 Critic（先标注后运行）。
+  - **GitHub 来源已完成（2026-10-27）**：`forager/sources/github.py`，按话题搜索近 7 天创建、星标最多的仓库，并附 README 摘录；快照 `data/snapshot/github-2026-10-27.json`。候选内容按来源交替排列（最多 24 条），来源类型不单一规则因此可以满足。Hugging Face 按计划不做。
+  - 下一步：Streamlit 界面 → （可选）新闻来源、三个来源专家和 Manager。可选：在新的真实简报上评估 Critic（先标注后运行）。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。

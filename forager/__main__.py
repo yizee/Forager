@@ -2,10 +2,10 @@
 
   python -m forager onboard               set up your interest profile (Idea 1; paid call)
   python -m forager onboard --baseline    free-text baseline: no follow-up questions
-  python -m forager snapshot              fetch recent arXiv papers into data/snapshot/
+  python -m forager snapshot              save recent arXiv papers and GitHub repos into data/snapshot/
   python -m forager digest                fetch arXiv and write today's digest with rules + Critic (paid calls)
   python -m forager digest --mode rules   evaluation baselines: --mode rules (no Critic), --mode single (Stage 1)
-  python -m forager digest --snapshot P   use a fixed snapshot file instead of fetching
+  python -m forager digest --snapshot P [P ...]   use fixed snapshot files instead of fetching
   python -m forager consent               choose which feedback signals Forager may track (Idea 2)
   python -m forager rate p03 5            rate an item in the latest digest (if ratings are on)
   python -m forager like p03              like an item in the latest digest (if likes are on)
@@ -27,10 +27,11 @@ from .memory_cli import approval_prompt, ask_consent, find_item, review_expired
 from .profile import PROFILE_PATH, load_profile
 from .render import to_markdown
 from .signals import SIGNALS, describe, load_signals, purge_signal, record_signal
-from .sources import arxiv
+from .sources import arxiv, github, load_snapshot, save_snapshot
 
 DIGEST_DIR = PROJECT_ROOT / "runtime" / "digests"
 SNAPSHOT_DIR = PROJECT_ROOT / "data" / "snapshot"
+SOURCES = ("arxiv", "github")
 
 
 def print_turns(event):
@@ -154,11 +155,17 @@ def cmd_profile(args):
             print(f"  {entry['time'][:10]} [{entry['decision']}] {entry['change']}")
 
 
+def fetch_sources(names, max_results=30) -> dict[str, list[dict]]:
+    """Fetch live items from each named source (free; no model calls)."""
+    fetchers = {"arxiv": lambda: arxiv.fetch(max_results=max_results), "github": github.fetch}
+    return {name: fetchers[name]() for name in names}
+
+
 def cmd_snapshot(args):
-    papers = arxiv.fetch(max_results=args.max_results)
-    path = SNAPSHOT_DIR / f"arxiv-{date.today().isoformat()}.json"
-    arxiv.save_snapshot(papers, path)
-    print(f"Saved {len(papers)} papers to {path.relative_to(PROJECT_ROOT)}")
+    for name, items in fetch_sources(args.sources, args.max_results).items():
+        path = SNAPSHOT_DIR / f"{name}-{date.today().isoformat()}.json"
+        save_snapshot(items, path)
+        print(f"Saved {len(items)} {name} items to {path.relative_to(PROJECT_ROOT)}")
 
 
 def recent_digests(today: str, days: int = 7) -> list[dict]:
@@ -170,7 +177,10 @@ def recent_digests(today: str, days: int = 7) -> list[dict]:
 def cmd_digest(args):
     from .digest import generate_digest
 
-    raw = arxiv.load_snapshot(args.snapshot) if args.snapshot else arxiv.fetch(max_results=args.max_results)
+    if args.snapshot:
+        raw = [item for path in args.snapshot for item in load_snapshot(path)]
+    else:
+        raw = [item for items in fetch_sources(args.sources, args.max_results).values() for item in items]
     today = date.today().isoformat()
     profile = load_profile()
     with lab_connection() as lab:
@@ -205,11 +215,13 @@ def main():
     onboard = sub.add_parser("onboard", help="set up your interest profile")
     onboard.add_argument("--baseline", action="store_true", help="free-text baseline, no follow-up questions")
     onboard.set_defaults(func=cmd_onboard)
-    snap = sub.add_parser("snapshot", help="save recent arXiv papers as a fixed snapshot")
-    snap.add_argument("--max-results", type=int, default=30)
+    snap = sub.add_parser("snapshot", help="save recent items from each source as fixed snapshots")
+    snap.add_argument("--max-results", type=int, default=30, help="arXiv papers to fetch")
+    snap.add_argument("--sources", nargs="+", choices=SOURCES, default=list(SOURCES))
     snap.set_defaults(func=cmd_snapshot)
     dig = sub.add_parser("digest", help="generate today's digest (paid calls: writer, Critic, one revision)")
-    dig.add_argument("--snapshot", type=Path, help="snapshot JSON to use instead of fetching")
+    dig.add_argument("--snapshot", type=Path, nargs="+", help="snapshot files to use instead of fetching")
+    dig.add_argument("--sources", nargs="+", choices=SOURCES, default=list(SOURCES), help="sources to fetch live")
     dig.add_argument("--max-results", type=int, default=30)
     dig.add_argument("--mode", choices=("critic", "rules", "single"), default="critic",
                      help="critic: rules + Critic (default); rules: code rules only; single: Stage 1 baseline")
