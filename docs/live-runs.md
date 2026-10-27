@@ -121,3 +121,80 @@ Total for the three runs: $0.0177; ledger $0.0603 of $1.
    kept (`check_log` in the outcome, the digest record and the runner's results).
 6. "Changes since last time" noticed that FlexPart, SpectralCanary and BrickWright
    reappear from the 10-25 digest, which used the same arXiv snapshot.
+
+## 2026-10-27 (afternoon): rules and critic again, to check the two instruction changes
+
+Same profile, snapshots (arXiv 10-25, GitHub and news 10-27), previous digest and
+history as the morning run; rules and critic once each. Results:
+`eval/results/digest-modes-20261027-164540.jsonl` and `.md`.
+
+| Mode | Requests | Cost | Time | Outcome |
+| --- | --- | --- | --- | --- |
+| rules | 8 | $0.0072 | 40.0 s | no digest: the Manager's answer was cut off |
+| critic | 8 | $0.0078 | 48.1 s | no digest: the Manager's answer was cut off |
+
+Total $0.0150; ledger $0.0753 of $1.
+
+In both runs the Manager asked all three specialists in its first response, and each
+specialist read its 8 items and reported 6. The Manager's final answer then reached
+the lab's limit of 4,096 completion tokens per response, which includes reasoning.
+The lab's transport rejected it ("Model output was truncated"), so no digest was
+written.
+
+| Manager's final answer | Prompt tokens | Reasoning tokens | Completion tokens |
+| --- | --- | --- | --- |
+| morning, rules | 5,274 | 680 | 2,731 |
+| morning, critic | 5,405 | 565 | 2,273 |
+| afternoon, rules | 5,937 | 2,045 | 4,096 (cut off) |
+| afternoon, critic | 6,092 | 2,930 | 4,096 (cut off) |
+
+### What could still be checked: the specialists' labels
+
+Specialist notes are recorded even when the Manager fails (`team_calls`).
+
+- **r08** is Tencent ARC's video-generation repository. Both morning team runs
+  labelled it "Sora 2". Both afternoon runs marked it as breadth: "Not editing itself,
+  but frontier video-generation research directly relevant to Sora 2".
+- **p03** is the video world-model survey. The morning critic run labelled it "Video
+  editing". Both afternoon runs marked it as breadth.
+- **Two borderline labels appeared, in the critic run only.** n05 (GPT-6.1 Terra's
+  price cut) and p02 (a proxy metric for embodied policies) were both labelled AI
+  agents. The rules run marked both as breadth. The specialists still disagree on
+  items that sit next to an interest.
+
+These judgments are Claude's and the author has not checked them. The grouping change
+(points by field, not by source) could not be checked, because no digest was written.
+
+### Change made
+
+- **The Manager now gives only item IDs.** It no longer writes the items' summaries,
+  topics and reasons. It may mark a reported interest match as breadth instead, but
+  not the reverse. Code copies each item's summary, topics and fit from the note of
+  the specialist that read it (`Team.fill`). On the morning critic digest, this cuts
+  the JSON from about 2,350 to about 950 tokens (characters / 4).
+- **Shorter reasoning.** The Manager's instructions ask it to keep its reasoning
+  short. They also say what a field is: an interest's label, otherwise a short area
+  name.
+- **Rewrite after a lost answer.** If the Manager's answer is lost after every
+  specialist has answered, it writes the digest once more from their notes, in a
+  session without tools. This takes one request instead of asking the specialists
+  again. The rewrite is recorded (`rewritten`, `check_log` stage "rewrite") and
+  shown in "How this digest was checked".
+- **The single writer is unchanged.** Its instructions are identical byte for byte.
+
+These changes have not been run live yet.
+
+### Observations for the report
+
+1. **The output limit is a design constraint for a Manager.** Every response,
+   reasoning included, must fit in 4,096 tokens, and the Manager writes the largest
+   answer in the system. After the instruction changes its reasoning grew from
+   565–680 to 2,045–2,930 tokens. The specialists' longer notes also added about 650
+   prompt tokens. Two runs cannot separate the new grouping instruction from
+   run-to-run variation.
+2. **Each agent now writes about what it read.** Item summaries come from the
+   specialist that read the source, not from a Manager that saw only titles and
+   notes. This is cheaper, and the Manager can no longer restate a note
+   inaccurately.
+3. **The narrower specialist instruction removed both known wrong labels** (r08 and
+   p03) in both runs, judged from the specialists' notes.

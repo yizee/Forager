@@ -2,6 +2,20 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (The Manager names items; the specialists' notes fill them in)
+
+### Added
+- A re-run of rules and critic to check the two instruction changes ($0.0150; `eval/results/digest-modes-20261027-164540.jsonl` and `.md`; write-up in `docs/live-runs.md`). Both Manager answers hit the lab's limit of 4,096 completion tokens per response (reasoning 2,045 and 2,930 tokens, against 565-680 in the morning), so neither run wrote a digest. The specialists' notes were recorded. Both wrong labels from the morning run (r08 "Sora 2", p03 "Video editing") were breadth in both runs. The grouping change is still unchecked.
+- Two offline tests (114 in total): the Manager naming items while code copies the notes, and a truncated answer rewritten from the notes.
+
+### Changed
+- The Manager no longer writes item summaries, topics or reasons. It gives the IDs of the items it includes and may mark a reported interest match as breadth. Code copies each item's summary, topics and fit from the note of the specialist that read it (`Team.fill`), so the Manager's answer is about 60% shorter.
+- The Manager's instructions ask it to keep its reasoning short, and say what a field is: an interest's label, otherwise a short area name. The single writer's instructions are unchanged.
+- `eval/run_digest_modes.py` records whether the Manager rewrote its digest.
+
+### Fixed
+- The team pipeline wrote no digest when the Manager's answer was lost after the specialists had answered. It now writes the digest once more from their notes, in a session without tools: one request instead of asking them again. The rewrite is recorded (`rewritten` and `check_log`) and shown in "How this digest was checked".
+
 ## 2026-10-27 (Stage 4 complete: live run of the three modes)
 
 ### Added

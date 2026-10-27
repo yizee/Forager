@@ -75,6 +75,7 @@ def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, t
                       "candidates": dict(Counter(c["type"] for c in outcome["candidates"])),
                       "errors": outcome["errors"], "warnings": outcome["warnings"],
                       "revision_errors": outcome["revision_errors"], "attempts": outcome["attempts"],
+                      "rewritten": outcome["rewritten"],
                       "requests": after["requests"] - before["requests"],
                       "cost": round(after["cost"] - before["cost"], 6),
                       "cost_known": not (after["unknown_cost"] or after["pending"]),
@@ -101,7 +102,8 @@ def summary_table(records: list[dict]) -> str:
             f"{m['critic_verdict'] or 'unusable'}" + (f", {m['critic_issues']} issue(s)" if m["critic_issues"] else "")
             + (", revised" if m["revised"] else ""))
         types = ", ".join(f"{k} {v}" for k, v in sorted(m["by_type"].items()))
-        rules = ("PASS" if not m["rule_problems"] else f"{m['rule_problems']} broken") + (" (errors)" if r["errors"] else "")
+        rules = (("PASS" if not m["rule_problems"] else f"{m['rule_problems']} broken") + (" (errors)" if r["errors"] else "")
+                 + (" (rewritten)" if r.get("rewritten") else ""))
         rows.append(f"| {r['repeat'] + 1} | {r['mode']} | {r['writer']} | {rules} "
                     f"| {m['items']} | {types} | {m['largest_bucket']} {m['largest_share']:.0%} "
                     f"| {m['breadth_share']:.0%} | {m['uncovered']} | {critic} | {r['requests']} | {r['cost']:.4f} "

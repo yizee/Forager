@@ -48,7 +48,9 @@ def team_line(checks: dict) -> str | None:
     if checks.get("team"):
         parts = [f"{t['specialist']} reported {len(t['reported'])} of {t['candidates']} {t['plural']} "
                  f"({len(t['used'])} used)" for t in checks["team"]]
-        return "Written by the Manager from its specialists' notes: " + "; ".join(parts) + "."
+        rewritten = (" The Manager's first answer was lost, so it wrote the digest again from the same notes."
+                     if checks.get("rewritten") else "")
+        return "Written by the Manager from its specialists' notes: " + "; ".join(parts) + "." + rewritten
     if checks.get("writer") == "single":
         return "Written by a single agent that read every candidate."
     return None

@@ -11,10 +11,12 @@ source's candidates:
 
 A specialist answers with JSON notes. Code keeps them only if the specialist called its
 tool in that run, keeps only notes on its own source's items, records them and passes
-them to the Manager. Code then checks the Manager's digest
-(Team.check): every specialist whose source has candidates was asked, every item in the
-digest was reported by its specialist, and an item is marked as matching an interest
-only if its specialist named that interest, because the Manager never read the item.
+them to the Manager. The Manager names the items to include; code copies each one's
+summary, topics and fit from its specialist's note (Team.fill). Code then checks the
+Manager's digest (Team.check): every specialist whose source has candidates was asked,
+every item in the digest was reported by its specialist, and an item is marked as
+matching an interest only if its specialist named that interest, because the Manager
+never read the item.
 """
 
 import json
@@ -200,6 +202,33 @@ class Team:
     def notes(self) -> dict[str, dict]:
         """The latest note on each item, across every answer so far."""
         return {note["id"]: note for call in self.calls for note in call["notes"]}
+
+    def answered(self) -> bool:
+        """Every specialist whose source has candidates has answered at least once."""
+        return all(any(c["kind"] == kind for c in self.calls) for kind in self.kinds)
+
+    def answers(self) -> list[dict]:
+        """The specialists' answers as the Manager received them (for its rewrite)."""
+        return [{"specialist": SPECIALISTS[c["kind"]]["name"], "items": c["notes"], "overview": c["overview"]}
+                for c in self.calls]
+
+    def fill(self, data):
+        """The Manager's digest with each reported item's summary, topics and fit copied from
+        its specialist's note: the specialist read the item, the Manager did not. A reason the
+        Manager gives is kept, and check() holds it to the note."""
+        if not isinstance(data, dict) or not isinstance(data.get("items"), list):
+            return data
+        notes, items = self.notes(), []
+        for item in data["items"]:
+            note = notes.get(item.get("id")) if isinstance(item, dict) else None
+            if note is None:                                   # check() reports unreported items
+                items.append(item)
+                continue
+            reason = item.get("reason") if isinstance(item.get("reason"), dict) else {
+                "kind": note["fit"], "interest_id": note["interest_id"], "text": note["why"]}
+            items.append({**item, "summary": note["summary"] or item.get("summary", ""),
+                          "topics": note["topics"] or item.get("topics", []), "reason": reason})
+        return {**data, "items": items}
 
     def check(self, data: dict) -> list[str]:
         """Code checks on the Manager's digest; see the module docstring."""

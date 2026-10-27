@@ -199,6 +199,43 @@ def test_critic_adjust_goes_back_to_the_manager_with_its_notes():
     assert "1 issue(s); the Manager revised the digest once" in to_markdown(outcome["digest"], DEFAULT_PROFILE)
 
 
+def test_manager_names_items_and_code_copies_the_specialists_notes():
+    final = {**digest(), "items": [{"id": i} for i in FITS]}
+    final["items"][0] = {"id": "p01", "reason": {"kind": "breadth", "interest_id": None, "text": "Shown as breadth."}}
+    final["items"][6] = {"id": "n01", "summary": "The Manager's own words."}
+    outcome, requests, _ = run("rules", team_replies(final))
+    assert outcome["errors"] == [] and len(requests) == 8
+    items = {i["id"]: i for i in outcome["digest"]["items"]}
+    assert (items["r01"]["summary"], items["r01"]["topics"]) == ("Summary of r01.", ["t"])
+    assert items["r01"]["reason"] == {"kind": "interest", "interest_id": "i1", "text": "Worth a look."}
+    assert items["n01"]["summary"] == "Summary of n01."        # summaries come from the specialist that read it
+    assert items["p01"]["reason"]["text"] == "Shown as breadth."   # the Manager may show a match as breadth
+
+
+def truncated(data):
+    """A reply cut off at the output limit, as the lab reports it."""
+    response = reply(data)
+    response["choices"][0]["finish_reason"] = "length"
+    return response
+
+
+def test_a_lost_manager_answer_is_rewritten_from_the_notes_once():
+    final = {**digest(), "items": [{"id": i} for i in FITS]}
+    replies = team_replies(digest())[:-1] + [truncated(digest()), reply(final), reply({"verdict": "PASS", "issues": []})]
+    outcome, requests, _ = run("critic", replies)
+    assert outcome["errors"] == [] and outcome["rewritten"] and len(requests) == 10
+    rewrite = requests[8]
+    assert rewrite["messages"][0]["content"].startswith("You are the Manager") and not rewrite.get("tools")
+    context = rewrite["messages"][1]["content"]
+    assert "specialist_notes" in context and "Summary of n03." in context and "abstract" not in context
+    assert [e["stage"] for e in outcome["check_log"]] == ["draft", "rewrite"]
+    assert "Model output was truncated" in outcome["check_log"][0]["problems"][0]
+    assert "wrote the digest again from the same notes" in to_markdown(outcome["digest"], DEFAULT_PROFILE)
+
+    outcome, requests, _ = run("rules", [truncated(digest())])   # cut off before asking anyone: nothing to reuse
+    assert not outcome["rewritten"] and outcome["digest"] is None and len(requests) == 1
+
+
 def test_single_mode_keeps_the_single_writer():
     outcome, requests, _ = run("single", [reply(digest())])
     assert outcome["writer"] == "single" and len(requests) == 1 and outcome["team_calls"] == []
