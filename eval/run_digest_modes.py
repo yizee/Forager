@@ -4,8 +4,9 @@ The modes are the Idea 3 conditions: single (one writer, structure checks only),
 (the Manager and its specialists, plus the code rules) and critic (plus the Critic and
 one revision). Every run uses fresh sessions on one lab connection (one ledger); the
 previous digest and the 7-day history come from runtime/ and are the same for all runs.
-Code measures what it can without a model: source and topic mix, breadth share, uncovered
-interests, citations, rule results, the Critic's verdict, cost and time.
+Code measures what it can without a model: source and topic mix, breadth share, citations,
+the code rules applied to every mode's digest (single mode does not enforce them, but
+they are measured the same way), the Critic's verdict, cost and time.
 
 Usage (paid; prints an estimate and asks before starting):
   .venv/bin/python eval/run_digest_modes.py
@@ -25,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from forager import labkit, storage  # noqa: E402
-from forager.checks import citation_stats, topic_bucket  # noqa: E402
+from forager.checks import check_rules, citation_stats, topic_bucket  # noqa: E402
 from forager.digest import MODES, generate_digest, prepare_candidates  # noqa: E402
 from forager.profile import load_profile  # noqa: E402
 from forager.render import to_markdown  # noqa: E402
@@ -37,10 +38,12 @@ RESULT_DIR = ROOT / "eval" / "results"
 ESTIMATED_COST = {"single": 0.003, "rules": 0.008, "critic": 0.012}
 
 
-def metrics(digest: dict | None, profile: dict) -> dict:
-    """What code can measure about one digest."""
+def metrics(digest: dict | None, profile: dict, candidates=(), history=(), today: str | None = None) -> dict:
+    """What code can measure about one digest; the code rules run whatever the mode."""
     if not digest:
         return {}
+    rules = check_rules(digest, profile, {c["id"] for c in candidates}, available_types={c["type"] for c in candidates},
+                        history=history, today=today)
     items = digest.get("items") or []
     labels = {i["id"]: i["label"] for i in profile.get("interests", [])}
     buckets = Counter(labels.get(topic_bucket(i), topic_bucket(i)) if topic_bucket(i) != "breadth" else "Breadth"
@@ -52,7 +55,8 @@ def metrics(digest: dict | None, profile: dict) -> dict:
             "by_bucket": dict(buckets.most_common()), "largest_bucket": largest[0],
             "largest_share": round(largest[1] / len(items), 2) if items else 0,
             "breadth_share": round(buckets.get("Breadth", 0) / len(items), 2) if items else 0,
-            "uncovered": len(checks.get("warnings") or []), **citation_stats(digest),
+            "rule_problems": len(rules["structure_and_citations"] + rules["topic_share"] + rules["source_mix"]),
+            "uncovered": len(rules["coverage"]), **citation_stats(digest),
             "critic_verdict": critic.get("verdict"), "critic_issues": len(critic.get("issues") or []),
             "revised": bool(critic.get("revised"))}
 
@@ -74,8 +78,10 @@ def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, t
                       "requests": after["requests"] - before["requests"],
                       "cost": round(after["cost"] - before["cost"], 6),
                       "cost_known": not (after["unknown_cost"] or after["pending"]),
-                      "seconds": round(time.time() - started, 1), "metrics": metrics(outcome["digest"], profile),
-                      "digest": outcome["digest"], "team_calls": outcome["team_calls"], "outcome": outcome}
+                      "seconds": round(time.time() - started, 1),
+                      "metrics": metrics(outcome["digest"], profile, outcome["candidates"], history, today),
+                      "digest": outcome["digest"], "team_calls": outcome["team_calls"],
+                      "check_log": outcome["check_log"], "outcome": outcome}
             records.append(record)
             if on_record:
                 on_record(record)
@@ -83,7 +89,7 @@ def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, t
 
 
 def summary_table(records: list[dict]) -> str:
-    rows = ["| Run | Mode | Writer | Rules | Items | Types | Largest topic | Breadth | Uncovered | Critic | "
+    rows = ["| Run | Mode | Writer | Hard rules | Items | Types | Largest topic | Breadth | Uncovered | Critic | "
             "Requests | Cost (USD) | Seconds |", "|" + " --- |" * 13]
     for r in records:
         m = r["metrics"]
@@ -95,7 +101,8 @@ def summary_table(records: list[dict]) -> str:
             f"{m['critic_verdict'] or 'unusable'}" + (f", {m['critic_issues']} issue(s)" if m["critic_issues"] else "")
             + (", revised" if m["revised"] else ""))
         types = ", ".join(f"{k} {v}" for k, v in sorted(m["by_type"].items()))
-        rows.append(f"| {r['repeat'] + 1} | {r['mode']} | {r['writer']} | {'PASS' if not r['errors'] else 'FAIL'} "
+        rules = ("PASS" if not m["rule_problems"] else f"{m['rule_problems']} broken") + (" (errors)" if r["errors"] else "")
+        rows.append(f"| {r['repeat'] + 1} | {r['mode']} | {r['writer']} | {rules} "
                     f"| {m['items']} | {types} | {m['largest_bucket']} {m['largest_share']:.0%} "
                     f"| {m['breadth_share']:.0%} | {m['uncovered']} | {critic} | {r['requests']} | {r['cost']:.4f} "
                     f"| {r['seconds']} |")
@@ -109,6 +116,9 @@ def report(records: list[dict], profile: dict, snapshots, stamp: str) -> str:
         lines += [f"## Run {r['repeat'] + 1} · {r['mode']} ({r['writer']} writer)", ""]
         if r["errors"]:
             lines += ["Errors: " + "; ".join(r["errors"]), ""]
+        for entry in r.get("check_log") or []:
+            if entry["problems"]:
+                lines.append(f"- Repair after {entry['stage']} attempt {entry['attempt']}: " + "; ".join(entry["problems"]))
         for call in r["team_calls"]:
             lines += [f"- Manager asked the {call['kind']} specialist: {call['question']}",
                       f"  - reported: {', '.join(n['id'] for n in call['notes']) or 'nothing'}"

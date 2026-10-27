@@ -2,6 +2,27 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Stage 4 complete: live run of the three modes)
+
+### Added
+- First live run with the Manager and its specialists: single, rules and critic once each on the same profile and snapshots (arXiv 10-25, because the arXiv API answered 429 five times today; GitHub and news 10-27), $0.0177. Results: `eval/results/digest-modes-20261027-113548.jsonl` and `.md`; write-up for the report in `docs/live-runs.md`.
+  - All three modes produced a digest whose 8 points all cite included items. The team took 9-10 requests and about 30 s against 1 request and 9 s for the single writer (about 3.5 times the cost).
+  - The Manager asked all three specialists in one response; each read only its own 8 items and reported 6.
+  - The Critic caught a wrong interest label that came from the Paper researcher (a video world-model survey marked "Video editing"), and the Manager's revision moved it to breadth; in rules mode the label stayed. A "Sora 2" label on an unrelated video-generation repository got past the Critic in both team runs, as Sora 2 labels did in the case-set evaluation; the single writer marked both items as breadth.
+  - Measured in code for every mode: the single writer's digest would leave AI copyright policy uncovered over 7 days; both team digests cover every long-term interest.
+  - Today's digest in the app is the critic run.
+- Each writer attempt's check results are kept (`check_log` in the pipeline outcome, the digest record and the runner's results), so the cause of a repair turn is recorded. This run's rules-mode repair was not.
+
+### Changed
+- The Manager groups brief points by topic field, not by specialist or source (the critic run grouped them by source).
+- Specialists use fit "interest" only when the text is about the interest itself, not a neighbouring topic, and may report no matches. Neither instruction change has run live yet.
+- `eval/run_digest_modes.py` applies the code rules to every mode's digest, single included, so the conditions are measured the same way; this run's metrics were recomputed from its saved digests.
+- "How this digest was checked" says the Manager revised a team digest.
+- README: Stage 4 ticked (Hugging Face and AI-lab blogs dropped, as planned).
+
+### Fixed
+- GitHub README excerpts decode HTML entities (`&nbsp;` appeared in source texts).
+
 ## 2026-10-27 (Stage 4: Manager, source specialists and news)
 
 ### Added

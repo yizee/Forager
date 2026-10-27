@@ -18,8 +18,8 @@ def repo(name, stars, created="2026-10-23", **extra):
 def test_readme_excerpt_is_plain_text():
     raw = ("# Title\n![build](https://img.shields.io/badge.svg) <img src='x.png'>\n"
            "> Agents for [video editing](https://example.com/docs).\n```bash\npip install x\n```\n"
-           "- Fast | **simple**\n<!-- hidden -->")
-    assert github.clean_readme(raw) == "Title Agents for video editing. Fast simple"
+           "- Fast | **simple**&nbsp;&amp; small\n<!-- hidden -->")
+    assert github.clean_readme(raw) == "Title Agents for video editing. Fast simple & small"
     assert len(github.clean_readme("word " * 500, limit=50)) == 50
 
 

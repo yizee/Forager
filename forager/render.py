@@ -71,7 +71,8 @@ def _checks(checks: dict) -> list[str]:
     elif critic.get("verdict") == "PASS":
         lines.append("- Critic: no problems found.")
     else:
-        outcome = ("the writer revised the digest once" if critic.get("revised") else
+        writer = "the Manager" if checks.get("writer") == "team" else "the writer"
+        outcome = (f"{writer} revised the digest once" if critic.get("revised") else
                    "the revision broke a code rule, so the checked draft is shown")
         lines.append(f"- Critic: {len(critic['issues'])} issue(s); {outcome}.")
         lines += [f"  - {issue['type'].replace('_', ' ')} ({', '.join(issue['refs'])}): {issue['explanation']}"

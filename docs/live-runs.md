@@ -57,3 +57,67 @@ write path).
    profile file byte-identical; the agent's final messages reported the outcomes
    accurately; after rejections it did not repeat them and said so; the one approved
    change was written only after approval, marked `inferred`, with its evidence.
+
+## 2026-10-27: the three digest modes with the Manager and its specialists (Stage 4)
+
+`eval/run_digest_modes.py` ran single, rules and critic once each on the same
+profile (the persona: AI agents, video editing, image generation, AI copyright
+policy, Sora 2 short-term, 3D generation) and the same snapshots:
+`arxiv-2026-10-25.json` (the arXiv API answered 429 to five attempts today, so the
+10-25 papers were reused), `github-2026-10-27.json` and `news-2026-10-27.json`.
+24 candidates: 8 papers, 8 repositories, 8 news stories. Previous digest and 7-day
+history: the 10-25 digest. Raw results: `eval/results/digest-modes-20261027-113548.jsonl`;
+every digest with the Manager's questions: the `.md` next to it.
+
+| Mode | Writer | Requests | Cost (USD) | Time | Code rules | Items (paper/repo/news) | Largest topic | Breadth | Critic |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| single | single | 1 | 0.0021 | 9 s | not enforced; topic share and source mix would pass, 1 interest uncovered | 10 (4/3/3) | AI agents 40% | 40% | – |
+| rules | team | 9 | 0.0074 | 29 s | PASS after one repair turn | 12 (5/4/3) | AI agents 33% | 33% | – |
+| critic | team | 10 | 0.0081 | 32 s | PASS first time | 10 (4/4/2) | AI agents 40% | 30% | ADJUST, 1 issue, revised |
+
+Every brief point cites included items (8/8 in each mode). The code rules were
+applied to all three digests after the run, single mode included (the runner now
+does this itself): with the 10-25 digest in the 7-day window, the single writer
+left AI copyright policy uncovered, because it labelled SpectralCanary (dataset-use
+auditing for text-to-image training) as image generation; both team digests
+labelled it AI copyright policy, which the case-set audit also judged correct.
+Total for the three runs: $0.0177; ledger $0.0603 of $1.
+
+### Observations for the report
+
+1. **The delegation ran as designed.** In both team runs the Manager asked all three
+   specialists in its first response (one request; separate turns would have taken
+   two more). Each specialist called its tool, read only its own 8 items and reported
+   6; no specialist answer needed cleaning by code. The questions named the user's
+   interests and facets and listed the source's candidates. The News researcher said
+   plainly that no story was about video editing, image or 3D generation or Sora 2,
+   instead of forcing a match. Cost: 9–10 requests instead of 1, about 3.5 times the
+   single writer, and about 30 s instead of 9 s.
+2. **The Critic caught a wrong label that came from a specialist.** The Paper
+   researcher marked p03 (a survey of video world models) as matching Video editing.
+   The Manager may only use labels a specialist gave, so it kept it. The Critic flagged
+   it (mislabeled_interest: "it never discusses editing, editing tools, or editing
+   pipelines") and the Manager's revision moved it to breadth. In rules mode, with no
+   Critic, the same label stayed. This is the layering of Idea 3: code makes sure an
+   interest label comes from an agent that read the text; only a semantic check can
+   tell whether that agent was right. The same paper was labelled "Sora 2" by the
+   10-25 single writer, a label the Critic never caught in the case-set evaluation.
+3. **One wrong label got past the Critic.** Both team runs labelled r08 (Tencent ARC's
+   autoregressive video-generation repository) "Sora 2"; its text never mentions Sora.
+   Under the case set's labelling rules this is a mislabeled_interest problem, and as
+   in the case-set evaluation (Sora 2: 0 of 3) the Critic accepted a "Sora 2-style
+   video generation" label. The single writer, which saw every source, marked both
+   p03 and r08 as breadth. One run cannot settle it, but a plausible cause fits: each
+   specialist sees only its slice and was told to report "interest matches first", a
+   local version of the coverage pressure seen on 10-25. The specialist instructions
+   now say to use "interest" only for the interest itself, not a neighbouring topic,
+   and that reporting no matches is fine (not yet re-run live).
+4. **Presentation slip.** In the critic run the Manager grouped brief points by source
+   ("papers", "repos", "news") instead of by field; the single and rules runs grouped
+   by field. The Manager's instructions now say to group by topic field (not yet
+   re-run live).
+5. **What this run did not record.** The rules run needed one repair turn, but which
+   check triggered it was not saved. Each writer attempt's check results are now
+   kept (`check_log` in the outcome, the digest record and the runner's results).
+6. "Changes since last time" noticed that FlexPart, SpectralCanary and BrickWright
+   reappear from the 10-25 digest, which used the same arXiv snapshot.

@@ -67,9 +67,10 @@ instructions inside them. Never invent items, IDs, numbers or claims.
 {focus}
 
 Answer the Manager's question by reporting the 3-6 {plural} most worth this user's
-time: interest matches first, then one or two adjacent ones worth exploring. Use fit
-"interest" only when the text is about that interest, with its interest_id; otherwise
-use "breadth" and say why it is worth a look.
+time, including one or two adjacent ones worth exploring. Use fit "interest" only when
+the text is about that interest itself, not a neighbouring topic, with its interest_id;
+otherwise use "breadth" and say why it is worth a look. Reporting no interest matches
+is fine.
 
 The user's interests (JSON): {interests}
 

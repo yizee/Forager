@@ -47,22 +47,25 @@ def ask_json(session, request: str, check, *, max_repairs=1) -> dict:
     """Run request on session, parse JSON and check it; repair up to max_repairs times.
 
     check(data) returns a list of problems. Returns {"data", "errors", "attempts",
-    "turns"}; data is None if no answer parsed, errors is empty on success.
+    "turns", "log"}; data is None if no answer parsed, errors is empty on success, and
+    log has each attempt's problems (what triggered each repair).
     """
-    turns, data, errors = [], None, []
+    turns, data, errors, log = [], None, [], []
     for _ in range(max_repairs + 1):
         result = session.run(request)
         turns.append(result.to_dict())
         if result.status != "completed":
             errors = [f"Agent turn {result.status}: {result.error or 'no answer'}"]
+            log.append(errors)
             break
         try:
             data = parse_json(result.answer)
             errors = check(data)
         except ValueError as exc:
             data, errors = None, [f"Answer is not valid JSON: {exc}"]
+        log.append(errors)
         if not errors:
             break
         request = ("Your answer failed these checks. Return the corrected full JSON object only.\n- "
                    + "\n- ".join(errors[:15]))
-    return {"data": data, "errors": errors, "attempts": len(turns), "turns": turns}
+    return {"data": data, "errors": errors, "attempts": len(turns), "turns": turns, "log": log}

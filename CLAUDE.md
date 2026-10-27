@@ -29,12 +29,12 @@
 - 提案已提交（`docs/proposal.pdf`），老师反馈见 `docs/feedback.md`。
 - GitHub 仓库 `yizee/Forager` 已建立。本地克隆在 `~/Desktop/Forager`，虚拟环境 `.venv`（Python 3.11）。
 - **第 1–3 阶段已完成**，离线测试共 40 个全部通过（`.venv/bin/python -m pytest`，只收集 `tests/`），2026-10-25 的真实调用也全部通过，花费 $0.0053。详情和给报告用的观察见 `docs/live-runs.md`。下一步：第 4 阶段。
-- **第 4 阶段进行中。** 已完成：
-  - 代码规则（`forager/checks.py` 的 `check_rules`）：话题占比 ≤ 40%（每个兴趣一个桶，所有广度补充合为一个桶，5 条以上才判断）、长期兴趣 7 天覆盖（可传入历史简报）、来源类型不单一（只有可用来源 ≥ 2 种时才生效）、引用 ID 存在。规则还没有接进简报流程。
+- **第 4 阶段已完成（2026-10-27）**，离线测试共 112 个全部通过。内容：
+  - 代码规则（`forager/checks.py` 的 `check_rules`）：话题占比 ≤ 40%（每个兴趣一个桶，所有广度补充合为一个桶，5 条以上才判断）、长期兴趣 7 天覆盖（可传入历史简报）、来源类型不单一（只有可用来源 ≥ 2 种时才生效）、引用 ID 存在。规则已接进简报流程（见下面的三种模式）。
   - Critic 用例集 `eval/cases/critic/`（21 个，由 `eval/build_critic_cases.py` 生成，不要手改 JSON）。每个用例都通过全部代码规则：16 个带一个语义问题，4 个对照（含 2 个困难反例），外加未经修改的第一份真实简报 `live-01`（4 个问题），共 20 个标注问题。标注由 Claude 写成，2026-10-26 经过两轮审计：Claude 逐条对照原文自审，另有一个独立审计员（只看用例和 Critic 的判断标准）。结论和改动见用例 README 的"Label audit"一节。**作者本人的核对仍待完成**。
   - **Critic 的输出格式由用例集决定**：`{"verdict": "PASS"|"ADJUST", "issues": [{"type": "irrelevant_exploration|near_duplicate|unsupported_citation|overstated_connection|mislabeled_interest", "refs": ["p30" | "points[2]" | "connections[0]"], "explanation": "..."}]}`。评分规则见 `eval/cases/critic/README.md`：点名问题位置算抓到（重复内容要点名至少两条），点名"可争议"位置不计分，其余点名算误报。
   - **Critic 已完成（离线测通，2026-10-26）**：`forager/critic.py`。Critic 是上下文独立的 agent，只看档案、带位置编号的速报和每条内容的原文（`source_text`），看不到任何标注答案。它的输出由代码检查（类型、位置、类型与对象是否匹配），格式不对可修改一次。
-  - **简报流程三种模式**（也是想法 3 的三个对照条件）：`single`（只查结构和引用，即第 1 阶段基线）、`rules`（加代码规则，违规修改一次）、`critic`（再加 Critic；ADJUST 时写作 agent 修改一次，修改后重新跑规则；修改版违反规则就保留通过规则的草稿）。命令：`python -m forager digest --mode critic|rules|single`，默认 `critic`。目前写作 agent 还是第 1 阶段的单 agent，Manager 和来源专家接入后流程不变。
+  - **简报流程三种模式**（也是想法 3 的三个对照条件）：`single`（只查结构和引用，即第 1 阶段基线）、`rules`（加代码规则，违规修改一次）、`critic`（再加 Critic；ADJUST 时写作 agent 修改一次，修改后重新跑规则；修改版违反规则就保留通过规则的草稿）。命令：`python -m forager digest --mode critic|rules|single`，默认 `critic`。`rules` 和 `critic` 由 Manager 和来源专家写作，`single` 保留第 1 阶段的单 agent（基线）；可用 `--writer team|single` 覆盖。
   - **覆盖规则是软规则**：修改一次后仍未覆盖的长期兴趣变成警告，显示在简报里，而不是判失败。只有 arXiv 时，有些兴趣（如版权政策）根本没有对应内容；硬性要求会逼写作 agent 乱贴标签，正是 Critic 要抓的问题。这一点写进报告。
   - 简报 Markdown 末尾有"How this digest was checked"，显示规则结果、未覆盖的兴趣和 Critic 的问题（想法 3 对用户可见的部分之一）。
   - **用例集评估脚本**：`eval/run_critic_cases.py`（每个用例用全新的 Critic 会话，可 `--repeats`，付费前先显示估算并确认）。评分与用例 README 一致，同时输出"仅规则"（按构造全部为 0）和"规则 + Critic"。分析脚本：`eval/analyze_critic_results.py`。
@@ -48,7 +48,21 @@
     - 审批仍由 SDK 强制执行：记忆审查在后台线程里运行，SDK 在 `needs_approval` 处暂停，线程等页面上的"批准/拒绝"。每条建议有编号，重复点击不会误答下一条；10 分钟无回答视为拒绝。报告里可以强调这一点。
     - 运行数据路径集中在 `forager/storage.py`，可用 `FORAGER_RUNTIME_DIR` 指到别处（界面测试用临时目录）。
     - 界面测试用 Streamlit 的 AppTest 无头运行，配合脚本化模型，不花钱。
-  - 下一步：三种模式各跑一次真实调用（约 $0.01），按第 8 节的"进度落后"方案完成第 4 阶段 → 第 5 阶段评估和录视频素材。可选：三个来源专家和 Manager、新闻来源、在新的真实简报上评估 Critic（先标注后运行）。
+  - **Manager 和三个来源专家已完成（2026-10-27，按原设计）**：`forager/team.py`。
+    - Manager 只看候选内容的索引（ID、类型、标题），看不到原文；它用 `as_tool()` 向论文研究员、开源研究员、新闻研究员提出聚焦的问题。每个专家有自己的指令和一个只返回本来源候选内容的工具（开源研究员的工具在代码里算好"每天多少星"）。专家沿用 lab 的模型设置，记在同一个账本里。
+    - 代码检查 Manager 的每次回答（违规修改一次）：有候选内容的专家都问过；简报里每条内容都由对应专家报告过；只有读过原文的专家点名了某个兴趣，这条内容才能标成"兴趣匹配"（Manager 没读原文，不能自己加匹配）。这条规则直接针对第一次真实简报里为了覆盖兴趣而乱贴 Sora 2 标签的问题，报告里可以讲。
+    - 专家的回答也由代码检查：这次运行里没调用自己的工具就作废；只保留本来源的 ID；档案里没有的兴趣改为广度补充。
+    - 新闻来源 `forager/sources/news.py`：TechCrunch、The Verge、MIT Technology Review、Ars Technica、The Decoder 的 RSS/Atom，近 3 天，按媒体轮流取最多 15 条；原文最多 800 字符（快照公开提交）。快照 `data/snapshot/news-2026-10-27.json`。
+    - 三种模式对比脚本 `eval/run_digest_modes.py`：同一组快照和档案，每次运行都是全新会话，代码统计来源和话题分布、最大话题占比、广度占比、未覆盖兴趣、引用、Critic 结论、请求数、花费和耗时；`--save critic` 同时存为当天的简报。第 5 阶段想法 3 的"多样性与相关性"指标可以直接用它（再加 LLM 判定相关性）。
+  - **三种模式的真实调用已完成（2026-10-27，$0.0177）**，详见 `docs/live-runs.md` 第二节和 `eval/results/digest-modes-20261027-113548.*`。arXiv API 当天连续 5 次返回 429，所以论文用的是 10-25 的快照（GitHub、新闻是 10-27 的）。
+    - 三种模式都生成了简报，每条要点的引用都有效。团队版本 9–10 次请求、约 30 秒，单 agent 1 次、约 9 秒，花费约 3.5 倍。
+    - Manager 第一次回答就同时问了三个专家；每个专家都调用了自己的工具，只读了本来源的 8 条。
+    - Critic 抓到一个来自论文研究员的错误标签（视频世界模型综述被标成"视频剪辑"），Manager 修改后改为广度补充；仅规则模式下这个标签留在简报里。这说明分层的必要：代码保证标签来自读过原文的 agent，只有语义检查能判断它对不对。
+    - 两个团队版本都把一个与 Sora 无关的视频生成仓库标成"Sora 2"，Critic 没抓到，和用例集评估里 Sora 2 一次都没抓到一致。单 agent 反而把这两条都标成了广度补充。可能原因：每个专家只看自己那一部分，又被要求"先报兴趣匹配"。已改专家指令（只有内容本身就是该兴趣才算匹配，可以不报匹配）。
+    - Critic 版本里 Manager 按来源（papers/repos/news）而不是按领域分组；已改 Manager 指令。这两处指令修改都还没有真实运行验证。
+    - 单 agent 版本不执行规则，但事后用代码测量：7 天内"AI 版权政策"未覆盖（它把 SpectralCanary 标成图像生成，团队标成版权政策）。对比脚本现在对每种模式都用代码测量规则。
+    - 修复次数的原因这次没有记录；现在每次写作尝试的检查结果都保存在 `check_log` 里。
+  - 下一步：第 5 阶段评估和录视频素材。想法 3 可以用 `eval/run_digest_modes.py --repeats N` 比较三种模式的多样性（代码统计）和相关性（加 LLM 判定，先用少量人工标注校准），顺便验证上面两处指令修改。可选：在新的真实简报上评估 Critic（先标注后运行）。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。

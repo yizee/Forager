@@ -53,7 +53,7 @@ def save_digest(outcome: dict, profile: dict, today: str) -> dict:
     record = {**(digest or {}), "date": today, "mode": outcome["mode"], "writer": outcome.get("writer"),
               "check_errors": outcome["errors"], "revision_errors": outcome["revision_errors"],
               "attempts": outcome["attempts"], "usage": [t["usage"] for t in outcome["turns"]],
-              "team_calls": outcome.get("team_calls") or []}
+              "team_calls": outcome.get("team_calls") or [], "check_log": outcome.get("check_log") or []}
     digest_dir().mkdir(parents=True, exist_ok=True)
     (digest_dir() / f"{today}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
     if digest:

@@ -7,6 +7,7 @@ gained since creation stand in for how fast a project is growing. README text is
 untrusted web content: the agents are told to treat it as data.
 """
 
+import html
 import json
 import os
 import re
@@ -45,7 +46,7 @@ def clean_readme(text: str, limit: int = README_CHARS) -> str:
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
     text = re.sub(r"^\s*(#+|>|[-*+]|\d+\.)\s*", "", text, flags=re.M)
     text = re.sub(r"[|*_`]+", " ", text)
-    return " ".join(text.split())[:limit]
+    return " ".join(html.unescape(text).split())[:limit]
 
 
 def readme(full_name: str) -> str:

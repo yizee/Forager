@@ -34,7 +34,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 1: minimal pipeline. One source (arXiv), single agent, two-layer digest
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
-- [ ] Stage 4: Idea 3. GitHub and news sources, source specialists, rules + Critic
+- [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
 - [ ] Stage 5: evaluation. Week 6 harness test cases and think-aloud study
 
 Fallback if time is short: drop Hugging Face first.

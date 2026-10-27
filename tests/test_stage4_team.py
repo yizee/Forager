@@ -14,7 +14,7 @@ from types import SimpleNamespace
 import pytest
 
 from forager import labkit
-from forager.digest import generate_digest, prepare_candidates
+from forager.digest import generate_digest, merge_items, prepare_candidates
 from forager.profile import DEFAULT_PROFILE
 from forager.render import to_markdown
 from forager.sources import news
@@ -182,6 +182,8 @@ def test_unreported_items_and_unsupported_interest_labels_need_a_repair():
     repair = requests[8]["messages"][-1]["content"]
     assert "Item p04 was not reported by the Paper researcher" in repair
     assert "Item p03 is marked as matching i3, but the Paper researcher, who read it, marked it as breadth" in repair
+    [first, second] = outcome["check_log"]
+    assert first["stage"] == "draft" and len(first["problems"]) == 2 and second["problems"] == []
 
 
 def test_critic_adjust_goes_back_to_the_manager_with_its_notes():
@@ -194,6 +196,7 @@ def test_critic_adjust_goes_back_to_the_manager_with_its_notes():
     assert "independent reviewer" in revision[-1]["content"]
     assert any("Summary of r03." in str(m.get("content")) for m in revision)  # same Manager session, notes kept
     assert "r03" not in {i["id"] for i in outcome["digest"]["items"]}
+    assert "1 issue(s); the Manager revised the digest once" in to_markdown(outcome["digest"], DEFAULT_PROFILE)
 
 
 def test_single_mode_keeps_the_single_writer():
@@ -245,10 +248,13 @@ def test_digest_modes_runner_offline():
         records = modes_runner.run_modes(lab, DEFAULT_PROFILE, RAW, ["single", "rules"], today=TODAY)
     single, rules = records
     assert (single["writer"], single["requests"], rules["writer"], rules["requests"]) == ("single", 1, "team", 8)
+    crowded = merge_items(digest({k: "i1" for k in FITS}), CANDIDATES, TODAY)
+    crowded = modes_runner.metrics(crowded, DEFAULT_PROFILE, CANDIDATES, (), TODAY)
+    assert (crowded["rule_problems"], crowded["uncovered"]) == (1, 2)      # single mode is measured the same way
     assert rules["metrics"] == {
         "items": 9, "by_type": {"paper": 3, "repo": 3, "news": 3},
         "by_bucket": {"AI agents": 3, "image generation": 2, "Breadth": 2, "video editing": 2},
-        "largest_bucket": "AI agents", "largest_share": 0.33, "breadth_share": 0.22, "uncovered": 0,
+        "largest_bucket": "AI agents", "largest_share": 0.33, "breadth_share": 0.22, "rule_problems": 0, "uncovered": 0,
         "points": 5, "points_with_valid_citations": 5, "critic_verdict": None, "critic_issues": 0, "revised": False}
     table = modes_runner.summary_table(records)
     assert "| 1 | rules | team | PASS | 9 | news 3, paper 3, repo 3 | AI agents 33% | 22% | 0 |" in table
