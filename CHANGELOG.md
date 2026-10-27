@@ -2,6 +2,17 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Interest headings must match; the runner keeps the reviewed draft)
+
+### Added
+- Interest-heading check (`check_headings` in `forager/checks.py`): a brief point whose field is an interest's label must cite an item matched to that interest. The team writer is held to it as part of `Team.check`, with one repair turn, so the Manager's headings claim no more than the specialists' fits. It is not one of `check_rules`, so every Critic case still passes all code rules. On `live-01` it would flag points[4], a "Video editing" heading over an item that digest labelled Sora 2.
+- `generate_digest` returns `reviewed_draft`, the digest the Critic reviewed. `eval/run_digest_modes.py` saves it, and its report lists what the revision changed: items dropped or added, changed fits, and draft brief text that was rewritten or dropped.
+- Three offline tests (117 in total).
+
+### Changed
+- The Manager's instructions use an interest's label as a heading only for points that cite an item matching that interest. The single writer's instructions are unchanged.
+- `eval/run_digest_modes.py` measures heading mismatches for every mode, single included (`heading_problems`, also counted in `rule_problems`).
+
 ## 2026-10-27 (Live check: the Manager's ID-only answer and field grouping)
 
 ### Added

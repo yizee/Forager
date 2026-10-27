@@ -292,6 +292,22 @@ Nothing in code ties the two together.
 - "Changes since last time" in the critic digest starts "First digest" but mentions
   the 10-25 brief in the same sentence. The Critic does not review that section.
 
+### Change made
+
+- **Interest headings must match the items' fits.** A point whose heading is an
+  interest's label must cite an item matched to that interest; otherwise the Manager
+  gets one repair turn (`check_headings`, part of `Team.check`). Both headings flagged
+  above (SpectralCanary under AI copyright policy, n06 under AI agents) would have been
+  sent back. The check applies to the team writer only. It is not one of the code
+  rules that every Critic case is built to pass, so the case set and its scores are
+  unchanged. On the first live digest (`live-01`) it would flag points[4]: a "Video
+  editing" heading over WorldForge V2, which that digest labelled Sora 2.
+- **The runner keeps the draft the Critic reviewed** (`reviewed_draft`), and its report
+  lists what the revision changed. It also measures heading mismatches for every mode,
+  single included.
+
+These changes have not been run live yet.
+
 ### Observations for the report
 
 1. **Giving the Manager less to write fixed the length problem.** Both answers fit

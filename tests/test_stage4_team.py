@@ -197,6 +197,19 @@ def test_critic_adjust_goes_back_to_the_manager_with_its_notes():
     assert any("Summary of r03." in str(m.get("content")) for m in revision)  # same Manager session, notes kept
     assert "r03" not in {i["id"] for i in outcome["digest"]["items"]}
     assert "1 issue(s); the Manager revised the digest once" in to_markdown(outcome["digest"], DEFAULT_PROFILE)
+    reviewed = outcome["reviewed_draft"]                                        # what the Critic saw
+    assert "r03" in {i["id"] for i in reviewed["items"]} and "checks" not in reviewed
+
+
+def test_an_interest_heading_over_unmatched_items_needs_a_repair():
+    bad = digest()
+    bad["brief"]["points"][2]["field"] = "Video editing"          # cites p03, which its specialist marked as breadth
+    outcome, requests, _ = run("rules", team_replies(bad) + [reply(digest())])
+    assert outcome["errors"] == [] and len(requests) == 9
+    assert "brief.points[2] is under the heading 'Video editing'" in requests[8]["messages"][-1]["content"]
+    assert [len(entry["problems"]) for entry in outcome["check_log"]] == [1, 0]
+    outcome, requests, _ = run("rules", [reply(bad)], writer="single")   # other writers: measured, not enforced
+    assert outcome["errors"] == [] and len(requests) == 1
 
 
 def test_manager_names_items_and_code_copies_the_specialists_notes():
@@ -231,6 +244,7 @@ def test_a_lost_manager_answer_is_rewritten_from_the_notes_once():
     assert [e["stage"] for e in outcome["check_log"]] == ["draft", "rewrite"]
     assert "Model output was truncated" in outcome["check_log"][0]["problems"][0]
     assert "wrote the digest again from the same notes" in to_markdown(outcome["digest"], DEFAULT_PROFILE)
+    assert outcome["reviewed_draft"]["items"] == outcome["digest"]["items"]      # PASS: nothing was revised
 
     outcome, requests, _ = run("rules", [truncated(digest())])   # cut off before asking anyone: nothing to reuse
     assert not outcome["rewritten"] and outcome["digest"] is None and len(requests) == 1
@@ -291,9 +305,25 @@ def test_digest_modes_runner_offline():
     assert rules["metrics"] == {
         "items": 9, "by_type": {"paper": 3, "repo": 3, "news": 3},
         "by_bucket": {"AI agents": 3, "image generation": 2, "Breadth": 2, "video editing": 2},
-        "largest_bucket": "AI agents", "largest_share": 0.33, "breadth_share": 0.22, "rule_problems": 0, "uncovered": 0,
-        "points": 5, "points_with_valid_citations": 5, "critic_verdict": None, "critic_issues": 0, "revised": False}
+        "largest_bucket": "AI agents", "largest_share": 0.33, "breadth_share": 0.22, "rule_problems": 0,
+        "heading_problems": 0, "uncovered": 0, "points": 5, "points_with_valid_citations": 5, "critic_verdict": None,
+        "critic_issues": 0, "revised": False}
+    assert rules["reviewed_draft"] is None
     table = modes_runner.summary_table(records)
     assert "| 1 | rules | team | PASS | 9 | news 3, paper 3, repo 3 | AI agents 33% | 22% | 0 |" in table
     text = modes_runner.report(records, DEFAULT_PROFILE, ["news-2026-10-27.json"], "test")
     assert "Manager asked the news specialist: What matters in today's news?" in text and "#### Full items" in text
+
+
+def test_digest_modes_runner_keeps_the_reviewed_draft():
+    flagged = {"type": "irrelevant_exploration", "refs": ["r03"], "explanation": "Unrelated.", "fix": "Drop it."}
+    revised = digest({k: v for k, v in FITS.items() if k != "r03"})
+    revised["brief"]["points"][0]["text"] = "Point 0, narrower."
+    replies = team_replies(digest()) + [reply({"verdict": "ADJUST", "issues": [flagged]}), reply(revised)]
+    with offline_lab(replies) as lab:
+        [record] = modes_runner.run_modes(lab, DEFAULT_PROFILE, RAW, ["critic"], today=TODAY)
+    assert "r03" in {i["id"] for i in record["reviewed_draft"]["items"]} and record["metrics"]["revised"]
+    json.dumps({k: v for k, v in record.items() if k != "outcome"})       # what the runner saves
+    text = modes_runner.report([record], DEFAULT_PROFILE, ["news-2026-10-27.json"], "test")
+    assert "#### What the revision changed" in text and "- Items dropped: r03" in text
+    assert "- Draft points[0], rewritten or dropped: Point 0." in text

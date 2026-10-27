@@ -16,12 +16,14 @@ summary, topics and fit from its specialist's note (Team.fill). Code then checks
 Manager's digest (Team.check): every specialist whose source has candidates was asked,
 every item in the digest was reported by its specialist, and an item is marked as
 matching an interest only if its specialist named that interest, because the Manager
-never read the item.
+never read the item. Headings are interest claims too: a point sits under an
+interest's label only if it cites an item matched to that interest.
 """
 
 import json
 from datetime import date
 
+from .checks import check_headings
 from .critic import SOURCE_CHARS
 from .jsonagent import parse_json
 from .profile import active_interests
@@ -252,7 +254,7 @@ class Team:
                 named = f"named {note['interest_id']}" if note["interest_id"] else "marked it as breadth"
                 errors.append(f"Item {item_id} is marked as matching {reason.get('interest_id')}, but the "
                               f"{spec['name']}, who read it, {named}. Follow its judgment.")
-        return errors
+        return errors + (check_headings(data, self.interests) if isinstance(data, dict) else [])
 
     def summary(self, digest: dict | None) -> list[dict]:
         """Per specialist: the questions it was asked, what it reported and what the digest used."""

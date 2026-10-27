@@ -204,7 +204,8 @@ def writer_draft():
     items = [{"id": i, "summary": "Core contribution.", "topics": ["t"],
               "reason": {"kind": "interest", "interest_id": r, "text": "match"} if r
               else {"kind": "breadth", "interest_id": None, "text": "nearby"}} for i, r in zip(ids, reasons)]
-    return ids, {"brief": {"points": [{"text": f"Point {n}.", "field": "AI agents", "cites": [ids[n]]}
+    fields = {"i1": "AI agents", "i2": "Video editing", None: "Nearby work"}     # headings follow the items' fits
+    return ids, {"brief": {"points": [{"text": f"Point {n}.", "field": fields[reasons[n]], "cites": [ids[n]]}
                                       for n in range(5)],
                            "connections": [], "changes": [{"text": "First digest.", "cites": []}]},
                  "items": items}

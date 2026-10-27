@@ -5,8 +5,10 @@ The modes are the Idea 3 conditions: single (one writer, structure checks only),
 one revision). Every run uses fresh sessions on one lab connection (one ledger); the
 previous digest and the 7-day history come from runtime/ and are the same for all runs.
 Code measures what it can without a model: source and topic mix, breadth share, citations,
-the code rules applied to every mode's digest (single mode does not enforce them, but
-they are measured the same way), the Critic's verdict, cost and time.
+the code rules and the interest-heading check applied to every mode's digest (single mode
+does not enforce them, but they are measured the same way), the Critic's verdict, cost
+and time. Critic runs also keep the draft the Critic reviewed (reviewed_draft), and the
+report lists what the revision changed in it.
 
 Usage (paid; prints an estimate and asks before starting):
   .venv/bin/python eval/run_digest_modes.py
@@ -26,9 +28,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from forager import labkit, storage  # noqa: E402
-from forager.checks import check_rules, citation_stats, topic_bucket  # noqa: E402
+from forager.checks import check_headings, check_rules, citation_stats, topic_bucket  # noqa: E402
 from forager.digest import MODES, generate_digest, prepare_candidates  # noqa: E402
-from forager.profile import load_profile  # noqa: E402
+from forager.profile import active_interests, load_profile  # noqa: E402
 from forager.render import to_markdown  # noqa: E402
 from forager.sources import load_snapshot  # noqa: E402
 
@@ -44,6 +46,7 @@ def metrics(digest: dict | None, profile: dict, candidates=(), history=(), today
         return {}
     rules = check_rules(digest, profile, {c["id"] for c in candidates}, available_types={c["type"] for c in candidates},
                         history=history, today=today)
+    headings = check_headings(digest, active_interests(profile, today))
     items = digest.get("items") or []
     labels = {i["id"]: i["label"] for i in profile.get("interests", [])}
     buckets = Counter(labels.get(topic_bucket(i), topic_bucket(i)) if topic_bucket(i) != "breadth" else "Breadth"
@@ -55,8 +58,8 @@ def metrics(digest: dict | None, profile: dict, candidates=(), history=(), today
             "by_bucket": dict(buckets.most_common()), "largest_bucket": largest[0],
             "largest_share": round(largest[1] / len(items), 2) if items else 0,
             "breadth_share": round(buckets.get("Breadth", 0) / len(items), 2) if items else 0,
-            "rule_problems": len(rules["structure_and_citations"] + rules["topic_share"] + rules["source_mix"]),
-            "uncovered": len(rules["coverage"]), **citation_stats(digest),
+            "rule_problems": len(rules["structure_and_citations"] + rules["topic_share"] + rules["source_mix"] + headings),
+            "heading_problems": len(headings), "uncovered": len(rules["coverage"]), **citation_stats(digest),
             "critic_verdict": critic.get("verdict"), "critic_issues": len(critic.get("issues") or []),
             "revised": bool(critic.get("revised"))}
 
@@ -81,8 +84,8 @@ def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, t
                       "cost_known": not (after["unknown_cost"] or after["pending"]),
                       "seconds": round(time.time() - started, 1),
                       "metrics": metrics(outcome["digest"], profile, outcome["candidates"], history, today),
-                      "digest": outcome["digest"], "team_calls": outcome["team_calls"],
-                      "check_log": outcome["check_log"], "outcome": outcome}
+                      "digest": outcome["digest"], "reviewed_draft": outcome["reviewed_draft"],
+                      "team_calls": outcome["team_calls"], "check_log": outcome["check_log"], "outcome": outcome}
             records.append(record)
             if on_record:
                 on_record(record)
@@ -111,6 +114,29 @@ def summary_table(records: list[dict]) -> str:
     return "\n".join(rows)
 
 
+def revision_changes(draft: dict, final: dict, profile: dict) -> list[str]:
+    """What the revision changed in the draft the Critic reviewed: items, fits and brief text."""
+    labels = {i["id"]: i["label"] for i in profile.get("interests", [])}
+
+    def fit(item):
+        reason = item.get("reason") or {}
+        return labels.get(reason.get("interest_id"), reason.get("interest_id")) if reason.get("kind") == "interest" \
+            else "breadth"
+    before, after = ({i["id"]: i for i in d.get("items") or []} for d in (draft, final))
+    lines = []
+    if dropped := [i for i in before if i not in after]:
+        lines.append("Items dropped: " + ", ".join(dropped))
+    if added := [i for i in after if i not in before]:
+        lines.append("Items added: " + ", ".join(added))
+    lines += [f"Fit of {i}: {fit(before[i])} -> {fit(after[i])}" for i in before
+              if i in after and fit(before[i]) != fit(after[i])]
+    sections = ("points", "connections", "changes")
+    kept = {entry.get("text") for key in sections for entry in final["brief"].get(key) or []}
+    lines += [f"Draft {key}[{n}], rewritten or dropped: {entry.get('text')}" for key in sections
+              for n, entry in enumerate(draft["brief"].get(key) or []) if entry.get("text") not in kept]
+    return lines
+
+
 def report(records: list[dict], profile: dict, snapshots, stamp: str) -> str:
     lines = [f"# Digest modes · {stamp}", "", "Snapshots: " + ", ".join(Path(p).name for p in snapshots), "",
              summary_table(records), ""]
@@ -130,6 +156,11 @@ def report(records: list[dict], profile: dict, snapshots, stamp: str) -> str:
         if r["digest"]:
             body = to_markdown(r["digest"], profile).replace("\n# ", "\n### ").replace("\n## ", "\n#### ")
             lines += [body.split("\n", 1)[1] if body.startswith("# ") else body, ""]
+        if r.get("reviewed_draft") and r["metrics"].get("revised"):
+            changes = revision_changes(r["reviewed_draft"], r["digest"], profile) or ["No visible change."]
+            lines += ["#### What the revision changed", "",
+                      "Compared with the draft the Critic reviewed (`reviewed_draft` in the .jsonl):", ""]
+            lines += [f"- {change}" for change in changes] + [""]
     return "\n".join(lines)
 
 

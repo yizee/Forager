@@ -3,6 +3,10 @@
 Structure and citation IDs (Stage 1), plus the Stage 4 rules: topic share, 7-day
 coverage of long-term interests and source-type mix. Everything these rules cannot
 judge (relevance, duplicates, whether a citation supports a point) is the Critic's job.
+
+check_headings ties the brief's interest headings to the items' labels. The team writer
+is held to it (Team.check); it is not one of check_rules, whose four rules every Critic
+case is built to pass.
 """
 
 from collections import Counter
@@ -119,6 +123,33 @@ def check_source_mix(digest: dict, available_types) -> list[str]:
         return [f"All items are of type {', '.join(sorted(map(str, used))) or 'none'}; "
                 f"use at least two of: {', '.join(sorted(available))}."]
     return []
+
+
+def _label_key(text) -> str:
+    return " ".join(str(text or "").split()).casefold()
+
+
+def check_headings(digest: dict, interests) -> list[str]:
+    """A point whose field is an interest's label must cite an item matched to that interest;
+    otherwise the heading claims a match that no item's label supports."""
+    ids_by_label = {}
+    for interest in interests:
+        ids_by_label.setdefault(_label_key(interest.get("label")), set()).add(interest.get("id"))
+    items = digest.get("items") if isinstance(digest.get("items"), list) else []
+    matched = {item["id"]: item["reason"].get("interest_id") for item in items
+               if isinstance(item, dict) and isinstance(item.get("id"), str) and isinstance(item.get("reason"), dict)
+               and item["reason"].get("kind") == "interest"}
+    brief = digest.get("brief") if isinstance(digest.get("brief"), dict) else {}
+    points = brief.get("points") if isinstance(brief.get("points"), list) else []
+    problems = []
+    for index, point in enumerate(points):
+        ids = ids_by_label.get(_label_key(point.get("field"))) if isinstance(point, dict) else None
+        cites = point.get("cites") if ids and isinstance(point.get("cites"), list) else []
+        if ids and not any(isinstance(c, str) and matched.get(c) in ids for c in cites):
+            problems.append(f"brief.points[{index}] is under the heading '{point['field']}', an interest's label, "
+                            "but none of the items it cites matches that interest. Put the point under a short "
+                            "area name instead.")
+    return problems
 
 
 def check_rules(digest: dict, profile: dict, candidate_ids: set[str], *, available_types,

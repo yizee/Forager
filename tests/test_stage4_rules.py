@@ -1,6 +1,6 @@
 """Stage 4 code rules: topic share, 7-day coverage, source-type mix (no model involved)."""
 
-from forager.checks import check_coverage, check_rules, check_source_mix, check_topic_share, rule_errors
+from forager.checks import check_coverage, check_headings, check_rules, check_source_mix, check_topic_share, rule_errors
 
 TODAY = "2026-10-25"
 
@@ -47,6 +47,22 @@ def test_source_mix_applies_only_when_several_types_are_available():
     assert check_source_mix(papers, ["paper"]) == []
     assert check_source_mix(papers, ["paper", "repo"]) == ["All items are of type paper; use at least two of: paper, repo."]
     assert check_source_mix(digest([item(1, "i1"), item(2, "i2", "repo")]), ["paper", "repo"]) == []
+
+
+def test_an_interest_heading_needs_an_item_matched_to_that_interest():
+    d = digest([item(1, "i1"), item(2), item(3, "i2")])
+    d["brief"]["points"] = [
+        {"text": "a", "field": "interest 1", "cites": ["x01"]},            # matched: fine
+        {"text": "b", "field": "INTEREST  1", "cites": ["x02"]},           # a breadth item under i1's label
+        {"text": "c", "field": "interest 2", "cites": ["x01"]},            # an item matched to another interest
+        {"text": "d", "field": "interest 2", "cites": ["x02", "x03"]},     # one matching item is enough
+        {"text": "e", "field": "Nearby tools", "cites": ["x02"]}]          # an area name claims no interest
+    problems = check_headings(d, profile()["interests"])
+    assert problems[0] == ("brief.points[1] is under the heading 'INTEREST  1', an interest's label, but none of "
+                           "the items it cites matches that interest. Put the point under a short area name instead.")
+    assert len(problems) == 2 and problems[1].startswith("brief.points[2] is under the heading 'interest 2'")
+    malformed = {"items": "x", "brief": {"points": ["x", {"field": "interest 1", "cites": [["x01"]]}]}}
+    assert len(check_headings(malformed, profile()["interests"])) == 1     # reported, not a crash
 
 
 def test_check_rules_reports_by_rule():
