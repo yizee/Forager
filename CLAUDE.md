@@ -44,7 +44,11 @@
     - 最弱的是兴趣标签错误（47%）：虚构的 Lumen-V 2 抓到 2/3，真实的 Sora 2 一次也没抓到。
     - 不要在看过结果后改标注（会抬高 Critic 的分数）；要改进 Critic，需用新的用例或新的真实简报来评估。
   - **GitHub 来源已完成（2026-10-27）**：`forager/sources/github.py`，按话题搜索近 7 天创建、星标最多的仓库，并附 README 摘录；快照 `data/snapshot/github-2026-10-27.json`。候选内容按来源交替排列（最多 24 条），来源类型不单一规则因此可以满足。Hugging Face 按计划不做。
-  - 下一步：Streamlit 界面 → （可选）新闻来源、三个来源专家和 Manager。可选：在新的真实简报上评估 Critic（先标注后运行）。
+  - **Streamlit 界面已完成（2026-10-27）**：`.venv/bin/streamlit run forager/app.py`，四个页面：简报、设置（想法 1）、记忆（想法 2）、话题（想法 3）。
+    - 审批仍由 SDK 强制执行：记忆审查在后台线程里运行，SDK 在 `needs_approval` 处暂停，线程等页面上的"批准/拒绝"。每条建议有编号，重复点击不会误答下一条；10 分钟无回答视为拒绝。报告里可以强调这一点。
+    - 运行数据路径集中在 `forager/storage.py`，可用 `FORAGER_RUNTIME_DIR` 指到别处（界面测试用临时目录）。
+    - 界面测试用 Streamlit 的 AppTest 无头运行，配合脚本化模型，不花钱。
+  - 下一步：三种模式各跑一次真实调用（约 $0.01），按第 8 节的"进度落后"方案完成第 4 阶段 → 第 5 阶段评估和录视频素材。可选：三个来源专家和 Manager、新闻来源、在新的真实简报上评估 Critic（先标注后运行）。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。

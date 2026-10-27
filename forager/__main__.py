@@ -15,9 +15,8 @@
 """
 
 import argparse
-import json
 from contextlib import contextmanager
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 from . import PROJECT_ROOT, labkit
@@ -25,12 +24,10 @@ from .checks import citation_stats
 from .memory import MIN_EVIDENCE, MemoryStore
 from .memory_cli import approval_prompt, ask_consent, find_item, review_expired
 from .profile import PROFILE_PATH, load_profile
-from .render import to_markdown
 from .signals import SIGNALS, describe, load_signals, purge_signal, record_signal
 from .sources import arxiv, github, load_snapshot, save_snapshot
+from .storage import SNAPSHOT_DIR, digest_dir, latest_digest, recent_digests, save_digest
 
-DIGEST_DIR = PROJECT_ROOT / "runtime" / "digests"
-SNAPSHOT_DIR = PROJECT_ROOT / "data" / "snapshot"
 SOURCES = ("arxiv", "github")
 
 
@@ -48,11 +45,6 @@ def lab_connection():
             yield lab
         finally:
             print(lab.ledger.summary())
-
-
-def latest_digest(before: str) -> dict | None:
-    paths = sorted(p for p in DIGEST_DIR.glob("*.json") if p.stem < before)
-    return json.loads(paths[-1].read_text()) if paths else None
 
 
 def cmd_onboard(args):
@@ -110,7 +102,7 @@ def cmd_feedback(args):
     store = MemoryStore()
     signal, value = ("ratings", args.score) if args.command == "rate" else ("likes", 1)
     try:
-        item, digest_date = find_item(DIGEST_DIR, args.item, args.date)
+        item, digest_date = find_item(digest_dir(), args.item, args.date)
         event = record_signal(store.signals_path, store.profile(), signal, item, digest_date, value)
     except ValueError as exc:
         print(exc)
@@ -168,12 +160,6 @@ def cmd_snapshot(args):
         print(f"Saved {len(items)} {name} items to {path.relative_to(PROJECT_ROOT)}")
 
 
-def recent_digests(today: str, days: int = 7) -> list[dict]:
-    """Saved digests from the coverage window before today."""
-    since = (date.fromisoformat(today) - timedelta(days=days - 1)).isoformat()
-    return [json.loads(p.read_text()) for p in sorted(DIGEST_DIR.glob("*.json")) if since <= p.stem < today]
-
-
 def cmd_digest(args):
     from .digest import generate_digest
 
@@ -188,13 +174,8 @@ def cmd_digest(args):
                                   history=recent_digests(today), today=today, on_event=print_turns)
 
     digest = outcome["digest"]
-    DIGEST_DIR.mkdir(parents=True, exist_ok=True)
-    record = {**(digest or {}), "date": today, "check_errors": outcome["errors"],
-              "revision_errors": outcome["revision_errors"], "attempts": outcome["attempts"],
-              "usage": [t["usage"] for t in outcome["turns"]]}
-    (DIGEST_DIR / f"{today}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+    save_digest(outcome, profile, today)
     if digest:
-        (DIGEST_DIR / f"{today}.md").write_text(to_markdown(digest, profile) + "\n")
         print(citation_stats(digest))
     print("Code rules:", "PASS" if not outcome["errors"] else outcome["errors"])
     for warning in outcome["warnings"]:

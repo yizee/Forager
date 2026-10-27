@@ -2,6 +2,21 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Stage 4: Streamlit app)
+
+### Added
+- `forager/app.py` (`.venv/bin/streamlit run forager/app.py`), four pages:
+  - Digest: make a digest from the saved snapshots or live sources, choosing Rules + Critic, Rules only or Single agent, with a live progress log; the two-layer brief with citations that jump to the full item; interest-match or breadth badge and "why you see this" on every item; 1-5 star ratings and likes (recorded only with consent); "How this digest was checked".
+  - Set up (Idea 1): one sentence, then the agent's questions as clickable option chips, nearby fields and short-term focuses; an editable profile table, consent switches and the exploration share; the free-text baseline as a switch.
+  - Memory (Idea 2): the visible profile (stated or learned, long- or short-term, weight, evidence and approval date), consent switches that delete data when turned off, decisions on expired short-term interests, stored feedback, and "Review my feedback": each proposal shows the agent's message, the change and the evidence, with Approve and Reject.
+  - Topics (Idea 3): this week's items per interest and breadth, uncovered interests, the exploration slider and the digest time.
+- `forager/ui_runtime.py`: the memory review runs in a worker thread; the SDK pauses at each `needs_approval` call and the worker waits for the page's answer, so approvals stay SDK-enforced in the app. Each proposal has a token, so a repeated or stale click cannot answer the next one; no answer within 10 minutes counts as a rejection.
+- `forager/storage.py`: runtime paths (overridable with `FORAGER_RUNTIME_DIR`) and saving or loading digests, shared by the CLI and the app.
+- `tests/test_stage4_ui.py`: 10 tests (101 in total), including the pages run headless with Streamlit's AppTest against a temporary folder and the scripted model: set-up to saved profile, making and showing a digest, likes with and without consent, and an approval clicked in the page that goes through the SDK.
+
+### Changed
+- `requirements.txt` adds `streamlit==1.66.1`.
+
 ## 2026-10-27 (Stage 4: GitHub source)
 
 ### Added

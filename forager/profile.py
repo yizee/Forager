@@ -1,11 +1,14 @@
 """User interest profile: storage, defaults and which interests are currently active."""
 
 import json
+import os
 from datetime import date
+from pathlib import Path
 
 from . import PROJECT_ROOT
 
-RUNTIME_DIR = PROJECT_ROOT / "runtime"
+# FORAGER_RUNTIME_DIR moves runtime data elsewhere (see storage.py; read once here).
+RUNTIME_DIR = Path(os.environ.get("FORAGER_RUNTIME_DIR") or PROJECT_ROOT / "runtime")
 PROFILE_PATH = RUNTIME_DIR / "profile.json"
 
 # The persona used for the demo and report: an AI student following three fields.

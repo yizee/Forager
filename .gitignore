@@ -7,3 +7,5 @@ data/cache/
 runtime/
 # Course lab code: keep out of the repo while it is public
 lab/
+# Local tool settings
+.claude/

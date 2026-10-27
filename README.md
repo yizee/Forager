@@ -51,7 +51,7 @@ Fallback if time is short: drop Hugging Face first.
 ```
 CLAUDE.md        full project brief for development (read first)
 docs/            proposal, feedback, design notes, live-run notes and the Critic evaluation
-forager/         application code: sources/, digest.py, checks.py, render.py, profile.py
+forager/         application code: app.py (Streamlit), sources/, digest.py, critic.py, memory.py, checks.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)
 eval/            Critic case set (eval/cases/critic) and its builder
@@ -67,6 +67,7 @@ Requires Python 3.10+ and the course lab package unzipped into `lab/` (with its 
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest                    # offline, free
+.venv/bin/streamlit run forager/app.py         # the app in your browser (paid calls only on buttons marked "paid")
 .venv/bin/python -m forager onboard           # set up your profile with option follow-ups (paid call)
 .venv/bin/python -m forager onboard --baseline   # free-text baseline, no follow-ups
 .venv/bin/python -m forager consent           # choose which feedback signals may be tracked
