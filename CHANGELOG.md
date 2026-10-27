@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Live check: the Manager's ID-only answer and field grouping)
+
+### Added
+- A second re-run of rules and critic, with the Manager naming items ($0.0161; `eval/results/digest-modes-20261027-184748.jsonl` and `.md`; write-up in `docs/live-runs.md`).
+  - Both runs wrote a digest without a rewrite. Without reasoning, the Manager's answer was 925 and 945 tokens (1,708-2,051 in the morning), well inside the 4,096-token limit.
+  - Both grouped brief points by topic field; the morning critic run grouped them by source.
+  - r08 was labelled "Sora 2" again in the critic run (1 of 4 runs since the instruction change), and the Critic did not flag it.
+  - In the critic digest, a point sits under the heading "AI copyright policy", but its item is breadth and the interest is reported as not covered. The Manager's headings are not tied to the specialists' fits.
+
 ## 2026-10-27 (The Manager names items; the specialists' notes fill them in)
 
 ### Added

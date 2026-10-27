@@ -198,3 +198,113 @@ These changes have not been run live yet.
    inaccurately.
 3. **The narrower specialist instruction removed both known wrong labels** (r08 and
    p03) in both runs, judged from the specialists' notes.
+
+## 2026-10-27 (evening): rules and critic again, with the Manager naming items
+
+Same profile, snapshots (arXiv 10-25, GitHub and news 10-27), previous digest and
+history as the two earlier runs; rules and critic once each, with the changes above.
+Results: `eval/results/digest-modes-20261027-184748.jsonl` and `.md`.
+
+| Mode | Requests | Cost | Time | Outcome |
+| --- | --- | --- | --- | --- |
+| rules | 9 | $0.0067 | 37.3 s | digest; rules passed after one repair |
+| critic | 12 | $0.0094 | 47.0 s | digest; Critic ADJUST (1 issue), revised once |
+
+Total $0.0161; ledger $0.0913 of $1.
+
+### The Manager's answer fits
+
+Neither run was cut off, so neither needed the rewrite. The Manager's answer, now
+item IDs only, is about half as long as in the morning:
+
+| Manager's final answer | Prompt tokens | Reasoning tokens | Completion tokens | Answer tokens |
+| --- | --- | --- | --- | --- |
+| morning, rules | 5,274 | 680 | 2,731 | 2,051 |
+| morning, critic | 5,405 | 565 | 2,273 | 1,708 |
+| afternoon, rules | 5,937 | 2,045 | 4,096 (cut off) | – |
+| afternoon, critic | 6,092 | 2,930 | 4,096 (cut off) | – |
+| evening, rules | 5,507 | 1,279 | 2,204 | 925 |
+| evening, critic | 5,809 | 335 | 1,280 | 945 |
+
+Answer tokens are completion tokens minus reasoning tokens. Every item's summary and
+topics came from its specialist's note. The Manager still wrote its own reason for
+three breadth items in each run (rules: p03, r02, n05; critic: p03, r02, n06). The fit
+stayed breadth and the text paraphrased the note. Code allows this, although the
+instructions ask for a reason only when the Manager shows a reported match as breadth.
+
+### Points are grouped by field
+
+Both runs grouped brief points by topic, never by source:
+
+- rules: AI agents (3), Video generation, Model releases, Agent tooling
+- critic: AI agents (4), 3D generation, Sora 2, Video generation, AI copyright policy
+
+The morning critic run grouped them as papers, repos and news.
+
+### Labels
+
+These judgments are Claude's and the author has not checked them.
+
+- **r08** (Tencent ARC's video-generation repository) was breadth in the rules run.
+  In the critic run its specialist labelled it "Sora 2" again ("relevant to
+  Sora-style models"), and the Critic did not flag it. Since the instruction change,
+  the label has come back in 1 of 4 runs. In live digests the Critic has missed this
+  label both times it appeared. It also never caught a Sora 2 label in the case-set
+  evaluation.
+- **p03** (the video world-model survey) was breadth in both runs.
+- **p05** (SpectralCanary, which audits whether a text-to-image model was trained on
+  a collection) was AI copyright policy in the rules run and breadth in the critic run
+  ("Not copyright policy per se"). Both readings are defensible.
+- **p04** (pruning candidate solutions for reasoning models at test time) was
+  labelled AI agents in the rules run. The abstract is about reasoning models, not
+  agents, so the label is a stretch.
+
+### Headings and labels can disagree
+
+The Manager chooses each point's heading; the specialists choose each item's fit.
+Nothing in code ties the two together.
+
+- In the critic digest, SpectralCanary's point sits under the heading "AI copyright
+  policy". The item itself is breadth, and "How this digest was checked" says AI
+  copyright policy has no item in the last 7 days. A reader sees both on one page.
+- n06 (a Qwen model tried to send a file after saying it would use no tools) is
+  breadth, but its point sits under "AI agents".
+- The topic-share rule counts items. AI agents has 4 of 10 items in both runs, at the
+  40% limit. In the quick brief, which readers see first, it has 3 of 6 points
+  (rules) and 4 of 8 (critic).
+
+### Repairs and the Critic
+
+- **rules**: the first draft had 5 breadth items out of 11 (45%, over the 40% limit);
+  the repair brought it to 4 of 10.
+- **critic**: the first draft cited p03 in a connection without including it; the
+  repair fixed that. The repaired draft left AI copyright policy uncovered, which is
+  a warning, not a failure.
+- **The Critic** returned ADJUST with one issue: points[1] called OpenAI's dots
+  "meeting-aware", which n01's one-sentence source does not say. The revision
+  dropped the phrase. The final point still says the change is "a sign that coding
+  agents are becoming the foundation of OpenAI's everyday AI strategy", which the
+  source does not state either. The runner keeps only the final digest, so it is
+  unknown whether the revision added this.
+- The revision's rule check asked once more for AI copyright policy. No specialist
+  had matched an item to it, and the Manager may not add a match itself, so this
+  repair could not succeed and cost one request.
+- "Changes since last time" in the critic digest starts "First digest" but mentions
+  the 10-25 brief in the same sentence. The Critic does not review that section.
+
+### Observations for the report
+
+1. **Giving the Manager less to write fixed the length problem.** Both answers fit
+   well inside the 4,096-token limit (2,204 and 1,280 tokens), and no rewrite was
+   needed. One run per mode cannot show how often the limit would still be reached.
+2. **Headings are interest claims too.** The team rule says only a specialist that
+   read an item can match it to an interest. It covers labels but not headings. A
+   natural extension: a point under an interest's heading must cite an item matched
+   to that interest. Because headings are unchecked, the brief can also look more
+   one-sided than the items.
+3. **The Sora 2 label is the most persistent error.** The narrower specialist
+   instruction removed it in 3 of 4 runs, and the Critic has not caught it in any
+   live digest or case so far.
+4. **To measure what a revision changes, keep the reviewed draft.** Stage 5 compares
+   rules and critic across runs. A comparison within a run also needs the draft the
+   Critic reviewed, not only the final digest.
