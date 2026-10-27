@@ -2,6 +2,13 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (Critic evaluation on the case set)
+
+### Added
+- First live evaluation of the Critic: 21 cases x 3 repeats, $0.036. Rules only caught 0/60 problem instances (by construction); rules + Critic caught 45/60 (75%), all with the right problem type, with no false alarms (0/12 control reviews, 0 false-alarm issues). Constructed cases: 45/48 (94%); the real digest `live-01`: 0/12. Write-up for the report: `docs/critic-eval.md`.
+- `eval/results/critic-20261027-090328.jsonl` (raw reviews) and `.md` (every review with each issue and the Critic's explanation).
+- `eval/analyze_critic_results.py`: turns a run into the tables above, per-case verdicts across repeats, and a listing of every issue raised (on target, debatable or false alarm).
+
 ## 2026-10-26 (Critic case set: label audit)
 
 ### Fixed

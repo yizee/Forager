@@ -50,7 +50,7 @@ Fallback if time is short: drop Hugging Face first.
 
 ```
 CLAUDE.md        full project brief for development (read first)
-docs/            proposal, feedback, design notes and live-run notes (live-runs.md)
+docs/            proposal, feedback, design notes, live-run notes and the Critic evaluation
 forager/         application code: sources/, digest.py, checks.py, render.py, profile.py
 data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)

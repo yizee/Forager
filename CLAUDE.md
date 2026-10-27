@@ -37,8 +37,13 @@
   - **简报流程三种模式**（也是想法 3 的三个对照条件）：`single`（只查结构和引用，即第 1 阶段基线）、`rules`（加代码规则，违规修改一次）、`critic`（再加 Critic；ADJUST 时写作 agent 修改一次，修改后重新跑规则；修改版违反规则就保留通过规则的草稿）。命令：`python -m forager digest --mode critic|rules|single`，默认 `critic`。目前写作 agent 还是第 1 阶段的单 agent，Manager 和来源专家接入后流程不变。
   - **覆盖规则是软规则**：修改一次后仍未覆盖的长期兴趣变成警告，显示在简报里，而不是判失败。只有 arXiv 时，有些兴趣（如版权政策）根本没有对应内容；硬性要求会逼写作 agent 乱贴标签，正是 Critic 要抓的问题。这一点写进报告。
   - 简报 Markdown 末尾有"How this digest was checked"，显示规则结果、未覆盖的兴趣和 Critic 的问题（想法 3 对用户可见的部分之一）。
-  - **用例集评估脚本**：`eval/run_critic_cases.py`（每个用例用全新的 Critic 会话，可 `--repeats`，付费前先显示估算并确认）。评分与用例 README 一致，同时输出"仅规则"（按构造全部为 0）和"规则 + Critic"。**还没有跑过真实调用**，要等作者核对完标注。估算：21 个用例 × 3 次 ≈ 63 次调用，约 $0.13。
-  - 下一步：作者核对标注 → 用例集真实评估 → GitHub 和新闻来源 → 三个来源专家和 Manager → Streamlit 界面。
+  - **用例集评估脚本**：`eval/run_critic_cases.py`（每个用例用全新的 Critic 会话，可 `--repeats`，付费前先显示估算并确认）。评分与用例 README 一致，同时输出"仅规则"（按构造全部为 0）和"规则 + Critic"。分析脚本：`eval/analyze_critic_results.py`。
+  - **用例集真实评估已完成（2026-10-27，21 × 3 = 63 次审查，$0.036）**，详见 `docs/critic-eval.md`：
+    - 仅规则抓到 0/60，规则 + Critic 抓到 45/60（75%），类型全部正确，误报为 0（对照组 0/12）。
+    - 构造用例 45/48（94%），真实简报 live-01 是 0/12。构造用例高估了真实场景的效果，这是报告里必须讲的局限。
+    - 最弱的是兴趣标签错误（47%）：虚构的 Lumen-V 2 抓到 2/3，真实的 Sora 2 一次也没抓到。
+    - 不要在看过结果后改标注（会抬高 Critic 的分数）；要改进 Critic，需用新的用例或新的真实简报来评估。
+  - 下一步：GitHub 和新闻来源 → 三个来源专家和 Manager → Streamlit 界面。可选：在新的真实简报上评估 Critic（先标注后运行）。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
