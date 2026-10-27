@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-27 (A cost cap for the digest-modes runner)
+
+### Added
+- `eval/run_digest_modes.py --max-cost`: no new run starts once the batch has cost that much. A run already started finishes. The default is 1.5 times the batch's estimate, which is the plan's stop rule, now enforced in code. One offline test (128 in total).
+
+### Changed
+- The plan's runbook gives the approved first batch explicit caps: $0.18 for S1 and $0.12 for S2, 1.5 times the approved $0.20.
+
 ## 2026-10-27 (Stage 5 offline preparation: judges, calibration sheet, memory scenarios)
 
 ### Added

@@ -210,7 +210,9 @@ interpretations, as CLAUDE.md §7 asks.
 
 - Before each paid batch: `cd lab && ../.venv/bin/python agent.py --check`.
 - Each script prints an estimate and asks before spending; batches run one at a time.
-- Stop a batch if its recorded cost passes 1.5 times its estimate.
+- Stop a batch if its recorded cost passes 1.5 times its estimate. The digest runner
+  enforces this: it starts no new run once the batch has cost `--max-cost` (by default
+  1.5 times its own estimate; a run already started finishes).
 - Keep at least $0.25 unspent until the video is recorded.
 
 ## Runbook
@@ -219,9 +221,9 @@ Commit every result file and sheet. Look at each step's results before starting 
 
 1. Free, 10-28 morning: `.venv/bin/python -m forager snapshot --sources github news`
    (writes `github-2026-10-28.json` and `news-2026-10-28.json`).
-2. Digests, about $0.20, after approval:
-   - S1: `.venv/bin/python eval/run_digest_modes.py --repeats 6 --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json data/snapshot/news-2026-10-27.json`
-   - S2: `.venv/bin/python eval/run_digest_modes.py --repeats 4 --snapshot data/snapshot/arxiv-2026-10-27.json data/snapshot/github-2026-10-28.json data/snapshot/news-2026-10-28.json`
+2. Digests, about $0.20 (approved on 10-27), capped at 1.5 times that in total:
+   - S1: `.venv/bin/python eval/run_digest_modes.py --repeats 6 --max-cost 0.18 --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json data/snapshot/news-2026-10-27.json`
+   - S2: `.venv/bin/python eval/run_digest_modes.py --repeats 4 --max-cost 0.12 --snapshot data/snapshot/arxiv-2026-10-27.json data/snapshot/github-2026-10-28.json data/snapshot/news-2026-10-28.json`
 3. Free: `.venv/bin/python eval/calibration.py make <S1 runs> <S2 runs> --out eval/labels/digests`;
    the author labels the sheet.
 4. Judges, about $0.10: a pilot with `--limit 2` (about $0.003), then
@@ -259,7 +261,7 @@ Commit every result file and sheet. Look at each step's results before starting 
 
 ## Open decisions
 
-1. Approve the overall budget (about $0.50 of $0.90) and the first paid batch (30
-   digests, about $0.20).
+1. Approve the overall budget (about $0.50 of $0.90). The first paid batch (30 digests,
+   about $0.20) was approved on 10-27 and runs on the morning of 10-28.
 2. Who the 2-3 participants are, and when.
 3. Whether the author has time for the optional fresh Critic labels (about 45 min).

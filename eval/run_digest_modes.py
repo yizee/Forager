@@ -15,6 +15,7 @@ Usage (paid; prints an estimate and asks before starting):
   .venv/bin/python eval/run_digest_modes.py
   .venv/bin/python eval/run_digest_modes.py --modes rules critic --repeats 2
   .venv/bin/python eval/run_digest_modes.py --save critic     # also make that run today's digest
+No new run starts once the batch has cost 1.5 times the estimate (--max-cost changes the cap).
 Results go to eval/results/digest-modes-<timestamp>.jsonl and .md.
 """
 
@@ -66,11 +67,14 @@ def metrics(digest: dict | None, profile: dict, candidates=(), history=(), today
 
 
 def run_modes(lab, profile: dict, raw: list[dict], modes, repeats: int = 1, *, today: str, previous=None,
-              history=(), on_event=None, on_record=None) -> list[dict]:
-    """One record per (repeat, mode), in the order run."""
-    records = []
+              history=(), on_event=None, on_record=None, max_cost: float | None = None) -> list[dict]:
+    """One record per (repeat, mode), in the order run. With max_cost, no new run starts once
+    the batch has cost that much (the plan's stop rule); a run already started finishes."""
+    records, start = [], lab.ledger.data["cost"]
     for repeat in range(repeats):
         for mode in modes:
+            if max_cost is not None and lab.ledger.data["cost"] - start >= max_cost:
+                return records
             before, started = dict(lab.ledger.data), time.time()
             outcome = generate_digest(lab, profile, raw, mode=mode, previous=previous, history=history,
                                       today=today, on_event=on_event)
@@ -172,6 +176,8 @@ def main():
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--today", default=date.today().isoformat())
     parser.add_argument("--save", choices=MODES, help="also save this mode's last run as today's digest in runtime/")
+    parser.add_argument("--max-cost", type=float,
+                        help="start no new run once the batch has cost this much in USD (default: 1.5 x the estimate)")
     parser.add_argument("--yes", action="store_true", help="skip the cost confirmation")
     args = parser.parse_args()
 
@@ -180,9 +186,10 @@ def main():
     profile = load_profile(storage.profile_path())
     candidates = Counter(c["type"] for c in prepare_candidates(raw))
     estimate = args.repeats * sum(ESTIMATED_COST[m] for m in args.modes)
+    cap = args.max_cost if args.max_cost is not None else round(1.5 * estimate, 3)
     print("Snapshots:", ", ".join(Path(p).name for p in snapshots), "| candidates:", dict(candidates))
     print(f"{args.repeats} x {', '.join(args.modes)}: about ${estimate:.3f} "
-          "(planning estimate; the ledger records the real cost).")
+          f"(planning estimate; the ledger records the real cost). No new run starts after ${cap:.3f}.")
     if not args.yes and input("Proceed? [y/N] ").strip().lower() not in {"y", "yes"}:
         return
 
@@ -208,8 +215,10 @@ def main():
     with open_lab(labkit.lab_dir()) as lab:
         records = run_modes(lab, profile, raw, args.modes, args.repeats, today=args.today,
                             previous=storage.latest_digest(args.today), history=storage.recent_digests(args.today),
-                            on_event=show, on_record=save)
+                            on_event=show, on_record=save, max_cost=cap)
         print(lab.ledger.summary())
+    if len(records) < args.repeats * len(args.modes):
+        print(f"Stopped after {len(records)} of {args.repeats * len(args.modes)} runs: the batch reached ${cap:.3f}.")
     (RESULT_DIR / f"digest-modes-{stamp}.md").write_text(report(records, profile, snapshots, stamp) + "\n")
     print("\n" + summary_table(records))
     print(f"\nSaved {path.relative_to(ROOT)} and .md")

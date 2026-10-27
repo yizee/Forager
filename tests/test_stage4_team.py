@@ -315,6 +315,14 @@ def test_digest_modes_runner_offline():
     assert "Manager asked the news specialist: What matters in today's news?" in text and "#### Full items" in text
 
 
+def test_digest_modes_runner_stops_at_the_cost_cap():
+    with offline_lab([reply(digest()), reply(digest())]) as lab:
+        spend = lambda record: lab.ledger.data.update(cost=lab.ledger.data["cost"] + 0.01)    # stands in for a paid run
+        records = modes_runner.run_modes(lab, DEFAULT_PROFILE, RAW, ["single"], 3, today=TODAY, on_record=spend,
+                                         max_cost=0.015)
+    assert len(records) == 2                    # the third run would have started after $0.02
+
+
 def test_digest_modes_runner_keeps_the_reviewed_draft():
     flagged = {"type": "irrelevant_exploration", "refs": ["r03"], "explanation": "Unrelated.", "fix": "Drop it."}
     revised = digest({k: v for k, v in FITS.items() if k != "r03"})
