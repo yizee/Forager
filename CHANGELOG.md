@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Remaining paid work moves to the author's own key)
+
+### Changed
+- The rest of Stage 5's paid work runs on the author's own OpenRouter key, in a separate lab copy outside the repository (`~/Desktop/Human-AI/forager-lab-own-key`), selected with `FORAGER_LAB_DIR`.
+  - The copy has the same lab code, its own `.env` and its own ledger, which starts at $0.
+  - All 128 offline tests pass against it.
+- The course key's ledger (`lab/.lab-state`) is unchanged. It still holds one pending request, for the instructor to reconcile.
+- `docs/stage5-eval-plan.md`, `CLAUDE.md` and the README say where paid commands run.
+
 ## 2026-10-28 (First Stage 5 batch stopped by a request timeout)
 
 ### Added

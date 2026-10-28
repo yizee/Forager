@@ -13,6 +13,11 @@ prints its own estimate and asks first.
   2026-11-01) with $0.9071 left. The local ledger is the binding limit: about $0.90
   for the rest of the project. The plan spends about $0.50 and keeps the rest as a
   reserve for reruns and the demo.
+- **Key, from 10-28.** After the course key's ledger was paused (see Risks), the rest of
+  the paid work runs on the author's own OpenRouter key, in a separate lab copy outside
+  the repository (`~/Desktop/Human-AI/forager-lab-own-key`). It has the same lab code,
+  its own `.env` and its own ledger, which starts at $0 with the same $1 local cap. The
+  course key's ledger is left for the instructor to reconcile.
 - **Model.** Every agent and every judge is `z-ai/glm-5.3-flash`, the only model the
   lab allows. A judge from the same model as the Critic may share its blind spots, so
   every judge is calibrated against the author's labels (below) and the report says so.
@@ -218,6 +223,9 @@ interpretations, as CLAUDE.md §7 asks.
 ## Runbook
 
 Commit every result file and sheet. Look at each step's results before starting the next.
+From 10-28 every paid command runs with
+`FORAGER_LAB_DIR=~/Desktop/Human-AI/forager-lab-own-key` (the author's own key), and the
+budget check runs in that folder (`../../Forager/.venv/bin/python agent.py --check`).
 
 1. Free, 10-28 morning: `.venv/bin/python -m forager snapshot --sources github news`
    (writes `github-2026-10-28.json` and `news-2026-10-28.json`).
@@ -238,7 +246,7 @@ Commit every result file and sheet. Look at each step's results before starting 
 | Date | Work |
 | --- | --- |
 | Tue 10-27 (done) | Offline: judge, labelling and memory-case scripts with offline tests; the arXiv half of S2. |
-| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. The rest of S1, S2 and the labelling sheet wait for that. |
+| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. The rest of S1, S2 and the labelling sheet move to the author's own key in a separate lab copy. |
 | Thu 10-29 | Author: calibration labels, optional fresh Critic labels, case-set check. Then the judges, the optional Critic reviews and the Idea 2 scenarios (about $0.17). |
 | Fri 10-30 to Sun 11-01 | User study sessions (about $0.05); record video material. |
 | Sun 11-01 to Mon 11-02 | Analysis and figures; video script and recording. |
@@ -249,7 +257,8 @@ Commit every result file and sheet. Look at each step's results before starting 
 - **A request timeout pauses the lab** (it happened on 10-28, at this copy's 139th
   request). Each request has 180 seconds; one that does not answer in time stays
   pending, and every paid call is refused until the instructor reconciles usage. Run the
-  remaining work in smaller batches and check the ledger between them.
+  remaining work in smaller batches and check the ledger between them. The author's own
+  copy runs the same lab code, so a timeout pauses it too; Claude then stops and asks.
 - **arXiv answers 429** (it did on 10-27 morning): the S2 papers are already saved.
 - **The Manager's output limit**: answers are now about 950 tokens, but a cut-off is
   still possible; the rewrite from notes covers it and is recorded.

@@ -65,7 +65,8 @@ CHANGELOG.md
 
 ## Running
 
-Requires Python 3.10+ and the course lab package unzipped into `lab/` (with its `.env`).
+Requires Python 3.10+ and the course lab package unzipped into `lab/` (with its `.env`). To use a lab copy
+somewhere else, for example one with your own OpenRouter key and its own ledger, set `FORAGER_LAB_DIR` to it.
 
 ```bash
 python3.11 -m venv .venv
