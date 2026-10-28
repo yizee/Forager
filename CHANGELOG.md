@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (The Idea 3 evaluation set: S1 and S2 on the new repair step)
+
+### Added
+- `eval/results/digest-modes-20261028-151959.jsonl` and `.md` (S1, 18 runs, $0.0349) and `eval/results/digest-modes-20261028-152801.jsonl` and `.md` (S2, 12 runs, $0.0270): the 30 digests the judges will rate.
+  - Team drafts that still broke a hard rule after their repair fell from 37% (10 of 27, before the change) to 15% (3 of 20).
+  - The Critic ran in 8 of 10 critic runs and asked for 3 revisions, all of which passed the rules.
+- `eval/labels/digests`: the blind labelling sheet for judge calibration, with 30 items and 30 brief entries spread evenly over the modes.
+- `docs/live-runs.md`: a section on these runs and the repair change's effect.
+
 ## 2026-10-28 (Repair turns keep the topic balance in view)
 
 ### Changed

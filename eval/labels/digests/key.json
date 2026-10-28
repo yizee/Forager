@@ -1,0 +1,554 @@
+{
+  "made": "2026-10-28",
+  "seed": 619,
+  "runs": [
+    "digest-modes-20261028-151959.jsonl",
+    "digest-modes-20261028-152801.jsonl"
+  ],
+  "rows": {
+    "items": [
+      {
+        "row": 1,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 14,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "n01"
+      },
+      {
+        "row": 2,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 9,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r06"
+      },
+      {
+        "row": 3,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 5,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "p01"
+      },
+      {
+        "row": 4,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 17,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "p05"
+      },
+      {
+        "row": 5,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r05"
+      },
+      {
+        "row": 6,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 3,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r05"
+      },
+      {
+        "row": 7,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "r01"
+      },
+      {
+        "row": 8,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 4,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "p07"
+      },
+      {
+        "row": 9,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 14,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "n06"
+      },
+      {
+        "row": 10,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 4,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "n04"
+      },
+      {
+        "row": 11,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 11,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "r02"
+      },
+      {
+        "row": 12,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 13,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "n06"
+      },
+      {
+        "row": 13,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 3,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r08"
+      },
+      {
+        "row": 14,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 15,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "n05"
+      },
+      {
+        "row": 15,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 13,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "p05"
+      },
+      {
+        "row": 16,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 2,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "r04"
+      },
+      {
+        "row": 17,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 5,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "n01"
+      },
+      {
+        "row": 18,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 8,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "n04"
+      },
+      {
+        "row": 19,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 0,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "p01"
+      },
+      {
+        "row": 20,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 9,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "n02"
+      },
+      {
+        "row": 21,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 1,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "p08"
+      },
+      {
+        "row": 22,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 9,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "p05"
+      },
+      {
+        "row": 23,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 16,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "n05"
+      },
+      {
+        "row": 24,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 0,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r08"
+      },
+      {
+        "row": 25,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 2,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "r02"
+      },
+      {
+        "row": 26,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 3,
+        "version": "final",
+        "mode": "single",
+        "kind": "items",
+        "ref": "r08"
+      },
+      {
+        "row": 27,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 13,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "p03"
+      },
+      {
+        "row": 28,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "n05"
+      },
+      {
+        "row": 29,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 17,
+        "version": "final",
+        "mode": "critic",
+        "kind": "items",
+        "ref": "p02"
+      },
+      {
+        "row": 30,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 1,
+        "version": "final",
+        "mode": "rules",
+        "kind": "items",
+        "ref": "n05"
+      }
+    ],
+    "brief": [
+      {
+        "row": 1,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 9,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 2,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 3,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[5]"
+      },
+      {
+        "row": 3,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 7,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[3]"
+      },
+      {
+        "row": 4,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[1]"
+      },
+      {
+        "row": 5,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[7]"
+      },
+      {
+        "row": 6,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 12,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[6]"
+      },
+      {
+        "row": 7,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 8,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[4]"
+      },
+      {
+        "row": 8,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 12,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[0]"
+      },
+      {
+        "row": 9,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 10,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "connections[1]"
+      },
+      {
+        "row": 11,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[2]"
+      },
+      {
+        "row": 12,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[6]"
+      },
+      {
+        "row": 13,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 2,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "connections[1]"
+      },
+      {
+        "row": 14,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 7,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 15,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 14,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[2]"
+      },
+      {
+        "row": 16,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[0]"
+      },
+      {
+        "row": 17,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 11,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[3]"
+      },
+      {
+        "row": 18,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 2,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[2]"
+      },
+      {
+        "row": 19,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 8,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 20,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 2,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 21,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 13,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[5]"
+      },
+      {
+        "row": 22,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "connections[1]"
+      },
+      {
+        "row": 23,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "points[1]"
+      },
+      {
+        "row": 24,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 7,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[4]"
+      },
+      {
+        "row": 25,
+        "file": "digest-modes-20261028-152801.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[5]"
+      },
+      {
+        "row": 26,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 15,
+        "version": "final",
+        "mode": "single",
+        "kind": "brief",
+        "ref": "connections[0]"
+      },
+      {
+        "row": 27,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 10,
+        "version": "final",
+        "mode": "rules",
+        "kind": "brief",
+        "ref": "points[6]"
+      },
+      {
+        "row": 28,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 8,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[0]"
+      },
+      {
+        "row": 29,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 5,
+        "version": "final",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[6]"
+      },
+      {
+        "row": 30,
+        "file": "digest-modes-20261028-151959.jsonl",
+        "index": 14,
+        "version": "reviewed_draft",
+        "mode": "critic",
+        "kind": "brief",
+        "ref": "points[1]"
+      }
+    ]
+  }
+}

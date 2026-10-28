@@ -464,3 +464,49 @@ turned into a breadth item.
 
 Across both S1 batches, 9 of 24 team drafts still broke a hard rule after their one
 repair, 7 of them on the topic share.
+
+## 2026-10-28 evening: S1 and S2 after the repair change
+
+The repair change (commit 26803e7) does two things. In the rule modes, every repair turn
+now ends with a "Balance now" line giving each topic's item count and the most any topic
+may have. With the team writer, a repair turn asks for an uncovered interest only if a
+specialist matched some candidate to it. S1 (`--today 2026-10-27`) and S2
+(`--today 2026-10-28`) then ran in full on the course key in the lab copy, with the
+ledger checked in between. Results: `eval/results/digest-modes-20261028-151959.*` (S1,
+18 runs, $0.0349) and `eval/results/digest-modes-20261028-152801.*` (S2, 12 runs,
+$0.0270). These 30 digests are the evaluation set for Idea 3.
+
+| Batch | Mode | Pass the hard rules | Requests (mean) | Cost (mean) | Time (mean) | Critic |
+| --- | --- | --- | --- | --- | --- | --- |
+| S1 | single | 6/6 | 1.2 | $0.0008 | 11 s | |
+| S1 | rules | 6/6 | 8.5 | $0.0023 | 32 s | |
+| S1 | critic | 6/6 | 9.8 | $0.0027 | 38 s | 3 PASS, 3 ADJUST |
+| S2 | single | 4/4 | 1.5 | $0.0012 | 20 s | |
+| S2 | rules | 3/4 | 8.5 | $0.0022 | 36 s | |
+| S2 | critic | 2/4 | 11.5 | $0.0034 | 64 s | 2 PASS |
+
+Single mode only measures the hard rules; the other two modes enforce them.
+
+### Repairs before and after the change
+
+| Team drafts | Total | Needed a repair | Fixed by it | Still broke a rule |
+| --- | --- | --- | --- | --- |
+| Before (S1 twice, S2's first 5 runs) | 27 | 16 | 6 | 10 (37%), 8 on the topic share |
+| After (S1 and S2 above) | 20 | 10 | 7 | 3 (15%), 3 on the topic share |
+
+S2 was the harder set: more of its candidates are about AI agents. In one rules run the
+repair left that topic at 5 of 10 items. In one critic run the repair fixed a citation
+and pushed it to 5 of 10. In another the Manager's repair answer was cut off at the
+lab's 4,096-token output limit, so the first draft (4 of 9 items on AI agents) stayed.
+
+### What the Critic did
+
+The Critic ran in 8 of the 10 critic runs (all 6 in S1, 2 of 4 in S2). It passed 5
+drafts and asked for revisions on 3, all in S1: once for a point and a connection whose
+citations did not support them, and twice for an overstated connection. All three
+revisions passed the rules again. No digest in either batch has a star count that
+differs from its snapshot.
+
+The copy's ledger stands at $0.1493 after 477 requests, with no pause. The labelling
+sheet for judge calibration is `eval/labels/digests`: 30 items and 30 brief entries,
+spread evenly over the three modes, with the mode hidden until `key.json` is opened.
