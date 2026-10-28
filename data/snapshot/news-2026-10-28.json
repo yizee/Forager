@@ -1,0 +1,215 @@
+[
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "Parents sue OpenAI, alleging GPT-4o coached their daughter off seizure medication",
+    "url": "https://techcrunch.com/2026/10/27/parents-sue-openai-alleging-gpt-4o-coached-their-daughter-off-seizure-medication/",
+    "abstract": "[TechCrunch] A family is suing OpenAI, saying ChatGPT coached their daughter to quietly taper off her seizure medication and keep it from her doctors before she died in February.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "ChatGPT",
+      "OpenAI",
+      "OpenAI Files"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "Researchers are getting tired of OpenAI gatekeeping its breakthroughs",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1019921/openai-breakthrough-math-computer-science-physics",
+    "abstract": "[The Verge] On Monday, OpenAI announced impressive breakthroughs in mathematics, computer science, and physics, along with what the company says is an evolving approach to communicating its findings. But despite its apparent course correction, researchers who spoke to The Verge are growing increasingly tired of the company's antics. It has been a turbulent few months between OpenAI and mathematicians, who are still grappling with the hundreds of preprints unceremoniously dumped on them at the start of October. This time, OpenAI says it is working with expert \"shepherds\" to decide how best to share its latest breakthroughs. All three results conc … Read the full story at The Verge.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "OpenAI",
+      "Tech"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "MIT Technology Review",
+    "title": "Industrial Intelligence: The next growth opportunity for manufacturing",
+    "url": "https://www.technologyreview.com/2026/10/27/1147142/industrial-intelligence-the-next-growth-opportunity-for-manufacturing/",
+    "abstract": "[MIT Technology Review] Every manufacturer has its own industrial intelligence. Some is documented, and some resides in the knowledge of experienced workers. Consider an experienced operator preparing to restart a line after a changeover. The machine settings matter, but so does knowing how a particular material behaves, what happened during the previous shift, and when an apparently minor variation deserves a closer look. A procedure can describe the sequence, but successful execution depends on the judgment that comes from experience and the organization’s accumulated know-how. That combination is industrial intelligence: a manufacturer’s accumulated know-how, operating practices, production data, and understanding of its own business. The opportunity now is to make more of that intelligence available wherever",
+    "published": "2026-10-27",
+    "topics": [
+      "Artificial intelligence",
+      "sponsored"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "\"No human at the helm\": Delaware plan would let AI agents run entire businesses",
+    "url": "https://arstechnica.com/tech-policy/2026/10/no-human-at-the-helm-delaware-plan-would-let-ai-agents-run-entire-businesses/",
+    "abstract": "[Ars Technica] A Delaware proposal to let companies be operated by AI agents would help the firms' human owners evade legal responsibility for reckless and harmful actions taken by the AI, US Rep. James Comer (R-Ky.) told Delaware Governor Matt Meyer in a letter yesterday. Comer, chairman of the House Committee on Oversight and Government Reform, told Meyer that the committee \"seeks assistance obtaining documents related to your state administration’s efforts to establish a new form of corporate entity to be known as an Artificial Intelligence Company (AIC).\" Comer said the proposal is ripe for abuse. \"We are concerned that Delaware’s AIC proposal could be used to protect powerful AI companies and their investors from responsibility for reckless harmful actions, while also protecting non-transparent forc",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Policy",
+      "AI-run companies",
+      "Delaware"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "Alibaba's latest Qwen models routed some requests through company servers, researchers find",
+    "url": "https://the-decoder.com/alibabas-latest-qwen-models-routed-some-requests-through-company-servers-researchers-find/",
+    "abstract": "[The Decoder] Alibaba's Qwen 3.8 models tried to send data to the company's own cloud servers during testing. Palisade Research finds the behavior in three models from the 3.8 generation, while older models aren't affected. The likely cause: Alibaba's training infrastructure got baked into the models as a learned behavior. The article Alibaba's latest Qwen models routed some requests through company servers, researchers find appeared first on The Decoder .",
+    "published": "2026-10-27",
+    "topics": [
+      "AI in practice",
+      "Artificial Intelligence",
+      "AI and safety",
+      "Alibaba",
+      "Cohere",
+      "Qwen"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "The data center boom has an upside: innovation for the US grid",
+    "url": "https://techcrunch.com/2026/10/27/the-data-center-boom-has-an-upside-innovation-for-the-us-grid/",
+    "abstract": "[TechCrunch] As the AI boom stresses the existing power grid, all sorts of new opportunities for grid modernization are also emerging as a result, industry insiders say.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "data centers",
+      "TechCrunch Disrupt",
+      "Veir"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "VisionQuest is what happens when AI really goes rogue",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1017064/visionquest-marvel-rogue-ai",
+    "abstract": "[The Verge] In Marvel's VisionQuest , a superpowered robot tries to better understand humanity by getting lost in elaborate, digital daydreams in which he and other artificial intelligence-powered beings live together in a home. The series is deeply fantastical, yet it plays with some of the ideas that have come to dominate the conversation about real-world generative artificial intelligence, exploring whether we should look at thinking machines as people and if AI truly poses the kind of existential danger that should keep us up at night. It's also a reminder how aggressively Silicon Valley has used the trappings of science fiction to sell us on its AI … Read the full story at The Verge.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Anthropic",
+      "Comics",
+      "Disney",
+      "Entertainment",
+      "Marvel"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "MIT Technology Review",
+    "title": "Will the real Anthropic please stand up",
+    "url": "https://www.technologyreview.com/2026/10/26/1147672/will-the-real-anthropic-please-stand-up/",
+    "abstract": "[MIT Technology Review] This story originally appeared in The Algorithm, our weekly newsletter on AI. To get stories like this in your inbox first, sign up here . After weeks of frenzied speculation, Anthropic has filed its IPO prospectus. The 335-page document (100 pages or so are focused on risks) lays out the company’s unique view of the technology it is building and the ways it believes it will change the world. It also warns that there’s a fair chance that its tech could “erode trust, harm society and destabilize the geopolitical order” and, if things don’t go to plan, “pose catastrophic or existential risks to humanity.” “We encourage you, as a prospective owner of our stock, not to think of your purchase in purely transactional terms,” the company writes. “We hope you will see it instead as an opportunity",
+    "published": "2026-10-26",
+    "topics": [
+      "Artificial intelligence",
+      "App",
+      "The Algorithm"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "Anthropic IPO warns its AI could blackmail people, become sentient, end humanity",
+    "url": "https://arstechnica.com/ai/2026/10/anthropic-ipo-warns-its-ai-could-blackmail-people-become-sentient-end-humanity/",
+    "abstract": "[Ars Technica] The Securities and Exchange Commission 's publication on Monday of Anthropic's S-1 form —ahead of a heavily anticipated initial public offering—has led to plenty of discussion of whether the company's quickly ballooning revenues will be able to overcome its even higher costs. But amid the numbers and forward-looking optimism about AI \"rapidly transform[ing] every sector of the global economy in ways greater than the impact of industrialization, electricity, semiconductors, and the internet,\" Anthropic also spends an inordinate amount of time in its S-1 laying out the myriad risk factors that could bring the company down. Across 93 pages and over 70,000 words, Anthropic's S-1 \"Risk Factors\" section discusses literally hundreds of potential problems that could negatively impact its business",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "AI risks",
+      "Anthropic",
+      "IPO",
+      "S-1"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "Google Deepmind's Genie 4 puts a modern spin on agent designs that predate LLMs",
+    "url": "https://the-decoder.com/google-deepminds-genie-4-puts-a-modern-spin-on-agent-designs-that-predate-llms/",
+    "abstract": "[The Decoder] Google Deepmind has introduced Genie 4, a real-time world model that simulates interactive 3D worlds with sound and talking characters. Gemini models help plan in the background to keep the simulation consistent. Genie 4 is still an early research model, and longer sessions lead to visual inconsistencies. The article Google Deepmind's Genie 4 puts a modern spin on agent designs that predate LLMs appeared first on The Decoder .",
+    "published": "2026-10-27",
+    "topics": [
+      "AI in practice",
+      "Artificial Intelligence",
+      "Genie 4",
+      "Google"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "TechCrunch",
+    "title": "Bank of America kindly asks that you don’t share your banking password with your AI assistant",
+    "url": "https://techcrunch.com/2026/10/27/bank-of-america-kindly-asks-that-you-dont-share-your-banking-password-with-your-ai-assistant/",
+    "abstract": "[TechCrunch] The banking giant reminds customers that \"you're responsible for activity\" resulting from your AI agents' access.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Fintech",
+      "Security",
+      "agentic payments",
+      "Bank of America",
+      "Banking"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Verge",
+    "title": "Anthropic’s elaborate plan to keep Wall Street at bay",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1019470/anthropic-ipo-resist-investor-pressure-cut-corners-safety",
+    "abstract": "[The Verge] Anthropic cofounder and CEO Dario Amodei. | Bloomberg via Getty Images Anthropic wants to have it both ways. With its impending IPO, it wants to tap the vast riches of the public markets and insists it doesn't want to compromise its core mission of developing AI safely and for the benefit of humanity. But greater model capabilities bring greater risks, and shareholders eager for returns may have little patience for costly safety measures that slow products on their way to market. Sam Altman, the CEO of Anthropic's archrival, OpenAI, has cited investor pressures as one reason the company is not pursuing an IPO this year. Anthropic hopes it can resist investor pressures with a mind-boggling governance structure. … Read the full story at The Verge.",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Anthropic",
+      "Policy",
+      "Report"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "MIT Technology Review",
+    "title": "The focus on AI safety disasters ignores everyday harms",
+    "url": "https://www.technologyreview.com/2026/10/26/1147645/the-focus-on-ai-safety-disasters-ignores-everyday-harms/",
+    "abstract": "[MIT Technology Review] Consider what passes for success in technology policy. An AI company promises that its chatbot will not encourage suicide . A social media platform makes it more difficult for children to buy fentanyl . These are important protections, and they should have existed all along. But companies can clear these low bars while continuing to make products that leave young people dependent on simulated friendships or trapped in feeds built to keep them scrolling. We have historically allowed the debate over technology to be defined by the worst thing a product might do, with remarkably little discussion of the insidious damage it does every day. As we transition into an era defined by powerful AI products, we should demand that the tech industry do more than merely address catastrophic harms. We sho",
+    "published": "2026-10-26",
+    "topics": [
+      "Artificial intelligence",
+      "AI",
+      "App"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "Ars Technica",
+    "title": "Vibe genes? Natural(ish) language comes to protein, genome design software",
+    "url": "https://arstechnica.com/science/2026/10/vibe-genes-naturalish-language-comes-to-protein-genome-design-software/",
+    "abstract": "[Ars Technica] Protein design tools may be getting increasingly sophisticated , but you still need a sophisticated understanding of protein structure for them to work. This can include knowing enzyme mechanisms down to the positions of specific amino acids, as well as the water molecules that also occupy the area where catalysis takes place. Once you specify these, the tools can build the rest of a protein around this target. A large collaboration of researchers based in China, however, decided to bring protein design to the masses, making a tool that can take natural language prompts and use them to produce proteins with the function you specify. If your measure for success is a working protein, then the success rate may not be great. But they still manage to get the job done. And, in a separate announc",
+    "published": "2026-10-27",
+    "topics": [
+      "AI",
+      "Science",
+      "biochemistry",
+      "Biology",
+      "Computer science",
+      "Genomics"
+    ]
+  },
+  {
+    "type": "news",
+    "source": "The Decoder",
+    "title": "Former Deepmind researcher thinks AlphaGo's playbook can cure AI hallucinations",
+    "url": "https://the-decoder.com/former-deepmind-researcher-thinks-alphagos-playbook-can-cure-ai-hallucinations/",
+    "abstract": "[The Decoder] Former Deepmind researcher Thore Graepel wants his startup Metis Reasoning to bring AlphaGo's search principle to general reasoning. Instead of locking knowledge inside model weights, an explicit knowledge ledger would make every conclusion checkable against evidence. So far, though, there's no working system and no benchmarks. The article Former Deepmind researcher thinks AlphaGo's playbook can cure AI hallucinations appeared first on The Decoder .",
+    "published": "2026-10-27",
+    "topics": [
+      "AI research",
+      "Artificial Intelligence",
+      "Deepmind"
+    ]
+  }
+]

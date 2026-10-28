@@ -2,6 +2,13 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Second snapshot set complete)
+
+### Added
+- `data/snapshot/github-2026-10-28.json` and `data/snapshot/news-2026-10-28.json`, fetched at 09:09, complete the second snapshot set (S2) with `arxiv-2026-10-27.json`.
+  - Of S2's 24 candidates, 4 were also candidates in S1: 3 repositories and 1 story.
+  - In the files themselves, 11 of 15 repositories and 2 of 15 stories are also in S1's files. GitHub's 7-day window explains the repositories.
+
 ## 2026-10-27 (A cost cap for the digest-modes runner)
 
 ### Added
