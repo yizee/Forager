@@ -324,3 +324,43 @@ These changes have not been run live yet.
 4. **To measure what a revision changes, keep the reviewed draft.** Stage 5 compares
    rules and critic across runs. A comparison within a run also needs the draft the
    Critic reviewed, not only the final digest.
+
+## 2026-10-28: the first Stage 5 batch, stopped by a request timeout
+
+The first batch of the evaluation (`docs/stage5-eval-plan.md`, runbook step 2), approved
+on 10-27: S1 (arXiv 10-25, GitHub and news 10-27), 6 repeats of single, rules and
+critic, capped at $0.18. The S2 snapshots were fetched and committed first. Results:
+`eval/results/digest-modes-20261028-091008.jsonl` and `.md`.
+
+| Run | Requests | Cost | Time | Outcome |
+| --- | --- | --- | --- | --- |
+| 1, single | 2 | $0.0035 | 16.5 s | digest, after one repair turn |
+| 1, rules | 5 | $0.0017 recorded, about $0.0010 pending | 212.0 s | no digest: a request timed out |
+| the other 16 | 0 | $0 | 0 s | refused: paid calls paused |
+
+**What happened.** In the rules run the Manager asked the Paper researcher (6 items
+reported), then the Open-source researcher, which read its 8 repositories. Its next
+request did not answer within the lab's 180-second limit. The lab cannot tell whether a
+timed-out request was charged, so it leaves the request pending in the ledger
+(`pending: true`) and refuses every later paid call until usage is reconciled
+(`Ledger.reserve` in `lab/lab_support/_provider.py`). The batch moved on to the next
+runs, and each failed at once without a request. S2 was not started and no labelling
+sheet was made. `.lab-state/` was not touched: the lab README says to ask the
+instructor before changing accounting files.
+
+**What it cost.** The ledger recorded $0.0053 for 6 requests (run 1 single, and four
+requests of run 1 rules). OpenRouter's key check (free) now reports $0.12307 of
+all-time usage, against $0.12209 in the three local ledgers that use this key (this
+copy, week 4 and week 6). The two matched on 10-27, so the pending request was charged
+about $0.0010, and the batch cost about $0.0063 in all. Of the 139 requests this lab
+copy has made, this is the first to time out.
+
+**What it means for the rest of Stage 5.** Every paid request has the same 180-second
+limit, and one slow answer stops all paid calls until the ledger is reconciled. The
+rest of the plan needs roughly 380 more requests (about 230 for the 30 digests, 70 for
+the judges and 80 for the memory scenarios; Claude's estimate). At one timeout in 139
+requests, another pause during that work is likely, so the work should run in smaller
+batches with the ledger checked between them.
+
+The run's one digest (single) is not counted in the evaluation; S1 is to be re-run in
+full once paid calls resume.

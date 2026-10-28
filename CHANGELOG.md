@@ -2,6 +2,18 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (First Stage 5 batch stopped by a request timeout)
+
+### Added
+- `eval/results/digest-modes-20261028-091008.jsonl` and `.md`: the first attempt at the S1 batch.
+  - It produced one digest (single).
+  - In the rules run, the Open-source researcher's request did not answer within the lab's 180-second limit. The lab left it pending and paused all paid calls, and the other 16 runs were refused at no cost.
+  - About $0.0063 in all, including about $0.0010 that OpenRouter charged for the pending request.
+- `docs/live-runs.md`: a section on the stopped batch and why a single timeout pauses the lab. `.lab-state/` is unchanged: the lab README asks for the instructor before accounting files change.
+
+### Changed
+- `docs/stage5-eval-plan.md`: the schedule records the pause, and a new risk covers request timeouts.
+
 ## 2026-10-28 (Second snapshot set complete)
 
 ### Added

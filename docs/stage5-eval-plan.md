@@ -238,7 +238,7 @@ Commit every result file and sheet. Look at each step's results before starting 
 | Date | Work |
 | --- | --- |
 | Tue 10-27 (done) | Offline: judge, labelling and memory-case scripts with offline tests; the arXiv half of S2. |
-| Wed 10-28 | GitHub and news for S2 (free). Then, with approval, the 30 digest runs (about $0.20) and the labelling sheet. |
+| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. The rest of S1, S2 and the labelling sheet wait for that. |
 | Thu 10-29 | Author: calibration labels, optional fresh Critic labels, case-set check. Then the judges, the optional Critic reviews and the Idea 2 scenarios (about $0.17). |
 | Fri 10-30 to Sun 11-01 | User study sessions (about $0.05); record video material. |
 | Sun 11-01 to Mon 11-02 | Analysis and figures; video script and recording. |
@@ -246,6 +246,10 @@ Commit every result file and sheet. Look at each step's results before starting 
 
 ## Risks
 
+- **A request timeout pauses the lab** (it happened on 10-28, at this copy's 139th
+  request). Each request has 180 seconds; one that does not answer in time stays
+  pending, and every paid call is refused until the instructor reconciles usage. Run the
+  remaining work in smaller batches and check the ledger between them.
 - **arXiv answers 429** (it did on 10-27 morning): the S2 papers are already saved.
 - **The Manager's output limit**: answers are now about 950 tokens, but a cut-off is
   still possible; the rewrite from notes covers it and is recorded.
