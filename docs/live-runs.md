@@ -433,3 +433,34 @@ $0.17459 in the four local ledgers for this key (Forager `lab/` $0.09662, the co
 $0.05250, week 4 $0.02388, week 6 $0.00160). The remote total is below the local sum, so
 it has probably not counted the latest requests yet, and the cost of the request without
 usage is not known. That makes two pauses in about 300 requests on this key.
+
+### Reconciling the two ledgers
+
+The author then decided that the labs are over and the course key is the project's key,
+so pauses are reconciled without the instructor. Claude looked up the numbers and wrote
+a script; the auto-mode permission check does not let Claude edit the lab's accounting
+files, so the author ran it.
+
+- OpenRouter's `/generation` lookup returns 404 for the request without usage, and
+  returns the billed cost for the request just before it. At 14:38 the key's usage was
+  $0.175565: exactly the four local ledgers ($0.174589) plus $0.000976, the same gap as
+  at 09:13. So the afternoon's request was not billed, and the morning's timed-out
+  request cost $0.000976. (The 14:28 reading had not yet counted the latest requests.)
+- The script backed up each `usage.json`, added $0 to the copy's ledger and $0.000976
+  to `lab/`'s, cleared the pause flags and wrote the evidence to
+  `.lab-state/reconciliations.jsonl`. Both free checks then reported $0.85 remaining.
+
+### S1 again, with `--today 2026-10-27`
+
+Results: `eval/results/digest-modes-20261028-144428.*`, 18 runs for $0.0350 (119
+requests). No digest has a star count that differs from the snapshot, so the date
+mismatch is gone. After one repair, single passed the hard rules 6/6, rules 2/6 and
+critic 4/6. Of the six failures, five broke the 40% topic share and one cited an item
+missing from the digest. Usually the repair fixed the first problem (a heading or a
+citation) and pushed one topic over 40%; once it left the share unchanged. The Critic
+ran four times: PASS three times, and once ADJUST for a mislabelled interest (a news
+story on GPT-6.1 Terra's API pricing filed under image generation), which the revision
+turned into a breadth item.
+
+Across both S1 batches, 9 of 24 team drafts still broke a hard rule after their one
+repair, 7 of them on the topic share.

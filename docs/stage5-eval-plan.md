@@ -256,7 +256,7 @@ repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.
 | Date | Work |
 | --- | --- |
 | Tue 10-27 (done) | Offline: judge, labelling and memory-case scripts with offline tests; the arXiv half of S2. |
-| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. In the afternoon, on the course key in a separate lab copy: S1 in full (18 runs, $0.0397; to be re-run with `--today 2026-10-27`) and 5 of S2's 12 runs ($0.0128), until a response without usage paused the copy too. No labelling sheet yet. |
+| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. In the afternoon, on the course key in a separate lab copy: S1 in full (18 runs, $0.0397; to be re-run with `--today 2026-10-27`) and 5 of S2's 12 runs ($0.0128), until a response without usage paused the copy too. Both pauses reconciled from OpenRouter's numbers (the author's decision: the labs are over and the course key is the project's key). S1 re-run with `--today 2026-10-27` (18 runs, $0.0350). No labelling sheet yet. |
 | Thu 10-29 | Author: calibration labels, optional fresh Critic labels, case-set check. Then the judges, the optional Critic reviews and the Idea 2 scenarios (about $0.17). |
 | Fri 10-30 to Sun 11-01 | User study sessions (about $0.05); record video material. |
 | Sun 11-01 to Mon 11-02 | Analysis and figures; video script and recording. |
@@ -267,7 +267,8 @@ repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.
 - **A response without usage pauses the lab too** (10-28 afternoon, the copy's 155th
   request): with no cost in the answer, the lab sets `unknown_cost` and refuses later
   paid calls, as after a timeout. That is two pauses in about 300 requests on the course
-  key; Claude stops and asks.
+  key. Since 10-28 the author reconciles a pause from OpenRouter's numbers (`CLAUDE.md`,
+  section 3): Claude looks up the cost and writes the script, and the author runs it.
 - **A request timeout pauses the lab** (it happened on 10-28, at this copy's 139th
   request). Each request has 180 seconds; one that does not answer in time stays
   pending, and every paid call is refused until the instructor reconciles usage. Run the

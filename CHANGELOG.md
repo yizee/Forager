@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Ledgers reconciled; S1 re-run with the snapshot date)
+
+### Added
+- `eval/results/digest-modes-20261028-144428.jsonl` and `.md`: S1 again with `--today 2026-10-27`, 18 runs for $0.0350. No star count differs from the snapshot now. After one repair, single passed the hard rules 6/6, rules 2/6 and critic 4/6.
+- `docs/live-runs.md`: how the two paused ledgers were reconciled, and the S1 re-run.
+
+### Changed
+- The course key is now the project's key (the author's decision: the labs are over). Paused ledgers are reconciled without the instructor, from OpenRouter's own numbers. The author runs the reconciliation, which keeps a backup and a record in `.lab-state/reconciliations.jsonl`. `CLAUDE.md` and the plan describe it.
+
 ## 2026-10-28 (Stage 5 digests: S1 and part of S2, then paused again)
 
 ### Added
