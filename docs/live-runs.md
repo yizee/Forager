@@ -510,3 +510,20 @@ differs from its snapshot.
 The copy's ledger stands at $0.1493 after 477 requests, with no pause. The labelling
 sheet for judge calibration is `eval/labels/digests`: 30 items and 30 brief entries,
 spread evenly over the three modes, with the mode hidden until `key.json` is opened.
+
+## 2026-10-28 evening: the judges and the memory scenarios
+
+This is an operational record only. The results will be summarized after the author has
+labelled both calibration sheets, so that the labels stay blind to what the judges said.
+
+| Step | Output | Calls | Errors | Cost |
+| --- | --- | --- | --- | --- |
+| Judge pilot (2 judgements) | `judge-20261028-162727` | 2 | 0 | $0.0020 |
+| Judges on the 30 digests | `judge-20261028-162830` | 63 for 76 judgements (13 identical views reused) | 0 (2 needed one repair) | $0.0671 |
+| Memory scenarios: 8 scenarios, approval and silent, twice each | `memory-20261028-163542` | 32 reviews | 0 | $0.0160 |
+| Judges on the 18 proposals those runs showed or wrote | `judge-20261028-163754` | 18 | 0 | $0.0061 |
+
+The planning estimates were $0.095 for the digest judges, $0.048 for the memory runs and
+$0.011 for their judges. The copy's ledger stands at $0.2405 after 616 requests, with no
+pause; across all its ledgers the course key has about $0.64 left. The memory labelling
+sheet is `eval/labels/memory` (18 proposals).

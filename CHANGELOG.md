@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Judges and memory scenarios run)
+
+### Added
+- `eval/results/judge-20261028-162830.jsonl` and `.md`: the judges on the 30 digests (76 judgements in 63 calls, no errors, $0.0671). `judge-20261028-162727.*` is the two-judgement pilot ($0.0020).
+- `eval/results/memory-20261028-163542.jsonl` and `.md`: the eight memory scenarios, in approval and silent mode, twice each (32 reviews, no errors, $0.0160).
+- `eval/results/judge-20261028-163754.jsonl` and `.md`: the judges on the 18 proposals those runs showed or wrote ($0.0061).
+- `eval/labels/memory`: the blind labelling sheet for the 18 proposals. The results are summarized only after the author has labelled both sheets, so the labels stay blind.
+
 ## 2026-10-28 (The Idea 3 evaluation set: S1 and S2 on the new repair step)
 
 ### Added

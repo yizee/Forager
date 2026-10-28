@@ -1,0 +1,173 @@
+{
+  "made": "2026-10-28",
+  "seed": 619,
+  "runs": [
+    "memory-20261028-163542.jsonl"
+  ],
+  "rows": {
+    "proposals": [
+      {
+        "row": 1,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 12,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 2,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 28,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 3,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 29,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 4,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 24,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 5,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 13,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 6,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 1,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 7,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 25,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[1]"
+      },
+      {
+        "row": 8,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 25,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 9,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 8,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 10,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 16,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 11,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 31,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 12,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 15,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 13,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 6,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 14,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 17,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 15,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 14,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 16,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 9,
+        "version": "final",
+        "mode": "silent",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 17,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 0,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      },
+      {
+        "row": 18,
+        "file": "memory-20261028-163542.jsonl",
+        "index": 30,
+        "version": "final",
+        "mode": "approval",
+        "kind": "proposal",
+        "ref": "proposals[0]"
+      }
+    ]
+  }
+}
