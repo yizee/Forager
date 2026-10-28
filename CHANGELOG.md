@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Repair turns keep the topic balance in view)
+
+### Changed
+- In the rule modes, every repair turn now ends with a "Balance now" line: how many items the digest has, the most any topic may have, and each topic's count. This is `balance_note` in `forager/checks.py`, passed to `ask_json` as a hint, so it is neither a problem nor logged. In the 10-28 runs, most failed repairs fixed one problem and pushed a topic over 40%.
+- With the team writer, a repair turn asks for an uncovered interest only if a specialist matched some candidate to it (`Team.matched`). Otherwise there is no honest fix, and the gap stays a warning in the digest. `check_coverage` is split into `uncovered_interests` and `coverage_message`.
+
+### Added
+- Two offline tests for these changes (130 in all).
+
 ## 2026-10-28 (Ledgers reconciled; S1 re-run with the snapshot date)
 
 ### Added

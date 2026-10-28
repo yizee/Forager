@@ -5,6 +5,7 @@ Scripted model replies; no key, network or spending. Run: .venv/bin/python -m py
 """
 
 import asyncio
+import copy
 import importlib.util
 import json
 import urllib.error
@@ -14,7 +15,7 @@ from types import SimpleNamespace
 import pytest
 
 from forager import labkit
-from forager.digest import generate_digest, merge_items, prepare_candidates
+from forager.digest import COVERAGE_HINT, generate_digest, merge_items, prepare_candidates
 from forager.profile import DEFAULT_PROFILE
 from forager.render import to_markdown
 from forager.sources import news
@@ -78,10 +79,10 @@ def team_replies(final, fits=FITS):
     return replies + [reply(final)]
 
 
-def run(mode, replies, **extra):
+def run(mode, replies, profile=DEFAULT_PROFILE, **extra):
     events = []
     with offline_lab(replies) as lab:
-        outcome = generate_digest(lab, DEFAULT_PROFILE, RAW, mode=mode, today=TODAY, on_event=events.append, **extra)
+        outcome = generate_digest(lab, profile, RAW, mode=mode, today=TODAY, on_event=events.append, **extra)
         return outcome, lab.client.requests, events
 
 
@@ -210,6 +211,32 @@ def test_an_interest_heading_over_unmatched_items_needs_a_repair():
     assert [len(entry["problems"]) for entry in outcome["check_log"]] == [1, 0]
     outcome, requests, _ = run("rules", [reply(bad)], writer="single")   # other writers: measured, not enforced
     assert outcome["errors"] == [] and len(requests) == 1
+
+
+def test_a_repair_turn_shows_each_topics_count_and_the_cap():
+    crowded = {**FITS, "n02": "i1"}                                # AI agents: 4 of 9 items (44%)
+    fixed = {**crowded, "n02": None}                               # the Manager may turn a match into breadth
+    outcome, requests, _ = run("rules", team_replies(digest(crowded), crowded) + [reply(digest(fixed))])
+    assert outcome["errors"] == [] and len(requests) == 9
+    repair = requests[8]["messages"][-1]["content"]
+    assert "'i1' has 4 of 9 items (44%); the limit is 40%." in repair
+    assert ("Balance now: 9 items, so no interest, and not the breadth items together, may have more than 3 (40%). "
+            "Counts: AI agents 4, image generation 2, breadth items 2, video editing 1.") in repair
+    assert all("Balance now" not in p for entry in outcome["check_log"] for p in entry["problems"])
+
+
+def test_coverage_is_asked_for_only_if_a_specialist_matched_the_interest():
+    profile = copy.deepcopy(DEFAULT_PROFILE)
+    profile["interests"].append({"id": "i4", "label": "AI copyright policy", "facets": [], "type": "long_term",
+                                 "source": "stated", "weight": 0.5, "expires": None})
+    gap = "Long-term interest 'AI copyright policy' (i4) has no item in the last 7 days."
+    outcome, requests, _ = run("rules", team_replies(digest()), profile)          # no specialist matched i4
+    assert len(requests) == 8 and outcome["errors"] == [] and outcome["warnings"] == [gap]
+    fits = {**FITS, "r03": "i4"}                                   # the Open-source researcher matched r03
+    left_out = {k: v for k, v in fits.items() if k != "r03"}
+    outcome, requests, _ = run("rules", team_replies(digest(left_out), fits) + [reply(digest(fits))], profile)
+    assert len(requests) == 9 and gap + COVERAGE_HINT in requests[8]["messages"][-1]["content"]
+    assert outcome["errors"] == [] and outcome["warnings"] == []
 
 
 def test_manager_names_items_and_code_copies_the_specialists_notes():

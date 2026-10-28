@@ -43,12 +43,14 @@ def context_input(label: str, context: str):
     return build
 
 
-def ask_json(session, request: str, check, *, max_repairs=1) -> dict:
+def ask_json(session, request: str, check, *, max_repairs=1, hint=None) -> dict:
     """Run request on session, parse JSON and check it; repair up to max_repairs times.
 
-    check(data) returns a list of problems. Returns {"data", "errors", "attempts",
-    "turns", "log"}; data is None if no answer parsed, errors is empty on success, and
-    log has each attempt's problems (what triggered each repair).
+    check(data) returns a list of problems. hint(data), if given, may return a line of
+    context for the repair request (what a fix must keep, say); it is not a problem and
+    is not logged. Returns {"data", "errors", "attempts", "turns", "log"}; data is None if
+    no answer parsed, errors is empty on success, and log has each attempt's problems
+    (what triggered each repair).
     """
     turns, data, errors, log = [], None, [], []
     for _ in range(max_repairs + 1):
@@ -68,4 +70,7 @@ def ask_json(session, request: str, check, *, max_repairs=1) -> dict:
             break
         request = ("Your answer failed these checks. Return the corrected full JSON object only.\n- "
                    + "\n- ".join(errors[:15]))
+        note = hint(data) if hint and data is not None else None
+        if note:
+            request += "\n" + note
     return {"data": data, "errors": errors, "attempts": len(turns), "turns": turns, "log": log}

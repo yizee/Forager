@@ -205,6 +205,10 @@ class Team:
         """The latest note on each item, across every answer so far."""
         return {note["id"]: note for call in self.calls for note in call["notes"]}
 
+    def matched(self) -> set[str]:
+        """Interests a specialist has matched to some candidate in this run."""
+        return {note["interest_id"] for note in self.notes().values() if note["interest_id"]}
+
     def answered(self) -> bool:
         """Every specialist whose source has candidates has answered at least once."""
         return all(any(c["kind"] == kind for c in self.calls) for kind in self.kinds)

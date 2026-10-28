@@ -100,17 +100,40 @@ def check_topic_share(digest: dict, limit: float = MAX_TOPIC_SHARE) -> list[str]
     return []
 
 
-def check_coverage(digest: dict, profile: dict, history=(), today: str | None = None,
-                   days: int = COVERAGE_DAYS) -> list[str]:
-    """Each active long-term interest needs an item in the last `days` days, this digest included."""
+def balance_note(digest: dict, labels: dict, limit: float = MAX_TOPIC_SHARE) -> str | None:
+    """For a repair turn: each topic's item count and the most any topic may have, so that
+    fixing one problem does not break the topic-share rule. None when the rule does not apply."""
+    items = [i for i in digest.get("items") or [] if isinstance(i, dict)]
+    if len(items) < MIN_ITEMS_FOR_SHARE:
+        return None
+    counts = Counter(topic_bucket(i) if isinstance(i.get("reason"), dict) else "breadth" for i in items)
+    cap = int(limit * len(items) + 1e-9)
+    shown = ", ".join(f"{labels.get(bucket, bucket)} {n}" for bucket, n in counts.most_common())
+    return (f"Balance now: {len(items)} items, so no interest, and not the breadth items together, may have "
+            f"more than {cap} ({limit:.0%}). Counts: {shown}. Keep every count within that while you fix "
+            "the problems above.")
+
+
+def uncovered_interests(digest: dict, profile: dict, history=(), today: str | None = None,
+                        days: int = COVERAGE_DAYS) -> list[dict]:
+    """Active long-term interests with no item in the last `days` days, this digest included."""
     today = today or digest.get("date") or date.today().isoformat()
     since = (date.fromisoformat(today) - timedelta(days=days - 1)).isoformat()
     covered = {topic_bucket(i) for i in digest.get("items") or []}
     for past in history:
         if since <= past.get("date", "") <= today:
             covered |= {topic_bucket(i) for i in past.get("items") or []}
-    return [f"Long-term interest '{i['label']}' ({i['id']}) has no item in the last {days} days."
-            for i in active_interests(profile, today) if i["type"] == "long_term" and i["id"] not in covered]
+    return [i for i in active_interests(profile, today) if i["type"] == "long_term" and i["id"] not in covered]
+
+
+def coverage_message(interest: dict, days: int = COVERAGE_DAYS) -> str:
+    return f"Long-term interest '{interest['label']}' ({interest['id']}) has no item in the last {days} days."
+
+
+def check_coverage(digest: dict, profile: dict, history=(), today: str | None = None,
+                   days: int = COVERAGE_DAYS) -> list[str]:
+    """Each active long-term interest needs an item in the last `days` days, this digest included."""
+    return [coverage_message(i, days) for i in uncovered_interests(digest, profile, history, today, days)]
 
 
 def check_source_mix(digest: dict, available_types) -> list[str]:

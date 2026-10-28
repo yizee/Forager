@@ -22,14 +22,19 @@ Modes, which are also the Idea 3 evaluation conditions:
 
 Coverage is the one rule the writer may be unable to satisfy honestly (no candidate fits
 an interest). After the repair turn it becomes a warning, not a failure, so the writer
-is never pushed to mark an unrelated item as matching an interest.
+is never pushed to mark an unrelated item as matching an interest; with the team, a
+repair turn asks for an interest only if a specialist matched some candidate to it.
+Every repair turn in the rule modes also shows each topic's item count and the most any
+topic may have, so that fixing one problem does not break the topic-share rule (in the
+10-28 runs that was how most repairs failed).
 """
 
 import copy
 import json
 from datetime import date
 
-from .checks import check_coverage, check_digest, check_source_mix, check_topic_share
+from .checks import (balance_note, check_digest, check_source_mix, check_topic_share, coverage_message,
+                     uncovered_interests)
 from .critic import critique
 from .jsonagent import ask_json, context_input, json_agent_factory, run_plain
 from .profile import active_interests
@@ -218,20 +223,31 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, mode: str = "s
     available = sorted({c["type"] for c in candidates})
     team = Team(profile, candidates, today) if writer == "team" else None
     complete = team.fill if team else (lambda data: data)    # the Manager's items get their notes
+    labels = {**{i["id"]: i["label"] for i in active_interests(profile, today)}, "breadth": "breadth items"}
 
     def problems(data):
-        """(hard errors, coverage warnings) for a raw model answer."""
+        """(hard errors, uncovered long-term interests) for a raw model answer."""
         data = complete(data)
         hard = check_digest(data, candidate_ids) + (team.check(data) if team else [])
         if hard or mode == "single":
             return hard, []
         merged = merge_items(data, candidates, today)
         return (check_topic_share(merged) + check_source_mix(merged, available),
-                check_coverage(merged, profile, history, today))
+                uncovered_interests(merged, profile, history, today))
 
     def check(data):
-        hard, coverage = problems(data)
-        return hard + [warning + COVERAGE_HINT for warning in coverage]
+        """What a repair turn must fix. An uncovered interest is asked for only if a specialist
+        matched some candidate to it: otherwise there is no honest fix, and it stays a warning."""
+        hard, uncovered = problems(data)
+        matched = team.matched() if team else None
+        return hard + [coverage_message(i) + COVERAGE_HINT for i in uncovered
+                       if matched is None or i["id"] in matched]
+
+    def balance(data):
+        """Each topic's count and cap, shown on a repair turn in the rule modes."""
+        if mode == "single" or not isinstance(data, dict) or not isinstance(data.get("items"), list):
+            return None
+        return balance_note(merge_items(complete(data), candidates, today), labels)
 
     if team:
         session = lab.session(agent_factory=team.manager_factory(MANAGER_INSTRUCTIONS), runner=run_manager,
@@ -243,7 +259,7 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, mode: str = "s
                               runner=run_plain, input_builder=context_input(
                                   "Digest context", context_message(profile, candidates, previous, today)),
                               on_event=on_event, agent_id="digest-writer")
-    draft = ask_json(session, REQUEST, check, max_repairs=max_repairs)
+    draft = ask_json(session, REQUEST, check, max_repairs=max_repairs, hint=balance)
     check_log = [{"stage": "draft", "attempt": n + 1, "problems": p} for n, p in enumerate(draft["log"])]
     rewritten = bool(team and draft["data"] is None and team.answered())
     if rewritten:
@@ -253,7 +269,7 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, mode: str = "s
                               input_builder=context_input("Digest context", context_message(
                                   profile, candidates, previous, today, texts=False, notes=team.answers())),
                               on_event=on_event, agent_id="manager-rewrite")
-        rewrite = ask_json(session, REQUEST, check, max_repairs=max_repairs)
+        rewrite = ask_json(session, REQUEST, check, max_repairs=max_repairs, hint=balance)
         check_log += [{"stage": "rewrite", "attempt": n + 1, "problems": p} for n, p in enumerate(rewrite["log"])]
         draft = {**rewrite, "attempts": draft["attempts"] + rewrite["attempts"],
                  "turns": draft["turns"] + rewrite["turns"]}
@@ -276,10 +292,10 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, mode: str = "s
 
     if draft["data"] is None:
         return finish()
-    hard, coverage = problems(draft["data"])
+    hard, uncovered = problems(draft["data"])
     failures = [e for e in draft["errors"] if e.startswith("Agent turn")]
     result.update(digest=merge_items(complete(draft["data"]), candidates, today), errors=failures + hard,
-                  warnings=coverage)
+                  warnings=[coverage_message(i) for i in uncovered])
     if mode != "critic" or result["errors"]:
         return finish()
 
@@ -292,20 +308,20 @@ def generate_digest(lab, profile: dict, raw_items: list[dict], *, mode: str = "s
     if data is None or data["verdict"] == "PASS":
         return finish()
 
-    revision = ask_json(session, revision_request(data["issues"]), check, max_repairs=max_repairs)
+    revision = ask_json(session, revision_request(data["issues"]), check, max_repairs=max_repairs, hint=balance)
     result["turns"].extend(revision["turns"])
     result["check_log"] += [{"stage": "revision", "attempt": n + 1, "problems": p} for n, p in enumerate(revision["log"])]
     result["attempts"] += revision["attempts"]
     if revision["data"] is None:
         result["revision_errors"] = revision["errors"]
         return finish()
-    hard, coverage = problems(revision["data"])
+    hard, uncovered = problems(revision["data"])
     failures = [e for e in revision["errors"] if e.startswith("Agent turn")]
     if failures or hard:
         result["revision_errors"] = failures + hard          # keep the rule-passing draft
     else:
-        result.update(digest=merge_items(complete(revision["data"]), candidates, today), warnings=coverage,
-                      revised=True)
+        result.update(digest=merge_items(complete(revision["data"]), candidates, today),
+                      warnings=[coverage_message(i) for i in uncovered], revised=True)
     return finish()
 
 
