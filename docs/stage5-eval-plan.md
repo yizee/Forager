@@ -17,7 +17,10 @@ prints its own estimate and asks first.
   the paid work runs on the author's own OpenRouter key, in a separate lab copy outside
   the repository (`~/Desktop/Human-AI/forager-lab-own-key`). It has the same lab code,
   its own `.env` and its own ledger, which starts at $0 with the same $1 local cap. The
-  course key's ledger is left for the instructor to reconcile.
+  course key's ledger is left for the instructor to reconcile. The copy must never hold
+  the course key: with a ledger that starts at $0, the course key there would bypass the
+  course ledger and its pending request. (On 10-28 the first key pasted into the copy
+  turned out to be the course key; it was not used for any paid call.)
 - **Model.** Every agent and every judge is `z-ai/glm-5.3-flash`, the only model the
   lab allows. A judge from the same model as the Critic may share its blind spots, so
   every judge is calibrated against the author's labels (below) and the report says so.
@@ -226,6 +229,9 @@ Commit every result file and sheet. Look at each step's results before starting 
 From 10-28 every paid command runs with
 `FORAGER_LAB_DIR=~/Desktop/Human-AI/forager-lab-own-key` (the author's own key), and the
 budget check runs in that folder (`../../Forager/.venv/bin/python agent.py --check`).
+Before each paid batch, also confirm that the copy's key is not the course key: its ledger
+ID, `sha256(key)[:16]`, must differ from `key_id` in `lab/.lab-state/usage.json`. Compute it
+with a script that prints only the hash, never the key.
 
 1. Free, 10-28 morning: `.venv/bin/python -m forager snapshot --sources github news`
    (writes `github-2026-10-28.json` and `news-2026-10-28.json`).

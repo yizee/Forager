@@ -2,6 +2,12 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (The own-key lab copy must not hold the course key)
+
+### Changed
+- `CLAUDE.md` and `docs/stage5-eval-plan.md`: before each paid batch in the own-key lab copy, check that its key is not the course key, by comparing the lab's ledger ID for it (`sha256(key)[:16]`) with `key_id` in the course ledger. The copy's ledger starts at $0, so the course key there would bypass the course ledger and its pending request.
+  - The first key pasted into the copy matched the course key. The check caught it before any paid call, and the author is removing it from the copy.
+
 ## 2026-10-28 (Remaining paid work moves to the author's own key)
 
 ### Changed
