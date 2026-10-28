@@ -364,3 +364,72 @@ batches with the ledger checked between them.
 
 The run's one digest (single) is not counted in the evaluation; S1 is to be re-run in
 full once paid calls resume.
+
+## 2026-10-28 afternoon: S1 in full and part of S2, on the course key in the lab copy
+
+The author chose to run the batch on the course key in the lab copy, without waiting for
+the instructor to reconcile the morning's pending request (`CLAUDE.md`, section 3). The
+copy's ledger started at $0, so the course key's spending is now split between
+`lab/.lab-state` and the copy's ledger. Results: `eval/results/digest-modes-20261028-135519.*`
+(S1) and `eval/results/digest-modes-20261028-142057.*` (S2, partial).
+
+| Batch | Mode | Digests | Pass the hard rules | Requests (mean) | Cost (mean) | Time (mean) |
+| --- | --- | --- | --- | --- | --- | --- |
+| S1 | single | 6 of 6 | 6 | 1.5 | $0.0010 | 50 s |
+| S1 | rules | 6 of 6 | 6 | 8.5 | $0.0024 | 83 s |
+| S1 | critic | 6 of 6 | 3 | 10.0 | $0.0032 | 114 s |
+| S2 | single | 2 of 4 | 2 | 1.0 | $0.0007 | 37 s |
+| S2 | rules | 2 of 4 | 1 | 8.5 | $0.0028 | 75 s |
+| S2 | critic | 1 of 4 | 1 | 12.0 | $0.0045 | 106 s |
+
+S1 cost $0.0397 for 120 requests, about 30% of its $0.138 planning estimate. S2 cost
+$0.0128 for 35 requests, including the four of the run that stopped (below). Single mode
+only measures the hard rules; the other two modes enforce them.
+
+### Hard rules that still fail after one repair
+
+Four of the 15 team drafts still broke a hard rule after their one repair. Three broke
+the 40% topic share: with 9 to 11 items, four items in one bucket can already be over
+40% (4 of 9 is 44%), and in one run the repair moved the excess into another bucket. One
+broke the interest-heading check (a point under "3D generation" that cites no item
+matched to it), the first time that check fired in a real run. The four are the three
+failed S1 critic runs and one S2 rules run. Rules and critic modes draft in exactly the
+same way (`generate_digest` in `forager/digest.py`; the Critic only sees a draft that
+passes), so all three S1 failures falling on critic runs is chance. It does mean the
+Critic ran in only 3 of the 6 S1 critic runs.
+
+### A date mismatch in S1
+
+S1 uses the 10-27 GitHub snapshot but ran on 10-28 with `--today` left at its default.
+The Open-source researcher's tool computes each repository's age from `today`
+(`reader_view` in `forager/team.py`), so it gave 5 days where the snapshot text says
+"249 stars in 4 days". Wrong counts reached 2 of the 6 rules digests and 3 of the 6
+critic digests, and none of the single digests, which read the snapshot text directly.
+In all three S1 runs where the Critic ran, it reported exactly this as an unsupported
+citation (in one run, through star rates computed from the wrong age), and each
+revision fixed the brief. In two of them the item summaries kept the wrong counts: they
+are copied from the specialists' notes, which the Manager cannot change. This error
+cannot happen in daily use, where the fetch and the digest are on the same day, so S1 is
+to be re-run with `--today 2026-10-27` before it is judged; these 18 runs stay as a
+record. S2's GitHub and news snapshots are from 10-28, the day it ran.
+
+### The Critic in S2
+
+In S2's one critic run, the Critic reported an overstated connection: a point said "3D
+pipelines converge on video-to-3D", citing a repository that turns AI video into motion
+capture and FL4N, a feed-forward 4D novel-view-synthesis paper. The revision reframed
+the point as "3D generation advances on two fronts"; the connection the Critic also
+named was kept with a small rewording.
+
+### Paid calls paused again
+
+S2's second critic run stopped after 4 requests. OpenRouter answered one request
+(generation `gen-1793168807-uBeImFElnt0AeuisYfFZ`) with no usage at all, so the lab
+could not record its cost: it set `unknown_cost` in the copy's ledger and refused every
+later paid call (the other 7 runs, at no cost). The cause differs from the morning's
+timeout; the effect is the same. The copy's ledger was not changed. At 14:28 OpenRouter's
+key check reported $0.17437 of all-time usage (limit $1, remaining $0.84951), against
+$0.17459 in the four local ledgers for this key (Forager `lab/` $0.09662, the copy
+$0.05250, week 4 $0.02388, week 6 $0.00160). The remote total is below the local sum, so
+it has probably not counted the latest requests yet, and the cost of the request without
+usage is not known. That makes two pauses in about 300 requests on this key.

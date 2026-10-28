@@ -14,13 +14,15 @@ prints its own estimate and asks first.
   for the rest of the project. The plan spends about $0.50 and keeps the rest as a
   reserve for reruns and the demo.
 - **Key, from 10-28.** After the course key's ledger was paused (see Risks), the rest of
-  the paid work runs on the author's own OpenRouter key, in a separate lab copy outside
-  the repository (`~/Desktop/Human-AI/forager-lab-own-key`). It has the same lab code,
-  its own `.env` and its own ledger, which starts at $0 with the same $1 local cap. The
-  course key's ledger is left for the instructor to reconcile. The copy must never hold
-  the course key: with a ledger that starts at $0, the course key there would bypass the
-  course ledger and its pending request. (On 10-28 the first key pasted into the copy
-  turned out to be the course key; it was not used for any paid call.)
+  the paid work runs in a separate lab copy outside the repository
+  (`~/Desktop/Human-AI/forager-lab-own-key`), with the same lab code, its own `.env` and
+  its own ledger. The plan was the author's own OpenRouter key; the key the author
+  pasted in turned out to be the course key, and the author chose to use it without
+  waiting for the instructor. Since the copy's ledger started at $0, this sets aside the
+  pause on the course ledger, which the lab README asks to resolve with the instructor.
+  The course key's spending is therefore split between `lab/.lab-state` (to 10-28
+  morning) and the copy's ledger (from 10-28 afternoon); OpenRouter's usage for the key
+  is the total. The copy's ledger paused too on 10-28 afternoon (see Risks).
 - **Model.** Every agent and every judge is `z-ai/glm-5.3-flash`, the only model the
   lab allows. A judge from the same model as the Critic may share its blind spots, so
   every judge is calibrated against the author's labels (below) and the report says so.
@@ -227,17 +229,19 @@ interpretations, as CLAUDE.md §7 asks.
 
 Commit every result file and sheet. Look at each step's results before starting the next.
 From 10-28 every paid command runs with
-`FORAGER_LAB_DIR=~/Desktop/Human-AI/forager-lab-own-key` (the author's own key), and the
-budget check runs in that folder (`../../Forager/.venv/bin/python agent.py --check`).
-Before each paid batch, also confirm that the copy's key is not the course key: its ledger
-ID, `sha256(key)[:16]`, must differ from `key_id` in `lab/.lab-state/usage.json`. Compute it
-with a script that prints only the hash, never the key.
+`FORAGER_LAB_DIR=~/Desktop/Human-AI/forager-lab-own-key` (see Constraints for which key
+it holds), and the budget check runs in that folder
+(`../../Forager/.venv/bin/python agent.py --check`). To tell which key the copy holds,
+compare its ledger ID, `sha256(key)[:16]`, with `key_id` in `lab/.lab-state/usage.json`,
+using a script that prints only the hash, never the key. Each batch passes `--today`,
+the date of its newest snapshot: the Open-source researcher's tool computes each
+repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.md`).
 
 1. Free, 10-28 morning: `.venv/bin/python -m forager snapshot --sources github news`
    (writes `github-2026-10-28.json` and `news-2026-10-28.json`).
 2. Digests, about $0.20 (approved on 10-27), capped at 1.5 times that in total:
-   - S1: `.venv/bin/python eval/run_digest_modes.py --repeats 6 --max-cost 0.18 --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json data/snapshot/news-2026-10-27.json`
-   - S2: `.venv/bin/python eval/run_digest_modes.py --repeats 4 --max-cost 0.12 --snapshot data/snapshot/arxiv-2026-10-27.json data/snapshot/github-2026-10-28.json data/snapshot/news-2026-10-28.json`
+   - S1: `.venv/bin/python eval/run_digest_modes.py --repeats 6 --max-cost 0.18 --today 2026-10-27 --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json data/snapshot/news-2026-10-27.json`
+   - S2: `.venv/bin/python eval/run_digest_modes.py --repeats 4 --max-cost 0.12 --today 2026-10-28 --snapshot data/snapshot/arxiv-2026-10-27.json data/snapshot/github-2026-10-28.json data/snapshot/news-2026-10-28.json`
 3. Free: `.venv/bin/python eval/calibration.py make <S1 runs> <S2 runs> --out eval/labels/digests`;
    the author labels the sheet.
 4. Judges, about $0.10: a pilot with `--limit 2` (about $0.003), then
@@ -252,7 +256,7 @@ with a script that prints only the hash, never the key.
 | Date | Work |
 | --- | --- |
 | Tue 10-27 (done) | Offline: judge, labelling and memory-case scripts with offline tests; the arXiv half of S2. |
-| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. The rest of S1, S2 and the labelling sheet move to the author's own key in a separate lab copy. |
+| Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. In the afternoon, on the course key in a separate lab copy: S1 in full (18 runs, $0.0397; to be re-run with `--today 2026-10-27`) and 5 of S2's 12 runs ($0.0128), until a response without usage paused the copy too. No labelling sheet yet. |
 | Thu 10-29 | Author: calibration labels, optional fresh Critic labels, case-set check. Then the judges, the optional Critic reviews and the Idea 2 scenarios (about $0.17). |
 | Fri 10-30 to Sun 11-01 | User study sessions (about $0.05); record video material. |
 | Sun 11-01 to Mon 11-02 | Analysis and figures; video script and recording. |
@@ -260,6 +264,10 @@ with a script that prints only the hash, never the key.
 
 ## Risks
 
+- **A response without usage pauses the lab too** (10-28 afternoon, the copy's 155th
+  request): with no cost in the answer, the lab sets `unknown_cost` and refuses later
+  paid calls, as after a timeout. That is two pauses in about 300 requests on the course
+  key; Claude stops and asks.
 - **A request timeout pauses the lab** (it happened on 10-28, at this copy's 139th
   request). Each request has 180 seconds; one that does not answer in time stays
   pending, and every paid call is refused until the instructor reconciles usage. Run the

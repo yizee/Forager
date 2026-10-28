@@ -2,6 +2,17 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-28 (Stage 5 digests: S1 and part of S2, then paused again)
+
+### Added
+- `eval/results/digest-modes-20261028-135519.jsonl` and `.md`: S1 in full, 18 runs for $0.0397. Single 6/6, rules 6/6 and critic 3/6 passed the hard rules. The Critic ran in 3 runs and asked for a revision each time.
+- `eval/results/digest-modes-20261028-142057.jsonl` and `.md`: 5 of S2's 12 runs for $0.0128. The batch stopped when a response came back without usage and the lab paused paid calls.
+- `docs/live-runs.md`: a section on both batches, covering hard rules that still failed after one repair, a date mismatch in S1, what the Critic caught and the second pause.
+
+### Changed
+- The batch ran on the course key in the lab copy, by the author's decision, without waiting for the instructor to reconcile the morning's pending request. `CLAUDE.md` and `docs/stage5-eval-plan.md` record this, and the rule that the copy must not hold the course key is withdrawn.
+- Runbook: each batch passes `--today`, the date of its newest snapshot. S1 ran on 10-28 without it, so the Open-source researcher's tool counted repository ages one day too high. S1 is to be re-run with `--today 2026-10-27`.
+
 ## 2026-10-28 (The own-key lab copy must not hold the course key)
 
 ### Changed
