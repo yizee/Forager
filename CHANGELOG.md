@@ -2,6 +2,13 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Showcase: a line-art logo)
+
+### Changed
+- The logo is now an abstract line drawing: a bee whose head is a pair of round glasses, slightly tilted as if in flight, inside an open brush-stroke ring in honey.
+  - In the page header it is inline SVG, so its lines follow the light or dark theme.
+  - `showcase/bee.svg`, the page icon, switches with the system theme.
+
 ## 2026-10-29 (Showcase: English and Chinese, and a bee logo)
 
 ### Added

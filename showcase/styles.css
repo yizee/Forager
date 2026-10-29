@@ -15,6 +15,7 @@
   --brand: #2f6a3d;
   --brand-ink: #ffffff;
   --brand-soft: #e2ecdc;
+  --honey: #d99a2b;
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --deemph: #bdb8aa;
@@ -35,6 +36,7 @@
     --brand: #8fbf96;
     --brand-ink: #0f140e;
     --brand-soft: #26331f;
+    --honey: #e8b14f;
     --series-1: #3987e5;
     --series-2: #d95926;
     --deemph: #57554d;
@@ -55,6 +57,7 @@
   --brand: #8fbf96;
   --brand-ink: #0f140e;
   --brand-soft: #26331f;
+  --honey: #e8b14f;
   --series-1: #3987e5;
   --series-2: #d95926;
   --deemph: #57554d;
@@ -75,7 +78,10 @@ button { font: inherit; color: inherit; }
   backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: saturate(1.2) blur(10px); border-bottom: 1px solid var(--hairline); }
 .topbar-inner { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px; }
 .brand { display: flex; align-items: center; gap: 10px; }
-.logo { width: 36px; height: 36px; display: block; flex: none; }
+.logo { width: 40px; height: 40px; display: block; flex: none; color: var(--ink); }
+.logo-ring { fill: var(--honey); }
+.logo-line { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.logo-dot { fill: currentColor; }
 .brand-name { font-family: var(--serif); font-size: 24px; font-weight: 600; letter-spacing: -0.01em; line-height: 1; }
 .brand-tag { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .tabs { display: flex; gap: 4px; margin-left: auto; }
