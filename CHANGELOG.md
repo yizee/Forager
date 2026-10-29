@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Video script)
+
+### Added
+- `docs/video-script.md`: the 2-minute demo script and recording checklist.
+  - It has six timed beats with screen actions, captions and about 270 words of narration.
+  - Idea 1 is recorded live in the Streamlit app, on a separate runtime folder so the saved profile is not overwritten. Everything else is recorded on the showcase page, with captions saying the runs are recorded.
+  - It also lists the facts behind each claim in the narration.
+
 ## 2026-10-29 (Showcase: a line-art logo)
 
 ### Changed
