@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Demo video, recorded by script)
+
+### Added
+- `video/make_video.mjs` records the demo video from `docs/video-script.md` by driving headless Chrome over the DevTools protocol.
+  - It writes 1920×1080 frames with the subtitles, section labels and a cursor drawn in, and narrates with the macOS voice Samantha.
+  - Scene 2 runs the real setup in the Streamlit app (one paid call); the rest uses the showcase page.
+- `video/encode.swift` makes the MP4s with AVFoundation: one with the narration and one silent, subtitles only.
+- `video/forager-demo.srt`: the subtitles of the current cut, 1:53 long. The MP4s stay in `video/build/`, which git ignores.
+
 ## 2026-10-29 (Video script)
 
 ### Added

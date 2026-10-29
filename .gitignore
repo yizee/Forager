@@ -9,3 +9,4 @@ runtime/
 lab/
 # Local tool settings
 .claude/
+video/build/

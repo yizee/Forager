@@ -313,6 +313,8 @@ Forager/
 
 脚本和录制清单见 `docs/video-script.md`（2026-10-29）。想法 1 在 Streamlit 应用里现场录，每次 1 次付费调用；录制时设置 `FORAGER_RUNTIME_DIR`，避免覆盖 `runtime/profile.json`。其余部分用展示页录，画面上标注是记录下来的运行。结尾的评估结果用广度占比：单 agent 23%，团队加规则 36–38%，值得看的比例都是 87–88%。旁白不说 Critic 提高了广度或质量。
 
+2026-10-29 已用脚本自动录好视频：`video/make_video.mjs` 加 `video/encode.swift`，输出在 `video/build/`（不提交）。时长 1:53，英文配音用 macOS 的系统语音 Samantha，字幕画进画面里。另有一个无声的带字幕版本，方便作者用自己的声音重新配音。重新生成的命令见 `docs/video-script.md` 的 Automated recording 一节。
+
 ## 10. 报告写作要求（来自老师反馈）
 
 - **开头直接写问题和解决方案**，就像本文件第 1 节的三句话；动机压缩成一小段。

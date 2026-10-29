@@ -116,6 +116,32 @@ Sentence to type: *I'm an AI student who follows AI agents, video editing and im
 - [ ] Check the total length is no more than 2:00, and that the narration and the clicks line up.
 - [ ] Export 1080p MP4.
 
+## Automated recording
+
+The video can also be built without screen recording, from the same script.
+
+- **`video/make_video.mjs`** drives Google Chrome (headless) over the DevTools protocol and writes one JPEG per frame at 1920×1080.
+  - The subtitles, the section labels, a cursor and click rings are drawn into each frame.
+  - The narration comes from the macOS `say` voice Samantha. Each subtitle is one narration line, timed to its audio.
+  - Scene 2 runs the real setup in the Streamlit app, so it makes one paid call, about $0.001. The other scenes use the showcase page.
+- **`video/encode.swift`** uses AVFoundation to turn the frames into H.264 and lay the narration lines at their start times. It writes:
+  - `forager-demo.mp4`, with the narration;
+  - `forager-demo-silent.mp4`, with subtitles but no sound, for recording your own voice-over;
+  - `forager-demo.srt`, the subtitles as a separate file.
+
+Commands (the showcase server and the demo app come from `.claude/launch.json`: "showcase" on port 8765, "forager-demo" on port 8502):
+
+```bash
+node video/make_video.mjs
+swiftc -O -swift-version 5 video/encode.swift -o video/build/encode && video/build/encode video/build
+```
+
+Notes:
+
+- The output goes to `video/build/`, which git ignores.
+- `node video/make_video.mjs --scenes 3,4` renders only some scenes, for checking.
+- Chrome runs with a real device scale factor, not emulated metrics. With emulated metrics, the mouse moves Chrome synthesizes after each screenshot land at the wrong coordinates and hide every hover tooltip.
+
 ## Facts behind the narration
 
 These are the numbers and claims the narration relies on; all are in `docs/stage5-results.md`.
