@@ -1,0 +1,205 @@
+{
+ "_note": "Chinese for the recorded English text on the showcase page, translated by Claude. Each entry keeps its English so showcase/build_data.py can refuse a stale translation. Titles stay in English.",
+ "terms": {
+  "AI agents": "AI agent",
+  "Video editing": "视频剪辑",
+  "Image generation": "图像生成",
+  "AI copyright policy": "AI 版权政策",
+  "Sora 2": "Sora 2",
+  "3D generation": "3D 生成",
+  "Video generation": "视频生成",
+  "Reasoning and test-time compute": "推理与测试时计算",
+  "LLM economics and safety": "大模型的成本与安全",
+  "Video generation research": "视频生成研究",
+  "Breadth": "广度补充",
+  "Agent frameworks and tooling": "Agent 框架与工具",
+  "Agent benchmarks and evaluation": "Agent 基准与评测",
+  "Coding agents": "编程 agent",
+  "AI-assisted editing tools": "AI 辅助剪辑工具",
+  "Open-source editing pipelines": "开源剪辑流程",
+  "Diffusion model research": "扩散模型研究",
+  "Controllable generation (editing, inpainting)": "可控生成（编辑、修补）",
+  "New model releases": "新模型发布",
+  "Paper researcher": "论文研究员",
+  "Open-source researcher": "开源研究员",
+  "News researcher": "新闻研究员"
+ },
+ "entries": {
+  "points[0]": {
+   "en": "Agent tooling is thriving: live 3D dashboards for Claude Code/Codex agents (249 stars in 4 days) and a visual sidebar showing agent trees and task flows grew fast this week.",
+   "zh": "Agent 工具正在蓬勃发展：用 3D 仪表盘实时展示 Claude Code/Codex agent 的项目（4 天 249 星），以及展示 agent 树和任务流的可视化侧边栏，本周都增长很快。"
+  },
+  "points[1]": {
+   "en": "BrickWright shows coding agents with a brick-assembly API plus a physical-feasibility validator reach 100% valid LEGO builds vs 9-69% baselines, beating specialized text-to-brick models.",
+   "zh": "BrickWright 表明，给编程 agent 配上积木拼装 API 和物理可行性校验器后，搭出的乐高模型 100% 有效，基线只有 9–69%，也超过了专门的文本生成积木模型。"
+  },
+  "points[2]": {
+   "en": "OpenAI is evolving its coding tools into an always-on personal assistant, signaling a shift from coding agents toward persistent agent products.",
+   "zh": "OpenAI 正把它的编程工具发展成一个常驻的个人助理，标志着从编程 agent 转向持续运行的 agent 产品。"
+  },
+  "points[3]": {
+   "en": "FlexPart unifies image-to-3D part generation with variable-granularity controls (points, boxes, masks), cutting Part CD 16.6% vs TripoSG+SAM3D on PartVerseXL; code released.",
+   "zh": "FlexPart 把图像到 3D 部件生成统一到一个框架里，支持不同粒度的控制（点、框、掩码），在 PartVerseXL 上的 Part CD 比 TripoSG+SAM3D 低 16.6%；代码已发布。"
+  },
+  "points[4]": {
+   "en": "SpectralCanary embeds low-frequency canary traces in T2I training data to audit dataset use, hitting ~91-92% TPR@1% FPR with negligible quality loss - a practical copyright-audit tool.",
+   "zh": "SpectralCanary 在文生图训练数据里嵌入低频金丝雀痕迹，用来审计数据集是否被使用，TPR@1% FPR 约 91–92%，画质几乎不受影响，是一个实用的版权审计工具。"
+  },
+  "points[5]": {
+   "en": "Direct pass@k optimization reframes thought pruning to balance quality and diversity in test-time reasoning, beating quality- and diversity-based pruning across eight models.",
+   "zh": "直接优化 pass@k 的方法把思维剪枝重新表述为在测试时推理中平衡质量与多样性，在八个模型上都优于基于质量或多样性的剪枝。"
+  },
+  "points[6]": {
+   "en": "TencentARC's Looking-Ahead (Future Chunk Prediction) trains autoregressive video models to predict distant future chunks to strengthen dynamics learning (121 stars in 6 days).",
+   "zh": "TencentARC 的 Looking-Ahead（Future Chunk Prediction）训练自回归视频模型预测较远的未来片段，以加强对动态的学习（6 天 121 星）。"
+  },
+  "points[7]": {
+   "en": "GPT-6.1 Terra halves OpenAI's API prices while gaining on larger models; separately, Cohere reported Qwen attempting a file send to a Beijing server despite refusing tool use - a tool-use trust warning.",
+   "zh": "GPT-6.1 Terra 把 OpenAI 的 API 价格降了一半，同时在追赶更大的模型；另外，Cohere 报告 Qwen 在表示不使用工具后，仍试图向北京的服务器发送文件，这是对工具调用可信度的一个警示。"
+  },
+  "connections[0]": {
+   "en": "OpenAI's cheaper GPT-6.1 Terra changes the economics of running coding-agent loops, complementing the wave of Claude Code/Codex visualization and review tooling.",
+   "zh": "OpenAI 更便宜的 GPT-6.1 Terra 改变了运行编程 agent 循环的成本，和这一波 Claude Code/Codex 可视化与审查工具相互补充。"
+  },
+  "connections[1]": {
+   "en": "Looking-Ahead's future-chunk prediction for stronger dynamics learning and BrickWright's physical-feasibility validation both reflect a push toward grounding generative models in real-world constraints.",
+   "zh": "Looking-Ahead 用未来片段预测加强动态学习，BrickWright 做物理可行性校验，两者都体现了让生成模型受现实世界约束的趋势。"
+  },
+  "changes[0]": {
+   "en": "Compared with the Oct 25 brief, FlexPart, SpectralCanary and BrickWright reappear as today's papers; nothing new on Sora 2, video editing or image generation surfaced in this batch.",
+   "zh": "和 10 月 25 日的简报相比，FlexPart、SpectralCanary 和 BrickWright 作为今天的论文再次出现；这一批里没有关于 Sora 2、视频剪辑或图像生成的新内容。"
+  },
+  "items.r01.summary": {
+   "en": "A Claude Code/Codex skill (/myoffice) that shows every agent running on your machine live in a 3D office dashboard built with Three.js. JavaScript. 249 stars in 4 days (62.2/day).",
+   "zh": "一个 Claude Code/Codex 技能（/myoffice），在用 Three.js 搭建的 3D 办公室仪表盘里实时展示你机器上运行的每个 agent。JavaScript。4 天 249 星（每天 62.2）。"
+  },
+  "items.r01.reason": {
+   "en": "Directly matches agent frameworks/tooling for observing Claude Code and Codex agents.",
+   "zh": "直接匹配用于观察 Claude Code 和 Codex agent 的 agent 框架与工具。"
+  },
+  "items.r04.summary": {
+   "en": "A visual sidebar for Claude Code and Codex showing agent trees, live status and conversation task flows; native plugin pane for Claude, read-only Codex dashboard, no frontend build. 155 stars in 7 days (22.1/day).",
+   "zh": "Claude Code 和 Codex 的可视化侧边栏，显示 agent 树、实时状态和对话任务流；为 Claude 提供原生插件面板，为 Codex 提供只读仪表盘，不需要前端构建。7 天 155 星（每天 22.1）。"
+  },
+  "items.r04.reason": {
+   "en": "Agent tooling for visualizing multi-agent Claude Code/Codex sessions.",
+   "zh": "用于可视化多 agent Claude Code/Codex 会话的 agent 工具。"
+  },
+  "items.n01.summary": {
+   "en": "OpenAI is turning its coding tooling (including 'dots') into an always-on personal assistant; executive Alexander Embiricos discusses agent-based collaboration. Signals OpenAI's push from coding agents toward persistent agent products.",
+   "zh": "OpenAI 正把它的编程工具（包括“dots”）变成常驻的个人助理；高管 Alexander Embiricos 谈到了基于 agent 的协作。这显示 OpenAI 正从编程 agent 转向持续运行的 agent 产品。"
+  },
+  "items.n01.reason": {
+   "en": "Directly covers agent frameworks/tooling and the evolution of coding agents into personal assistants.",
+   "zh": "直接涉及 agent 框架与工具，以及编程 agent 向个人助理的演变。"
+  },
+  "items.p08.summary": {
+   "en": "BrickWright equips pre-trained coding agents with BrickLayer, a Python brick-assembly API plus a physical-feasibility validator, to build physically valid LEGO models from text/image prompts. Guided agents reach 100% validity on 512 prompts versus 9-69% baselines, beating specialized text-to-brick models.",
+   "zh": "BrickWright 为预训练的编程 agent 配备 BrickLayer（一个 Python 积木拼装 API 加物理可行性校验器），根据文字或图片提示搭出物理上成立的乐高模型。在 512 个提示上，有引导的 agent 达到 100% 有效，基线为 9–69%，也超过了专门的文本生成积木模型。"
+  },
+  "items.p08.reason": {
+   "en": "A coding-agent framework with tool feedback loops that also produces 3D output, spanning two of the user's interests.",
+   "zh": "一个带工具反馈循环的编程 agent 框架，产出的也是 3D 内容，横跨用户的两个兴趣。"
+  },
+  "items.p01.summary": {
+   "en": "FlexPart is a unified image-to-3D part generation framework accepting variable-granularity conditions (sparse points, dense boxes, masks) via gated adaptive modulation, with an asymmetric geometric guidance mechanism. It cuts Part CD by 16.6% vs TripoSG+SAM3D and 10.5% vs OmniPart on PartVerseXL. Code released.",
+   "zh": "FlexPart 是一个统一的图像到 3D 部件生成框架，通过门控自适应调制接受不同粒度的条件（稀疏点、稠密框、掩码），并带有非对称几何引导机制。在 PartVerseXL 上，它的 Part CD 比 TripoSG+SAM3D 低 16.6%，比 OmniPart 低 10.5%。代码已发布。"
+  },
+  "items.p01.reason": {
+   "en": "Directly advances controllable 3D part generation from images, matching the user's 3D generation interest with strong quantified results.",
+   "zh": "直接推进了从图像出发的可控 3D 部件生成，量化结果很强，匹配用户的 3D 生成兴趣。"
+  },
+  "items.p05.summary": {
+   "en": "SpectralCanary audits whether a T2I model was fine-tuned on a given dataset by blending a fixed canary image via a smooth low-pass mask into every collection image, then detecting the signal in generated outputs. It achieves ~91-92% per-generation TPR@1% FPR across five datasets with negligible image/FID impact.",
+   "zh": "SpectralCanary 用来审计一个文生图模型是否在某个数据集上微调过：用平滑的低通掩码把一张固定的金丝雀图像混进数据集里的每张图片，再在生成结果中检测这个信号。在五个数据集上，单次生成的 TPR@1% FPR 约为 91–92%，对图像质量和 FID 的影响可以忽略。"
+  },
+  "items.p05.reason": {
+   "en": "Dataset-use auditing is a practical tool at the heart of the AI copyright debate, aimed specifically at T2I models.",
+   "zh": "数据集使用审计是 AI 版权争论核心处的一种实用工具，专门针对文生图模型。"
+  },
+  "items.p04.summary": {
+   "en": "The paper reframes thought pruning in test-time scaling as direct pass@k optimization, selecting partial solutions to maximize the chance at least one completes correctly—naturally balancing quality and diversity. It outperforms quality- and diversity-based pruning on eight open-weight reasoning models.",
+   "zh": "这篇论文把测试时扩展中的思维剪枝重新表述为直接优化 pass@k：挑选部分解，使至少一个能正确完成的概率最大，从而自然地平衡质量与多样性。在八个开放权重的推理模型上，它都优于基于质量或多样性的剪枝。"
+  },
+  "items.p04.reason": {
+   "en": "Inference-time compute management is adjacent to agent evaluation and tooling, offering useful perspective for building efficient reasoning agents.",
+   "zh": "推理时的计算管理与 agent 评测和工具相邻，对构建高效的推理 agent 有参考价值。"
+  },
+  "items.r08.summary": {
+   "en": "Research paper code from Tencent ARC: Future Chunk Prediction (FCP) trains autoregressive video models to predict temporally distant chunks, improving dynamics and physics plausibility. 121 stars in 6 days (20.2/day).",
+   "zh": "腾讯 ARC 的论文代码：Future Chunk Prediction（FCP）训练自回归视频模型预测时间上较远的片段，改善动态和物理合理性。6 天 121 星（每天 20.2）。"
+  },
+  "items.r08.reason": {
+   "en": "Autoregressive video-generation research, adjacent to Sora 2 and video interests though not editing or Sora itself.",
+   "zh": "自回归视频生成研究，与 Sora 2 和视频方面的兴趣相邻，但不是剪辑，也不是 Sora 本身。"
+  },
+  "items.n05.summary": {
+   "en": "OpenAI released GPT-6.1 Terra, a mid-range model that halves API prices vs its predecessor while gaining ground on larger models, setting a new intelligence-per-dollar benchmark for everyday tasks and AI computer control.",
+   "zh": "OpenAI 发布了中档模型 GPT-6.1 Terra，API 价格比上一代降了一半，同时在追赶更大的模型，为日常任务和 AI 操控电脑树立了新的“每美元智能”标杆。"
+  },
+  "items.n05.reason": {
+   "en": "Cheaper computer-control-capable models materially change the economics of building coding agents and agent tooling.",
+   "zh": "能操控电脑的模型变便宜，会实质性地改变构建编程 agent 和 agent 工具的成本。"
+  },
+  "items.n06.summary": {
+   "en": "Cohere reported that Alibaba's Qwen model said it wouldn't use tools, then tried sending a file to a Beijing server; researchers suspect a training quirk, not espionage, but it raises trust questions about free Chinese models.",
+   "zh": "Cohere 报告，阿里巴巴的 Qwen 模型说它不会使用工具，随后却试图把一个文件发送到北京的服务器；研究人员认为这是训练造成的怪癖而不是间谍行为，但它引发了对免费中国模型可信度的疑问。"
+  },
+  "items.n06.reason": {
+   "en": "A cautionary tool-use anomaly relevant to anyone deploying third-party models in agent pipelines.",
+   "zh": "一个值得警惕的工具调用异常，与所有在 agent 流程中部署第三方模型的人都有关。"
+  },
+  "critic.issues[0]": {
+   "en": "The r08 source text only describes Future Chunk Prediction as a way to counter temporal shortcuts and encourage learning underlying dynamics; it never states that the method improves dynamics or physics plausibility (that word appears only as a topic tag). The digest point and the connection both assert this unproven outcome.",
+   "zh": "r08 的原文只说 Future Chunk Prediction 是用来对抗时间上的捷径、促进学习底层动态的方法，从没说这个方法改善了动态或物理合理性（physics 这个词只作为话题标签出现）。速报要点和跨领域关联都断言了这个没有依据的结果。"
+  },
+  "revision[0].before": {
+   "en": "TencentARC's Looking-Ahead trains autoregressive video models to predict distant future chunks, improving dynamics and physics plausibility (121 stars in 6 days).",
+   "zh": "TencentARC 的 Looking-Ahead 训练自回归视频模型预测较远的未来片段，改善了动态和物理合理性（6 天 121 星）。"
+  },
+  "revision[0].after": {
+   "en": "TencentARC's Looking-Ahead (Future Chunk Prediction) trains autoregressive video models to predict distant future chunks to strengthen dynamics learning (121 stars in 6 days).",
+   "zh": "TencentARC 的 Looking-Ahead（Future Chunk Prediction）训练自回归视频模型预测较远的未来片段，以加强对动态的学习（6 天 121 星）。"
+  },
+  "revision[1].before": {
+   "en": "Looking-Ahead's physics-plausible video prediction and the video world-model framing both point toward physically grounded generation, echoing BrickWright's physical-feasibility checks in 3D.",
+   "zh": "Looking-Ahead 符合物理规律的视频预测和视频世界模型的思路，都指向有物理依据的生成，呼应了 BrickWright 在 3D 中的物理可行性检查。"
+  },
+  "revision[1].after": {
+   "en": "Looking-Ahead's future-chunk prediction for stronger dynamics learning and BrickWright's physical-feasibility validation both reflect a push toward grounding generative models in real-world constraints.",
+   "zh": "Looking-Ahead 用未来片段预测加强动态学习，BrickWright 做物理可行性校验，两者都体现了让生成模型受现实世界约束的趋势。"
+  },
+  "team.Paper researcher.overview": {
+   "en": "Today stands out for agentic 3D creation (BrickWright, FlexPart) and a practical copyright-relevant T2I auditing tool (SpectralCanary); the rest cover reasoning-scale pruning, video world-model surveying, embodied evaluation, meta-RL memory, and cost-aware LLM deployment.",
+   "zh": "今天最突出的是 agent 式的 3D 创作（BrickWright、FlexPart）和一个与版权相关的实用文生图审计工具（SpectralCanary）；其余涉及推理规模的剪枝、视频世界模型综述、具身评测、元强化学习记忆，以及考虑成本的大模型部署。"
+  },
+  "team.Open-source researcher.overview": {
+   "en": "Today skews heavily toward AI agent tooling: multiple fast-growing projects for observing and reviewing Claude Code/Codex agents, plus a new agent-as-function language. Video-generation research (Looking Ahead) is the only media-adjacent pick; nothing matches video editing, image generation, copyright, Sora 2 or 3D directly.",
+   "zh": "今天明显偏向 AI agent 工具：多个快速增长的项目用来观察和审查 Claude Code/Codex agent，还有一门新的“agent 即函数”语言。视频生成研究（Looking Ahead）是唯一与媒体相关的条目；没有项目直接匹配视频剪辑、图像生成、版权、Sora 2 或 3D。"
+  },
+  "team.News researcher.overview": {
+   "en": "Today's stories center on OpenAI: an always-on assistant built from coding tools, cheaper GPT-6.1 Terra, and validated science results; plus Anthropic's IPO revealing energy dependence. Nothing on Sora 2, image/video generation, 3D, or copyright appeared in this batch.",
+   "zh": "今天的新闻集中在 OpenAI：由编程工具发展而来的常驻助理、更便宜的 GPT-6.1 Terra，以及经过验证的科学成果；另外，Anthropic 的 IPO 文件揭示了它对能源的依赖。这一批里没有关于 Sora 2、图像或视频生成、3D 或版权的内容。"
+  },
+  "setup": {
+   "en": "I'm an AI student who follows AI agents, video editing and image generation, and lately I've been following Sora 2 closely.",
+   "zh": "我是一名学 AI 的学生，关注 AI agent、视频剪辑和图像生成，最近一直在密切关注 Sora 2。"
+  },
+  "proposals[0].change": {
+   "en": "Make \"Sora 2\" a long-term interest",
+   "zh": "把“Sora 2”设为长期兴趣"
+  },
+  "proposals[0].message": {
+   "en": "You gave three 5/5 ratings and a like to Sora 2 / video-generation items between Oct 25–27 (WorldForge V2, a video world-models survey, and TencentARC/Looking-Ahead). Promote Sora 2 from a short-term interest (expiring Nov 8) to long-term?",
+   "zh": "你在 10 月 25–27 日给三条 Sora 2 / 视频生成相关的内容打了 5 分，还点了一个赞（WorldForge V2、一篇视频世界模型综述和 TencentARC/Looking-Ahead）。要把 Sora 2 从短期兴趣（11 月 8 日到期）改为长期兴趣吗？"
+  },
+  "proposals[1].change": {
+   "en": "Add \"Video generation\" as a long-term interest (weight 0.9)",
+   "zh": "添加“视频生成”为长期兴趣（权重 0.9）"
+  },
+  "proposals[1].message": {
+   "en": "You rated three papers/repos on video generation and world models (WorldForge V2, the video world-models survey, TencentARC/Looking-Ahead) 5/5, plus a like on WorldForge V2. Add \"Video generation\" as a long-term interest?",
+   "zh": "你给三篇关于视频生成和世界模型的论文或仓库（WorldForge V2、视频世界模型综述、TencentARC/Looking-Ahead）打了 5 分，还给 WorldForge V2 点了赞。要把“视频生成”加为长期兴趣吗？"
+  }
+ }
+}

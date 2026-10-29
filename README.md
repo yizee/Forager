@@ -92,7 +92,7 @@ python3.11 -m venv .venv
 .venv/bin/python eval/calibration.py draft eval/labels/NAME items LABELS.json --by WHO   # draft labels to check (free)
 .venv/bin/python eval/calibration.py score eval/labels/NAME JUDGE.jsonl   # agreement with a judge run (free)
 .venv/bin/python showcase/build_data.py      # rebuild the showcase page's data from recorded runs (free)
-open showcase/index.html                     # the static showcase page: brief, interests, topics, evaluation
+open showcase/index.html                     # the static showcase page (English or Chinese): brief, interests, topics, evaluation
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

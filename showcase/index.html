@@ -5,26 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Forager showcase</title>
   <meta name="description" content="A static showcase of Forager built from recorded runs: one daily brief, the interest profile and proposed changes, the topic mix, and the Stage 5 evaluation.">
+  <link rel="icon" href="bee.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script>
     try {
       const theme = localStorage.getItem("forager-theme");
       if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
-    } catch (e) { /* storage blocked: follow the system theme */ }
+      if (localStorage.getItem("forager-lang") === "zh") document.documentElement.lang = "zh-CN";
+    } catch (e) { /* storage blocked: follow the system theme, in English */ }
   </script>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9M12 12c0-4.4-3-7-7.5-7 0 4.4 3 7 7.5 7zM12 14.5c0-3.9 2.7-6.5 7-6.5 0 3.9-2.7 6.5-7 6.5z"/></svg>
+        <img class="logo" src="bee.svg" alt="" width="36" height="36">
         <div>
           <div class="brand-name">Forager</div>
-          <div class="brand-tag">Your daily AI brief, rotated for breadth</div>
+          <div class="brand-tag" id="tagline">Your daily AI brief, rotated for breadth</div>
         </div>
       </div>
       <nav class="tabs" role="tablist" aria-label="Sections"></nav>
-      <button class="theme-btn" type="button" aria-label="Switch theme"></button>
+      <div class="top-actions">
+        <button class="lang-btn" type="button"></button>
+        <button class="theme-btn" type="button" aria-label="Switch theme"></button>
+      </div>
     </div>
   </header>
   <main>

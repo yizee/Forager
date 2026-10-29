@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Forager: a bee wearing glasses">
+  <circle cx="32" cy="32" r="32" fill="#FBEFD0"/>
+  <g fill="#FFFFFF" fill-opacity="0.92" stroke="#2B2620" stroke-width="2">
+    <ellipse cx="18.5" cy="30" rx="10" ry="6.5" transform="rotate(-25 18.5 30)"/>
+    <ellipse cx="45.5" cy="30" rx="10" ry="6.5" transform="rotate(25 45.5 30)"/>
+  </g>
+  <defs><clipPath id="bee-body"><ellipse cx="32" cy="42" rx="12" ry="13"/></clipPath></defs>
+  <ellipse cx="32" cy="42" rx="12" ry="13" fill="#F2B033"/>
+  <g clip-path="url(#bee-body)" fill="#2B2620">
+    <rect x="18" y="38" width="28" height="4.2"/>
+    <rect x="18" y="46.6" width="28" height="4.2"/>
+  </g>
+  <ellipse cx="32" cy="42" rx="12" ry="13" fill="none" stroke="#2B2620" stroke-width="2.2"/>
+  <path d="M29.8 54.4 32 58.6 34.2 54.4z" fill="#2B2620"/>
+  <path d="M28 14.5C26.5 10 24 8 21 7.6M36 14.5C37.5 10 40 8 43 7.6" fill="none" stroke="#2B2620" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="20.6" cy="7.6" r="2.3" fill="#2B2620"/>
+  <circle cx="43.4" cy="7.6" r="2.3" fill="#2B2620"/>
+  <circle cx="32" cy="22" r="10" fill="#2B2620"/>
+  <g fill="#FFFFFF" stroke="#F2B033" stroke-width="2">
+    <circle cx="27.2" cy="22.4" r="4.3"/>
+    <circle cx="36.8" cy="22.4" r="4.3"/>
+  </g>
+  <path d="M31.5 22Q32 21.2 32.5 22M22.9 21.9 21.5 20.8M41.1 21.9 42.5 20.8" fill="none" stroke="#F2B033" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="27.8" cy="23" r="1.8" fill="#2B2620"/>
+  <circle cx="37.4" cy="23" r="1.8" fill="#2B2620"/>
+  <path d="M29.4 28.3Q32 30.2 34.6 28.3" fill="none" stroke="#F2B033" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

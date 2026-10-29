@@ -2,6 +2,18 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Showcase: English and Chinese, and a bee logo)
+
+### Added
+- A button at the top right of the showcase switches between English and Chinese.
+  - The page's own labels are written in both languages in `showcase/app.js`.
+  - The recorded text comes from `showcase/translations-zh.json`, translated by Claude. Titles stay in English.
+  - Each translation keeps its English, and `build_data.py` stops if that English has changed or a term has no translation. Two offline tests cover this (133 in all).
+- `showcase/bee.svg`: the new logo, a bee wearing glasses. It is also the page icon.
+
+### Fixed
+- At very narrow widths the showcase no longer scrolls sideways: long titles wrap, and the three source tiles stack.
+
 ## 2026-10-29 (Showcase page)
 
 ### Added

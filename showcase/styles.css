@@ -75,7 +75,7 @@ button { font: inherit; color: inherit; }
   backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: saturate(1.2) blur(10px); border-bottom: 1px solid var(--hairline); }
 .topbar-inner { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px; }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand .icon { width: 26px; height: 26px; color: var(--brand); stroke-width: 1.5; }
+.logo { width: 36px; height: 36px; display: block; flex: none; }
 .brand-name { font-family: var(--serif); font-size: 24px; font-weight: 600; letter-spacing: -0.01em; line-height: 1; }
 .brand-tag { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .tabs { display: flex; gap: 4px; margin-left: auto; }
@@ -83,9 +83,21 @@ button { font: inherit; color: inherit; }
   padding: 9px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
 .tab:hover { background: var(--surface-2); color: var(--ink); }
 .tab[aria-selected="true"] { background: var(--brand); color: var(--brand-ink); }
-.theme-btn { appearance: none; border: 1px solid var(--hairline); background: var(--surface); border-radius: 999px;
-  width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer; color: var(--ink-2); flex: none; }
-.theme-btn:hover { color: var(--ink); }
+.top-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+.theme-btn, .lang-btn { appearance: none; border: 1px solid var(--hairline); background: var(--surface); border-radius: 999px;
+  height: 36px; cursor: pointer; color: var(--ink-2); flex: none; }
+.theme-btn { width: 36px; display: grid; place-items: center; }
+.lang-btn { min-width: 52px; padding: 0 12px; font-size: 13px; font-weight: 650; }
+.theme-btn:hover, .lang-btn:hover { color: var(--ink); border-color: var(--axis); }
+
+/* Chinese: CJK faces after the Latin ones, looser lines, lighter tracking */
+html[lang="zh-CN"] {
+  --serif: "Iowan Old Style", "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --sans: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+html[lang="zh-CN"] .point, html[lang="zh-CN"] .connection, html[lang="zh-CN"] .change,
+html[lang="zh-CN"] .says, html[lang="zh-CN"] .quote { line-height: 1.75; }
+html[lang="zh-CN"] .kicker, html[lang="zh-CN"] .field-name, html[lang="zh-CN"] .diff-label { letter-spacing: 0.06em; }
 
 main { max-width: 1180px; margin: 0 auto; padding: 28px 24px 56px; }
 .panel[hidden] { display: none; }
@@ -275,19 +287,24 @@ details p { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
 .tooltip .tip-extra { opacity: 0.75; font-size: 12px; }
 
 @media (max-width: 980px) {
-  .brief-grid, .two-col { grid-template-columns: 1fr; }
+  .brief-grid, .two-col { grid-template-columns: minmax(0, 1fr); }
 
-  .fig-grid { grid-template-columns: 1fr; }
+  .fig-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 720px) {
   .topbar-inner { flex-wrap: wrap; gap: 10px 12px; padding: 10px 16px; }
   .brand-tag { display: none; }
   .tabs { order: 3; width: 100%; margin-left: 0; overflow-x: auto; }
-  .theme-btn { margin-left: auto; }
+  .top-actions { margin-left: auto; }
   main { padding: 20px 16px 48px; }
   .masthead h1 { font-size: 34px; }
   .brief-card { padding: 20px 18px; }
-  .items { grid-template-columns: 1fr; }
+  .items { grid-template-columns: minmax(0, 1fr); }
   .section-title { font-size: 26px; }
   .interest-row { grid-template-columns: 1fr; }
 }
+
+/* long titles and repo names may break anywhere rather than widen the page */
+.item-title, .ev-title, .point, .connection, .change, .reason-text, .item-summary, .panel-foot { overflow-wrap: anywhere; }
+.tile-sub { overflow-wrap: anywhere; }
+@media (max-width: 560px) { .tiles.compact { grid-template-columns: minmax(0, 1fr); } }
