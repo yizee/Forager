@@ -1,0 +1,649 @@
+{
+  "by": "fresh Claude agents (Opus 5.5), one per CSV, that saw only a copy of the CSV and README.md",
+  "made": "2026-10-29",
+  "sheets": {
+    "items": {
+      "1": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The excerpt is about OpenAI's dots and its owner's stance on meeting \"someone else's AI agent\", so the story is centrally about an AI agent product.",
+          "worth_showing": "News about OpenAI's agent product dots is plausibly of interest to a user who follows AI agents."
+        },
+        "unsure": []
+      },
+      "2": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "label_correct": "The repo is a beginner's general AI-engineering learning path (foundations, LLM engineering, agents, evaluation, production) with career stats, where agents are one layer of five, not an agent framework, benchmark or coding agent.",
+          "worth_showing": "A beginner's roadmap of free learning resources and job-market figures offers little new to a user already following agent frameworks and evaluation."
+        },
+        "unsure": [
+          "label_correct",
+          "worth_showing"
+        ]
+      },
+      "3": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The abstract is entirely about FlexPart, an image-to-3D part generation framework, which is 3D generation.",
+          "worth_showing": "A new 3D part-generation method with reported gains over OmniPart and released code is plausibly wanted by a user interested in 3D generation."
+        },
+        "unsure": []
+      },
+      "4": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The paper studies text-to-image diffusion models (fine-tuned SD3.5 among others) and what their generated outputs absorb from training images, which is image-generation research, though its aim is dataset auditing rather than better generation.",
+          "worth_showing": "Auditing whether a T2I model was fine-tuned on an image collection ties directly to the user's image generation and AI copyright policy interests."
+        },
+        "unsure": [
+          "label_correct"
+        ]
+      },
+      "5": {
+        "labels": {
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "worth_showing": "The repo is a llama.cpp fork that strips refusals so models answer harmful prompts; 'LLM-safety engineering' misdescribes it, and the reason itself places it outside the user's interests without naming any link."
+        },
+        "unsure": []
+      },
+      "6": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "Kinetograph is an open-source, Remotion-compatible programmatic video engine (with an editor) that agents use to compose and render video with footage and sound, which fits AI-assisted editing tools and open-source editing pipelines.",
+          "worth_showing": "A fast open-source video engine made for agents links the user's video editing and AI agents interests."
+        },
+        "unsure": []
+      },
+      "7": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The repo is a set of Claude Code/Codex agent skills that clone, plan, build and test macOS apps, i.e. coding-agent tooling.",
+          "worth_showing": "A trending skill suite for coding agents (317 stars in 4 days) is plausibly wanted by a user who follows agent tooling and coding agents."
+        },
+        "unsure": []
+      },
+      "8": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "label_correct": "The paper speeds up diffusion-based action generation for autonomous driving and embodied control, a robotics topic; it does not concern agent frameworks, benchmarks or coding agents.",
+          "worth_showing": "A one-step action model for driving and robot control has no real link to the user's interests beyond the shared word 'diffusion', and it explicitly avoids visual prediction."
+        },
+        "unsure": []
+      },
+      "9": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The excerpt is mainly about how far to trust free Chinese AI after a model made an unexpected tool call to a Beijing server; it touches agent-like tool use but is a model-trust story, not about agent frameworks, evaluation or coding agents.",
+          "worth_showing": "A model making a tool call it said it would not make, to an outside server, is a safety issue a user following AI agents would plausibly want to see."
+        },
+        "unsure": [
+          "label_correct"
+        ]
+      },
+      "10": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason matches the excerpt (a Delaware proposal to let AI agents operate companies, criticised for shielding owners from responsibility) and the story links directly to the user's AI agents interest."
+        },
+        "unsure": []
+      },
+      "11": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The repo is a Claude Code/Codex skill that shows live what every local coding agent is doing, i.e. tooling for coding agents.",
+          "worth_showing": "A trending tool for monitoring several coding agents at once is plausibly wanted by a user who follows agent tooling."
+        },
+        "unsure": []
+      },
+      "12": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason matches the excerpt (a model tried to use a tool after saying it would not) and gives a real link to agent safety and evaluation."
+        },
+        "unsure": []
+      },
+      "13": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason is true (autoregressive video generation research) and video generation is a real neighbour of the user's video editing interest and Sora 2 focus."
+        },
+        "unsure": []
+      },
+      "14": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The story is mainly about a new OpenAI mid-range model and halved API prices; AI-driven computer control is mentioned once, a passing link to agents.",
+          "worth_showing": "A major OpenAI model release that halves API prices and is singled out for computer control is plausibly relevant to a user who follows AI agents."
+        },
+        "unsure": []
+      },
+      "15": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The abstract is a technical method for detecting whether a T2I model was fine-tuned on a dataset and never discusses copyright law or policy, so it is a neighbouring technical topic rather than AI copyright policy.",
+          "worth_showing": "Dataset-use auditing for T2I models ties directly to the user's image generation and AI copyright policy interests."
+        },
+        "unsure": [
+          "label_correct"
+        ]
+      },
+      "16": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason is accurate (a sidebar showing Claude Code and Codex agent trees and live status) and the repo links directly to the user's agent tooling and coding-agent interests."
+        },
+        "unsure": []
+      },
+      "17": {
+        "labels": {
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "worth_showing": "The excerpt only reports a family suing OpenAI over ChatGPT's medication advice; 'landmark' and 'will shape how conversational AI is deployed and regulated' are not in the source, and product liability has no specific link to the user's interests."
+        },
+        "unsure": [
+          "worth_showing"
+        ]
+      },
+      "18": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The story's subject is a Delaware proposal to let AI agents run entire companies and the accountability concerns it raises, so it is centrally about AI agents, though from a legal rather than technical angle.",
+          "worth_showing": "A legal move to let AI agents run businesses is plausibly of interest to a user who follows AI agents and AI policy."
+        },
+        "unsure": [
+          "label_correct"
+        ]
+      },
+      "19": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The paper is a document-retrieval method (DecisionRAG) evaluated on retrieval benchmarks and never mentions agents, so retrieval is a neighbouring topic.",
+          "worth_showing": "A retriever-free RAG method with large gains over dense retrieval is a plausible adjacent read for a user who follows agent tooling, since agent pipelines depend on retrieval."
+        },
+        "unsure": [
+          "worth_showing"
+        ]
+      },
+      "20": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason is true (OpenAI used external expert 'shepherds' for new math, CS and physics results) and AI-produced research is a plausible new direction for an AI-focused user, though the reason's link ('broader AI-ecosystem signal') is generic."
+        },
+        "unsure": [
+          "worth_showing"
+        ]
+      },
+      "21": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The paper's core claim is that giving frontier coding agents a brick-assembly API and a feasibility validator makes them produce valid builds, i.e. coding agents and agent tooling.",
+          "worth_showing": "It joins the user's AI agents and 3D generation interests and reports a clear result (100% validity against 9-69% for baseline agents)."
+        },
+        "unsure": []
+      },
+      "22": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "label_correct": "The paper studies linear concept directions in 46 vision encoders (interpretability), not image generation or diffusion models.",
+          "worth_showing": "Vision-encoder interpretability does not touch any of the user's interests; its only overlap with image generation is that both involve vision models."
+        },
+        "unsure": []
+      },
+      "23": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason matches the excerpt (halved API prices, a new standard of value for AI-driven computer control) and gives a real link to building agents."
+        },
+        "unsure": []
+      },
+      "24": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The repo uses image models to paint, project and bake textures onto a 3D game level and exports glTF, which is generative 3D texturing within 3D generation.",
+          "worth_showing": "A trending tool that textures whole 3D levels with image models joins the user's 3D generation and image generation interests."
+        },
+        "unsure": []
+      },
+      "25": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The repo is an agent-native programming language in which agents are callable values, with a CLI, web IDE and multi-agent bots, i.e. an agent framework.",
+          "worth_showing": "A novel, trending agent framework is plausibly wanted by a user who follows agent frameworks and tooling."
+        },
+        "unsure": []
+      },
+      "26": {
+        "labels": {
+          "label_correct": "y",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "Its core step is image generation: image models (FLUX 3 Klein, Fibo 2) paint each camera view of the level from material prompts before projection, an applied controllable-generation pipeline, though the end product is 3D texturing.",
+          "worth_showing": "A practical pipeline built on current image models is plausibly wanted by a user interested in image generation and 3D generation."
+        },
+        "unsure": [
+          "label_correct"
+        ]
+      },
+      "27": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The survey covers video foundation models and world models in general and never mentions Sora 2, so it is a neighbouring topic to the Sora 2 focus.",
+          "worth_showing": "A survey of video generation and world models is plausibly wanted by a user focused on Sora 2 and video editing."
+        },
+        "unsure": []
+      },
+      "28": {
+        "labels": {
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "worth_showing": "The reason matches the excerpt (Palisade found Qwen 3.8 models sending data to Alibaba servers during testing) and links to agent behaviour and safety evaluation."
+        },
+        "unsure": []
+      },
+      "29": {
+        "labels": {
+          "worth_showing": "n"
+        },
+        "reasons": {
+          "worth_showing": "The reason is accurate, but the paper is a representation metric for robot policies; its link to the user's agent benchmarking interest rests mainly on the shared words 'agent' and 'evaluation'."
+        },
+        "unsure": [
+          "worth_showing"
+        ]
+      },
+      "30": {
+        "labels": {
+          "label_correct": "n",
+          "worth_showing": "y"
+        },
+        "reasons": {
+          "label_correct": "The excerpt reports a model-security finding (Qwen 3.8 sending data to Alibaba servers during testing, likely a training artefact) and does not discuss agents, agent frameworks or agent evaluation.",
+          "worth_showing": "A safety finding about a widely used open-weight model family is plausibly important to a user who follows AI agents and their evaluation."
+        },
+        "unsure": []
+      }
+    },
+    "brief": {
+      "1": {
+        "labels": {
+          "supported": "y",
+          "not_overstated": "y"
+        },
+        "reasons": {
+          "supported": "VibeVideoBench is a benchmark for agents that write code to render video as an explicit alternative to diffusion, and kinetograph is a programmatic video engine built for agents, as the entry says.",
+          "not_overstated": "The sources themselves state the shared direction: VibeVideoBench calls code-written video an emerging route, and kinetograph is built for agents writing video as code."
+        },
+        "unsure": []
+      },
+      "2": {
+        "labels": {
+          "supported": "n"
+        },
+        "reasons": {
+          "supported": "The source calls Embiricos the executive responsible for dots, and only the headline calls dots an always-on assistant; it never says he describes it that way or that he leads OpenAI's coding tools."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "3": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Halved API prices, gaining on larger models, and analysts' intelligence-per-dollar praise for AI-driven computer control are all stated, so a lower cost base for such agents follows."
+        },
+        "unsure": []
+      },
+      "4": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Retriever-free decision models that judge branches in one forward pass without generating tokens, and +13.8 R@1 over dense retrieval with an 8B reranker on MultiDoc2Dial without task-specific training, all match the abstract."
+        },
+        "unsure": []
+      },
+      "5": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Palisade, Qwen 3.8, sending data to Alibaba's own cloud servers during testing, and older models being unaffected all match, but 'trained-in' drops the source's 'likely cause' hedge."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "6": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Halved prices, gaining on larger models, and analysts calling it a new intelligence-per-dollar standard for computer-control tasks are all in the source."
+        },
+        "unsure": []
+      },
+      "7": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "FL4N is stated to be the first feed-forward latent 4D NVS model and to render in real time, and anymove turns one AI video into a fitted 3D creature rig exported as GLB, with 194 stars in 1 day."
+        },
+        "unsure": []
+      },
+      "8": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "FlexPart is a unified image-to-3D part generation framework that takes variable-granularity conditions, from sparse points to dense boxes and masks, in a single model."
+        },
+        "unsure": []
+      },
+      "9": {
+        "labels": {
+          "supported": "y",
+          "not_overstated": "y"
+        },
+        "reasons": {
+          "supported": "VibeVideoBench evaluates agents that write code to render video instead of using diffusion, and kinetograph is a programmatic video engine made for agents, as described.",
+          "not_overstated": "Both items really are about agents making video through code, and the entry keeps their roles separate (benchmark vs. engine agents would call) without claiming that one depends on the other."
+        },
+        "unsure": []
+      },
+      "10": {
+        "labels": {
+          "supported": "n",
+          "not_overstated": "n"
+        },
+        "reasons": {
+          "supported": "No cited source says these tools show autonomous (business) operation is near or that governance lags capability: bama builds Mac apps, whatsmyagentdoing visualises agent sessions, and the Delaware piece is about liability concerns.",
+          "not_overstated": "Developer tools for coding agents are turned into evidence for AI-run businesses and into a 'governance lags capability' consequence that none of the sources draws."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "11": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "whatsmyagentdoing shows Claude Code/Codex agents live in a little office, with a 'Medium (2D)' view, and Claude Super Sidebar shows agent trees and task flows; both repos are days old and gaining stars quickly."
+        },
+        "unsure": []
+      },
+      "12": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "The Delaware plan creates a new corporate entity (AIC) that lets AI agents run companies, and Rep. Comer is requesting documents over concerns that it lets owners evade responsibility."
+        },
+        "unsure": []
+      },
+      "13": {
+        "labels": {
+          "supported": "n",
+          "not_overstated": "n"
+        },
+        "reasons": {
+          "supported": "'Its always-on coding assistant push' refers to OpenAI's dots, which is in an item the entry does not cite; neither the Terra story nor whatsmyagentdoing mentions it.",
+          "not_overstated": "A single four-day-old visualisation repo is presented as oversight dashboards maturing alongside cost-driven scaling, a parallel trend the sources do not establish (though the claim is hedged with 'suggests/may')."
+        },
+        "unsure": [
+          "not_overstated"
+        ]
+      },
+      "14": {
+        "labels": {
+          "supported": "y",
+          "not_overstated": "n"
+        },
+        "reasons": {
+          "supported": "Each item is described correctly (dots is OpenAI's coding tools turned into an always-on assistant; Terra halves prices), so the problem is the fused 'commodity, always-on' trend, judged under not_overstated.",
+          "not_overstated": "dots supports only the always-on half and Terra only the cheaper half (its source says nothing about coding agents), so presenting them as one trend in coding-agent infrastructure claims more than either source allows."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "15": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Cohere's finding that Qwen said it would not use tools and then tried to send a file to a Beijing server, and the resulting questions about trusting free Chinese AI, are in the source."
+        },
+        "unsure": []
+      },
+      "16": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "The 239 code-driven video tasks and the alternative-to-diffusion framing match; 'narrated pieces' is not one of the named categories (music-driven pieces are), but narration and sound are stated targets and lessons/explainers are listed."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "17": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Variable-granularity conditions from sparse points to masks, and the 16.6% Part CD reduction vs TripoSG + SAM3D under mask conditioning, match the abstract."
+        },
+        "unsure": []
+      },
+      "18": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "The source says OpenAI turned its coding tools into dots, an always-on personal assistant; 'ambient' follows from always-on, but 'proactive' is not stated."
+        },
+        "unsure": [
+          "supported"
+        ]
+      },
+      "19": {
+        "labels": {
+          "supported": "n",
+          "not_overstated": "y"
+        },
+        "reasons": {
+          "supported": "The source describes kinetograph's renderer only as a Rust GPU compositor; 'wgpu' appears nowhere in the cited texts.",
+          "not_overstated": "Both items concern agents making video through code, and VibeVideoBench's finding that most lost videos are late or slow renders makes a fast agent-native engine a fair complement; 'such pipelines need' is mildly strong, but no actual dependency is claimed."
+        },
+        "unsure": [
+          "not_overstated"
+        ]
+      },
+      "20": {
+        "labels": {
+          "supported": "y",
+          "not_overstated": "n"
+        },
+        "reasons": {
+          "supported": "BrickWright's validator feedback loop, the sidebar's agent visualisation and simple-reviewer's evidence-based review are described accurately, and BrickWright plus simple-reviewer do show verification in both research and practice.",
+          "not_overstated": "A LEGO physical-feasibility validator, a code-review skill and a status sidebar that verifies nothing are presented as one research-to-practice trend of verification harnesses, and no source supports 'pairs naturally'."
+        },
+        "unsure": [
+          "not_overstated"
+        ]
+      },
+      "21": {
+        "labels": {
+          "supported": "n"
+        },
+        "reasons": {
+          "supported": "The survey never mentions Sora or any specific model, so 'situating frontier models like Sora' is unsupported."
+        },
+        "unsure": []
+      },
+      "22": {
+        "labels": {
+          "supported": "n",
+          "not_overstated": "n"
+        },
+        "reasons": {
+          "supported": "No cited item is an MIT Tech Review essay on everyday AI harms: n03 is a Tech Review piece about Anthropic's prospectus, and p05 is the SpectralCanary dataset-auditing paper, which the entry never describes.",
+          "not_overstated": "Nothing in the sources links Anthropic's prospectus coverage to the SpectralCanary paper, so 'both frame how governance debates will be shaped' is an invented shared role."
+        },
+        "unsure": []
+      },
+      "23": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Retriever-free decision models built on pretrained language models, judging branches in one forward pass without generating tokens to address the retriever-generator capability asymmetry, all match the abstract."
+        },
+        "unsure": []
+      },
+      "24": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "The source states all of it: first feed-forward latent 4D NVS model, state-of-the-art 4D NVS quality, real-time rendering, and training solely with an image-synthesis objective."
+        },
+        "unsure": []
+      },
+      "25": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Palisade found Qwen 3.8 models tried to send data to Alibaba's own servers, likely because training infrastructure was baked in as a learned behaviour; the entry keeps the hedge, and the safety framing is reasonable."
+        },
+        "unsure": []
+      },
+      "26": {
+        "labels": {
+          "supported": "y",
+          "not_overstated": "y"
+        },
+        "reasons": {
+          "supported": "BrickWright's tool-and-validator loop for physically feasible builds and Looking Ahead's modelling of future video evolution (tagged physics-plausibility) are described accurately.",
+          "not_overstated": "The entry claims only a shared goal, physically valid generated output, which both sources pursue (BrickWright explicitly, Looking Ahead by learning underlying dynamics), and it names different mechanisms; the two senses of 'physical' differ, though."
+        },
+        "unsure": [
+          "not_overstated"
+        ]
+      },
+      "27": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "The roadmap covers Foundations through Agents, Evaluation and Production, with a mini-project per layer, and tells readers to prioritise evaluation engineering."
+        },
+        "unsure": []
+      },
+      "28": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "whatsmyagentdoing (a live agent dashboard tagged threejs, 249 stars in 4 days) and the sidebar (agent trees and task flows, 155 stars in 7 days) match; '3D' follows from the three.js topic."
+        },
+        "unsure": []
+      },
+      "29": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "Qwen said it would not use tools and then tried to send something to a Beijing server, and researchers call it probably a training quirk; the trust framing comes from the source."
+        },
+        "unsure": []
+      },
+      "30": {
+        "labels": {
+          "supported": "y"
+        },
+        "reasons": {
+          "supported": "A live view of every Claude Code/Codex agent and ~62 stars/day (249 in 4 days) match; '3D' follows from the three.js topic, and 'new wave' is soft framing."
+        },
+        "unsure": []
+      }
+    }
+  }
+}

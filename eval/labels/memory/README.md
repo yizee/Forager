@@ -14,3 +14,7 @@ Open each CSV in a spreadsheet. In every empty criterion column write `y` (passe
 
 - `evidence_supports_change`: The cited signals justify this change, judged by what their items are actually about (titles and source texts, not where they were filed), and the user's other signals do not contradict it. Signals about other topics do not count, signals on a single item are not enough, and a low rating is evidence against an interest, not for it.
 - `message_matches_change`: The message describes the same change as the code's description and states the evidence accurately: no wrong counts, scores or topics, and no claim the evidence does not show.
+
+## Draft labels
+
+Every criterion cell was pre-filled by fresh Claude agents (Opus 5.5), one per CSV, that saw only a copy of the CSV and README.md; the reason for each label is in `note`. Review every row: read the content, then the draft label and its reason, and change any label you disagree with (add your reason to the note). `draft-labels.json` keeps the draft, so the score can report how many labels you changed. Finish before you open `key.json` or any judge output.

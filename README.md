@@ -35,7 +35,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
-- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges and the memory scenarios have run (see [live runs](docs/live-runs.md)), and the calibration sheets are being labelled
+- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges and the memory scenarios have run (see [live runs](docs/live-runs.md)), and the calibration sheets have Claude's draft labels for the author to check
 
 Fallback if time is short: drop Hugging Face first.
 
@@ -89,6 +89,8 @@ python3.11 -m venv .venv
 .venv/bin/python eval/run_memory_cases.py     # the memory agent on eight scenarios, approval vs silent (paid; asks first)
 .venv/bin/python eval/judge_runs.py RUNS      # LLM judges on saved runs (paid; asks first)
 .venv/bin/python eval/calibration.py make RUNS --out eval/labels/NAME   # blinded labelling sheet (free)
+.venv/bin/python eval/calibration.py draft eval/labels/NAME items LABELS.json --by WHO   # draft labels to check (free)
+.venv/bin/python eval/calibration.py score eval/labels/NAME JUDGE.jsonl   # agreement with a judge run (free)
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

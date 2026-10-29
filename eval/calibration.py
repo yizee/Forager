@@ -9,10 +9,14 @@ once. Label before looking at any judge output, and open key.json only afterward
 score: compare the labels with a judge run: agreement, Cohen's kappa and a confusion table
 per criterion, plus the rows where the author and the judge disagree. The plan uses the
 judge for the full set when kappa is at least 0.6.
+draft: pre-fill a sheet with another annotator's labels, one reason each in the note column,
+for the author to review row by row. draft-labels.json keeps the draft, and score then also
+counts the labels the author changed.
 
 Usage (free; no model calls):
   .venv/bin/python eval/calibration.py make eval/results/digest-modes-<stamp>.jsonl [...] --out eval/labels/<name>
   .venv/bin/python eval/calibration.py make --memory eval/results/memory-<stamp>.jsonl --out eval/labels/<name>
+  .venv/bin/python eval/calibration.py draft eval/labels/<name> items|brief|proposals <labels.json> --by "<who>"
   .venv/bin/python eval/calibration.py score eval/labels/<name> eval/results/judge-<stamp>.jsonl [...]
 """
 
@@ -179,6 +183,63 @@ def readme(picked: dict, interests: list[dict], run_names) -> str:
     return "\n".join(lines) + "\n"
 
 
+# ---- draft labels ----
+
+DRAFT_FILE = "draft-labels.json"
+DRAFT_README = ("## Draft labels\n\nEvery criterion cell was pre-filled by {by}; the reason for each label is in "
+                "`note`. Review every row: read the content, then the draft label and its reason, and change any label "
+                "you disagree with (add your reason to the note). `{file}` keeps the draft, so the score can report "
+                "how many labels you changed. Finish before you open `key.json` or any judge output.\n")
+
+
+def write_draft(sheet: Path, name: str, rows, by: str) -> int:
+    """Pre-fill one CSV of a sheet with draft labels for the author to review; return the labels written.
+
+    rows: [{"row", "labels": {criterion: "y" | "n"}, "reasons": {criterion: text}, "unsure": [criterion]}],
+    labelling exactly the criteria that are not n/a. Each row's reasons go in `note`, and the draft is kept in
+    draft-labels.json. A CSV that already has labels, notes or a draft is refused, and nothing is written
+    unless every row checks out.
+    """
+    spec, store = SHEETS[name], sheet / DRAFT_FILE
+    draft = (json.loads(store.read_text()) if store.exists()
+             else {"by": by, "made": date.today().isoformat(), "sheets": {}})
+    if name in draft["sheets"]:
+        raise SystemExit(f"{store} already has a draft for {spec['file']}.")
+    path = sheet / spec["file"]
+    with path.open(newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        fields, table = reader.fieldnames, list(reader)
+    given, kept = {int(r["row"]): r for r in rows}, {}
+    for line in table:
+        row = int(line["row"])
+        applicable = [c for c in spec["criteria"] if line[c].strip().casefold() not in ("n/a", "na")]
+        if any(line[c].strip() for c in applicable) or line["note"].strip():
+            raise SystemExit(f"{spec['file']} row {row} already has labels or a note; a draft would overwrite them.")
+        entry = given.pop(row, {})
+        labels, reasons = entry.get("labels") or {}, entry.get("reasons") or {}
+        if sorted(labels) != sorted(applicable) or set(labels.values()) - {"y", "n"}:
+            raise SystemExit(f"{spec['file']} row {row}: the draft must label exactly {', '.join(applicable)} "
+                             "with y or n.")
+        unsure = [c for c in entry.get("unsure") or [] if c in applicable]
+        line.update(labels)
+        line["note"] = " | ".join(["Draft" + (f" (unsure: {', '.join(unsure)})" if unsure else "")]
+                                  + [f"{c}: {reasons.get(c, '').strip()}" for c in applicable])
+        kept[str(row)] = {"labels": labels, "reasons": {c: reasons.get(c, "") for c in applicable},
+                          "unsure": unsure}
+    if given:
+        raise SystemExit(f"The draft has rows that {spec['file']} does not: {sorted(given)}.")
+    with path.open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(table)
+    draft["sheets"][name] = kept
+    store.write_text(json.dumps(draft, ensure_ascii=False, indent=2) + "\n")
+    readme_path = sheet / "README.md"
+    if "## Draft labels" not in (text := readme_path.read_text()):
+        readme_path.write_text(text + "\n" + DRAFT_README.format(by=draft["by"], file=DRAFT_FILE))
+    return sum(len(entry["labels"]) for entry in kept.values())
+
+
 # ---- scoring ----
 
 def parse_label(text: str):
@@ -216,8 +277,10 @@ def judge_answers(records) -> dict:
 
 
 def score(sheet: Path, judge_records) -> dict:
-    """Per criterion: agreement, kappa and confusion counts; plus disagreements and gaps."""
+    """Per criterion: agreement, kappa and confusion counts; plus disagreements and gaps, and, when the
+    sheet has a draft, the rows where the author changed the draft label."""
     key = json.loads((sheet / "key.json").read_text())
+    draft = json.loads((sheet / DRAFT_FILE).read_text())["sheets"] if (sheet / DRAFT_FILE).exists() else {}
     answers = judge_answers(judge_records)
     results = {}
     for name, rows in key["rows"].items():
@@ -225,12 +288,17 @@ def score(sheet: Path, judge_records) -> dict:
         with (sheet / spec["file"]).open(newline="", encoding="utf-8-sig") as f:
             labelled = {int(row["row"]): row for row in csv.DictReader(f) if (row.get("row") or "").strip()}
         for criterion in spec["criteria"]:
-            pairs, disagreements, unlabelled, unjudged = [], [], 0, 0
+            pairs, disagreements, unlabelled, unjudged, drafted, changed = [], [], 0, 0, 0, []
             for entry in rows:
                 cell = (labelled.get(entry["row"], {}).get(criterion) or "").strip()
                 if cell.casefold() in ("n/a", "na"):
                     continue                                    # the criterion does not apply to this row
                 author = parse_label(cell)
+                first = draft.get(name, {}).get(str(entry["row"]), {}).get("labels", {}).get(criterion)
+                if first is not None:
+                    drafted += 1
+                    if author != LABELS[first]:
+                        changed.append(entry["row"])
                 answer = answers.get((entry["file"], entry["index"], entry["version"], entry["kind"], entry["ref"]))
                 judge = (answer or {}).get(criterion)
                 if author is None:
@@ -242,7 +310,8 @@ def score(sheet: Path, judge_records) -> dict:
                     if author != judge:
                         disagreements.append(entry["row"])
             results[f"{name}.{criterion}"] = {**kappa(pairs), "unlabelled": unlabelled, "no_judgement": unjudged,
-                                             "disagreements": disagreements}
+                                             "disagreements": disagreements, "drafted": drafted,
+                                             "changed_from_draft": changed}
     return results
 
 
@@ -263,6 +332,12 @@ def score_report(results: dict, sheet: Path, judge_files) -> str:
     lines += ["", "Rows where the author and the judge disagree:", ""]
     lines += [f"- {name}: rows {', '.join(map(str, r['disagreements']))}" for name, r in results.items()
               if r["disagreements"]] or ["- none"]
+    if (sheet / DRAFT_FILE).exists():
+        lines += ["", f"Draft labels by {json.loads((sheet / DRAFT_FILE).read_text())['by']}, reviewed by the author:",
+                  ""]
+        lines += [f"- {name}: changed {len(r['changed_from_draft'])} of {r['drafted']}"
+                  + (f" (rows {', '.join(map(str, r['changed_from_draft']))})" if r["changed_from_draft"] else "")
+                  for name, r in results.items() if r["drafted"]]
     return "\n".join(lines) + "\n"
 
 
@@ -277,6 +352,11 @@ def main():
     make.add_argument("--brief", type=int, default=30)
     make.add_argument("--proposals", type=int, help="at most this many proposals (default: all)")
     make.add_argument("--seed", type=int, default=SEED)
+    drafter = sub.add_parser("draft", help="pre-fill a sheet with draft labels for the author to review")
+    drafter.add_argument("sheet", type=Path)
+    drafter.add_argument("name", choices=sorted(SHEETS))
+    drafter.add_argument("labels", type=Path, help='JSON: {"rows": [{"row", "labels", "reasons", "unsure"}]}')
+    drafter.add_argument("--by", required=True, help="who drafted the labels")
     scorer = sub.add_parser("score", help="compare the author's labels with judge results")
     scorer.add_argument("sheet", type=Path)
     scorer.add_argument("judge", nargs="+", type=Path, help="judge-*.jsonl files")
@@ -292,6 +372,9 @@ def main():
         picked = sample(runs, memory, items=args.items, brief=args.brief, proposals=args.proposals, seed=args.seed)
         picked = write_sheet(args.out, picked, interests_of(runs), {name for name, _, _ in runs + memory}, args.seed)
         print(f"Wrote {args.out}: " + ", ".join(f"{len(units)} {name}" for name, units in picked.items()))
+    elif args.command == "draft":
+        count = write_draft(args.sheet, args.name, json.loads(args.labels.read_text())["rows"], args.by)
+        print(f"Drafted {count} labels in {args.sheet / SHEETS[args.name]['file']}.")
     else:
         records = [r for path in args.judge for r in load_jsonl(path)]
         results = score(args.sheet, records)

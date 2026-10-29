@@ -331,6 +331,49 @@ def test_calibration_scores_agreement_and_kappa(tmp_path):
     assert "| items.worth_showing | 5 | 80% | 0.00 |" in calibration.score_report(results, tmp_path, ["judge.jsonl"])
 
 
+def test_a_draft_prefills_the_sheet_and_the_score_counts_the_authors_changes(tmp_path):
+    runs = calibration_runs()
+    picked = calibration.sample(runs, items=6, brief=6)
+    calibration.write_sheet(tmp_path, picked, calibration.interests_of(runs), {"modes.jsonl"}, 619)
+    path = tmp_path / "items.csv"
+
+    def read():
+        with path.open(encoding="utf-8-sig", newline="") as f:
+            return list(csv.DictReader(f))
+
+    blank = read()
+    applies = lambda row: [c for c in ("label_correct", "worth_showing") if row[c] != "n/a"]
+    draft = [{"row": int(r["row"]), "labels": {c: "y" for c in applies(r)},
+              "reasons": {c: f"reason for {c}" for c in applies(r)},
+              "unsure": ["worth_showing"] if r["row"] == "2" else []} for r in blank]
+    with pytest.raises(SystemExit, match="must label exactly"):         # a missing cell writes nothing
+        calibration.write_draft(tmp_path, "items", [draft[0], {**draft[1], "labels": {}}, *draft[2:]], by="Claude")
+    assert read() == blank
+    assert calibration.write_draft(tmp_path, "items", draft, by="Claude") == sum(len(applies(r)) for r in blank)
+    rows = read()
+    assert [{c: row[c] for c in ("label_correct", "worth_showing")} for row in rows] == \
+           [{c: "y" if c in applies(r) else "n/a" for c in ("label_correct", "worth_showing")} for r in blank]
+    assert rows[1]["note"].startswith("Draft (unsure: worth_showing) | ")
+    assert "worth_showing: reason for worth_showing" in rows[1]["note"]
+    assert "## Draft labels" in (tmp_path / "README.md").read_text()
+    with pytest.raises(SystemExit, match="already has a draft"):
+        calibration.write_draft(tmp_path, "items", draft, by="Claude")
+    rows[0]["worth_showing"] = "n"                                     # the author disagrees with one label
+    with path.open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    judged = [{"file": u["file"], "index": u["index"], "version": u["version"], "kind": u["kind"],
+               "checks": {u["ref"]: {c: {"passed": True, "reason": "r"} for c in u["criteria"]}}}
+              for u in picked["items"]]
+    results = calibration.score(tmp_path, judged)
+    assert (results["items.worth_showing"]["drafted"], results["items.worth_showing"]["changed_from_draft"]) == (6, [1])
+    assert results["items.label_correct"]["changed_from_draft"] == [] and results["brief.supported"]["drafted"] == 0
+    report = calibration.score_report(results, tmp_path, ["judge.jsonl"])
+    assert "Draft labels by Claude, reviewed by the author:" in report
+    assert "- items.worth_showing: changed 1 of 6 (rows 1)" in report and "- items.label_correct: changed 0 of 3" in report
+
+
 # ---- snapshots ----
 
 def test_snapshot_keeps_an_existing_file(tmp_path, monkeypatch):

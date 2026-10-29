@@ -25,7 +25,8 @@ prints its own estimate and asks first.
   is the total. The copy's ledger paused too on 10-28 afternoon (see Risks).
 - **Model.** Every agent and every judge is `z-ai/glm-5.3-flash`, the only model the
   lab allows. A judge from the same model as the Critic may share its blind spots, so
-  every judge is calibrated against the author's labels (below) and the report says so.
+  every judge is calibrated against reference labels the author has checked (below) and
+  the report says so.
 - **Data.** Automated runs use committed snapshots in `data/snapshot/`, never live
   feeds, so results can be reproduced.
 - **Time.** The video is due 2026-11-03; results are needed by 11-02.
@@ -36,7 +37,7 @@ prints its own estimate and asks first.
 | --- | --- | --- | --- | --- | --- |
 | 3 | Diversity vs relevance: single, rules, critic | Code statistics + LLM judge of each item | 10 repeats x 3 modes = 30 digests | $0.20 digests + $0.05 judge | — |
 | 3 | Citation support of brief points | LLM judge of each point and connection | same 30 digests + the drafts the Critic had revised | $0.05 | — |
-| 3, 2 | Judge calibration | Author labels a blinded sample | 30 items + 30 brief entries; every distinct proposal | — | about 45 min, plus about 10 min for proposals |
+| 3, 2 | Judge calibration | A blinded sample, labels drafted by Claude and checked by the author (from 10-29) | 30 items + 30 brief entries; every distinct proposal | — | about 30–40 min to check both sheets |
 | 3 | Critic on fresh real digests (optional) | Author labels 3 rules digests first, then the Critic reviews each 3 times | 9 reviews | $0.01 | about 45 min |
 | 3 | Author's check of the Critic case-set labels | Pending since 2026-10-26 | — | — | about 30 min |
 | 2 | Evidence-backed, approved updates | 8 scenarios, approval vs silent baseline; code checks + LLM judge | 8 x 2 modes x 2 repeats = 32 reviews | $0.05 reviews + $0.02 judge | — |
@@ -56,7 +57,7 @@ All offline-tested (`tests/test_stage5_eval.py`, scripted model replies, no spen
 | --- | --- | --- |
 | `eval/run_digest_modes.py` | The three modes on fixed snapshots. Each saved record now also keeps the profile and the snapshot file names. | yes |
 | `eval/judge_runs.py` | The three LLM judges (items, brief, proposals) on saved runs, with blinded views; a report per mode with bootstrap intervals, critic minus rules, and what the revision changed | yes |
-| `eval/calibration.py` | `make`: a blinded labelling sheet; `score`: agreement and Cohen's kappa per criterion | no |
+| `eval/calibration.py` | `make`: a blinded labelling sheet; `draft`: pre-fills it with draft labels for the author to check; `score`: agreement and Cohen's kappa per criterion, and how many draft labels the author changed | no |
 | `eval/run_memory_cases.py` | The eight memory scenarios in approval and silent mode, with code measures | yes |
 
 ## Idea 3: diversity vs relevance, and citation support
@@ -120,8 +121,20 @@ source texts and no mode column, a README with the user's interests and the crit
 and `key.json`, which maps rows to runs and modes and is opened only after labelling.
 `score` gives percent agreement, Cohen's kappa and a confusion table per criterion, and
 lists the rows of disagreement. With kappa of at least 0.6 the judge is used for the
-full set; below that, the author-labelled sample is the primary result and the judge is
+full set; below that, the checked sample is the primary result and the judge is
 reported as secondary. Labels are not changed after seeing the judge's answers.
+
+**Who labels (changed 2026-10-29, the author's decision, to save time).** Fresh Claude
+agents (Opus 5.5) draft the labels, one agent per CSV. Each sees only a copy of its CSV
+and the README, in a scratch folder: no `key.json`, no judge output, nothing else in the
+repo. Each label comes with a one-sentence reason, and borderline calls are marked
+unsure. `calibration.py draft` writes the draft into the sheet, with the reasons in
+`note`, and keeps it in `draft-labels.json`. The author then reviews every row and
+changes any label they disagree with, giving the reason in `note`; `score` reports how
+many draft labels the author changed. The report says the reference labels were drafted
+by Claude and checked by the author, and gives that count. Limitation: a pre-filled label
+pulls the reviewer towards agreeing, so agreement with the judge is partly agreement
+between Claude and GLM; the number of changes is the evidence that the review happened.
 
 **Analysis.** Per mode: mean and bootstrap 95% CI over digests for label accuracy,
 worth-showing rate, support rate, breadth share and entropy. Critic minus rules with a
@@ -187,8 +200,9 @@ difference is whether the user sees and approves the change before it is written
   criteria. Silent updates fail the approval part by construction, which the report
   states; the informative part is how many silent updates the judge finds unjustified
   (scenario 5 especially), i.e. changes a user would never have seen.
-- The author labels every distinct judged proposal before the judge runs
-  (`calibration.py make --memory`), about 10 minutes.
+- Every distinct judged proposal gets a reference label (`calibration.py make --memory`),
+  drafted by Claude and checked by the author as for the digests (see Calibration),
+  about 10 minutes.
 - Link to the user study: task 2 below shows each participant one proposal built on
   mislabelled evidence and records whether they notice it from the evidence shown.
 
@@ -243,13 +257,14 @@ repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.
    - S1: `.venv/bin/python eval/run_digest_modes.py --repeats 6 --max-cost 0.18 --today 2026-10-27 --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json data/snapshot/news-2026-10-27.json`
    - S2: `.venv/bin/python eval/run_digest_modes.py --repeats 4 --max-cost 0.12 --today 2026-10-28 --snapshot data/snapshot/arxiv-2026-10-27.json data/snapshot/github-2026-10-28.json data/snapshot/news-2026-10-28.json`
 3. Free: `.venv/bin/python eval/calibration.py make <S1 runs> <S2 runs> --out eval/labels/digests`;
-   the author labels the sheet.
+   fresh Claude agents draft the labels (`calibration.py draft eval/labels/digests items|brief <labels.json> --by "<who>"`)
+   and the author checks every row.
 4. Judges, about $0.10: a pilot with `--limit 2` (about $0.003), then
    `.venv/bin/python eval/judge_runs.py <S1 runs> <S2 runs>`.
 5. Free: `.venv/bin/python eval/calibration.py score eval/labels/digests eval/results/judge-<stamp>.jsonl`.
 6. Memory, about $0.07: `.venv/bin/python eval/run_memory_cases.py --repeats 2`; then
-   `eval/calibration.py make --memory <memory run> --out eval/labels/memory` and the
-   author labels it; then `eval/judge_runs.py <memory run>` and `calibration.py score`.
+   `eval/calibration.py make --memory <memory run> --out eval/labels/memory`, drafted
+   and checked the same way; then `eval/judge_runs.py <memory run>` and `calibration.py score`.
 
 ## Schedule
 
@@ -257,7 +272,7 @@ repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.
 | --- | --- |
 | Tue 10-27 (done) | Offline: judge, labelling and memory-case scripts with offline tests; the arXiv half of S2. |
 | Wed 10-28 | GitHub and news for S2 (done, committed). The S1 batch stopped in its second run: a request timed out, and the lab paused paid calls until usage is reconciled with the instructor. In the afternoon, on the course key in a separate lab copy: S1 in full (18 runs, $0.0397; to be re-run with `--today 2026-10-27`) and 5 of S2's 12 runs ($0.0128), until a response without usage paused the copy too. Both pauses reconciled from OpenRouter's numbers (the author's decision: the labs are over and the course key is the project's key). S1 re-run with `--today 2026-10-27` (18 runs, $0.0350). Then the repair change (each repair turn shows the topic counts and cap; coverage is asked for only when a specialist matched the interest) and the evaluation set: S1 `digest-modes-20261028-151959` and S2 `digest-modes-20261028-152801`, 30 digests for $0.0619. Labelling sheet made: `eval/labels/digests`. Judges on the 30 digests (76 judgements, $0.0671), the memory scenarios (32 reviews, $0.0160) and their judges (18 proposals, $0.0061); memory sheet made: `eval/labels/memory`. |
-| Thu 10-29 | Author: calibration labels for the digests and the memory proposals, optional fresh Critic labels, case-set check; then the free agreement scores (`calibration.py score`). The judges and the Idea 2 scenarios already ran on 10-28. |
+| Thu 10-29 | Calibration labels for the digests and the memory proposals: drafted by fresh Claude agents, checked row by row by the author. Then the free agreement scores (`calibration.py score`). Optional: fresh Critic labels, case-set check. The judges and the Idea 2 scenarios already ran on 10-28. |
 | Fri 10-30 to Sun 11-01 | User study sessions (about $0.05); record video material. |
 | Sun 11-01 to Mon 11-02 | Analysis and figures; video script and recording. |
 | Tue 11-03 | Submit the video; then the report. |
@@ -277,7 +292,7 @@ repository's age from it (S1 first ran on 10-28 without it; see `docs/live-runs.
 - **arXiv answers 429** (it did on 10-27 morning): the S2 papers are already saved.
 - **The Manager's output limit**: answers are now about 950 tokens, but a cut-off is
   still possible; the rewrite from notes covers it and is recorded.
-- **Same-model judge**: calibration against the author's labels; criteria phrased
+- **Same-model judge**: calibration against labels the author checked; criteria phrased
   differently from the Critic's instructions; the judge never sees the condition.
 - **The judge's own output limit**: an item judgement for 10 items is about 1k tokens
   plus reasoning, inside the 4,096-token limit; a cut-off answer gets the repair turn and

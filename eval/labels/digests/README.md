@@ -29,3 +29,7 @@ Open each CSV in a spreadsheet. In every empty criterion column write `y` (passe
 
 - `supported`: Points and connections. Each factual claim in the entry is stated in, or follows directly from, the source texts of the items it cites. Names, numbers, rankings and results must match, and a claim that needs a source the entry does not cite fails. Framing words such as "notable" are fine when the sources bear them out.
 - `not_overstated`: Connections only. The link the connection draws between its items is no stronger than the sources allow: a loose analogy presented as a shared method, a dependency, a trend or a consequence fails.
+
+## Draft labels
+
+Every criterion cell was pre-filled by fresh Claude agents (Opus 5.5), one per CSV, that saw only a copy of the CSV and README.md; the reason for each label is in `note`. Review every row: read the content, then the draft label and its reason, and change any label you disagree with (add your reason to the note). `draft-labels.json` keeps the draft, so the score can report how many labels you changed. Finish before you open `key.json` or any judge output.

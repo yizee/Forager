@@ -1,0 +1,221 @@
+{
+  "by": "fresh Claude agents (Opus 5.5), one per CSV, that saw only a copy of the CSV and README.md",
+  "made": "2026-10-29",
+  "sheets": {
+    "proposals": {
+      "1": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "All three cited items are about AI agents (an LLM-agent safety benchmark, an agent that audits a web corpus, a skill for AI coding agents) and were rated 1/5, 2/5 and 1/5, with no other signals against lowering the weight.",
+          "message_matches_change": "Same change (1.0 to 0.5), and the three items and their scores (1/5, 2/5, 1/5) are stated correctly."
+        },
+        "unsure": []
+      },
+      "2": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Three distinct items that are genuinely about AI agents got low ratings (1/5, 2/5, 1/5) and no other signals contradict, so lowering the weight is supported.",
+          "message_matches_change": "Same change (1.0 to 0.5); the items, their types (two papers, one repo) and the scores 1/5, 2/5, 1/5 match the evidence."
+        },
+        "unsure": []
+      },
+      "3": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Three distinct AI-agent items rated 1/5, 2/5 and 1/5 with no contradicting signals support lowering the weight (here to 0.6).",
+          "message_matches_change": "Same change (1.0 to 0.6), and the three items and scores 1/5, 2/5, 1/5 are correct."
+        },
+        "unsure": []
+      },
+      "4": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "WorldForge V2 (camera-controlled video diffusion), the video world-model survey and Looking-Ahead (autoregressive video generation) are three distinct video-generation items rated 5/5 (one also liked), so they support a Video generation interest even though they were filed under Sora 2.",
+          "message_matches_change": "Same change, and the three 5/5 ratings, the like on WorldForge V2 and the topic (video generation and world models) all match the evidence."
+        },
+        "unsure": []
+      },
+      "5": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "The three cited items are genuinely about AI agents and were rated 1/5, 2/5 and 1/5, with no other signals, so they support lowering the weight.",
+          "message_matches_change": "Same change (1.0 to 0.5), and the items and scores 1/5, 2/5, 1/5 are stated correctly."
+        },
+        "unsure": []
+      },
+      "6": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "FlexPart (image-to-3D part generation) and Gate3DGen (input purification for single-image 3D generation) are two distinct 3D-generation papers rated 5/5, one also liked, with no signals against.",
+          "message_matches_change": "Same change; two 3D-generation papers rated 5/5 and one like, all on Oct 25, match the evidence (item IDs are not shown in the evidence, but their order is consistent)."
+        },
+        "unsure": []
+      },
+      "7": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "n"
+        },
+        "reasons": {
+          "evidence_supports_change": "WorldForge V2 (camera control in video diffusion) and Looking-Ahead (autoregressive video generation) say nothing about Sora 2 and were only filed under it, so they do not support raising Sora 2's weight.",
+          "message_matches_change": "Counts and scores are right (two items 5/5, one like), but it calls them 'Sora 2-linked' items although nothing in their content concerns Sora 2 (only the wrong filing label links them)."
+        },
+        "unsure": [
+          "message_matches_change"
+        ]
+      },
+      "8": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "WorldForge V2, the video world-model survey and Looking-Ahead are all about video generation and world models and were rated 5/5, and the other signal (a like on WorldForge V2) agrees.",
+          "message_matches_change": "Same change; the three 5/5 ratings and the topic are right, and the like it mentions is real (it is in the other signals rather than the cited ones)."
+        },
+        "unsure": []
+      },
+      "9": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "n"
+        },
+        "reasons": {
+          "evidence_supports_change": "None of the three items (WorldForge V2, the video world-model survey, Looking-Ahead) is about Sora 2; they are general video-generation research filed under Sora 2, so they do not support making Sora 2 long-term.",
+          "message_matches_change": "Counts, dates and item names are right, but it presents them as 'Sora 2 / video-generation items' to argue for Sora 2 when none of them is about Sora 2."
+        },
+        "unsure": [
+          "message_matches_change"
+        ]
+      },
+      "10": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Two distinct papers genuinely about 3D generation (FlexPart, Gate3DGen) rated 5/5, one also liked, with no contradicting signals.",
+          "message_matches_change": "Same change; two 3D-generation papers rated 5/5 (s101, s102) and one liked (s103) match the evidence."
+        },
+        "unsure": []
+      },
+      "11": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "n"
+        },
+        "reasons": {
+          "evidence_supports_change": "Both items are about Lumen-V 2 but are the same launch-day story from Oct 25 (the hands-on review repeats the announcement), and the short-term focus they backed has already expired with no later signals, so they show a launch burst rather than a long-term interest.",
+          "message_matches_change": "Same change, but 'rated two Lumen-V 2 items 5/5 and liked another' implies a third item, while the like was on the release announcement, one of the two rated items."
+        },
+        "unsure": [
+          "evidence_supports_change",
+          "message_matches_change"
+        ]
+      },
+      "12": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "The two items are Oct 25 launch coverage of a single model (the review repeats the announcement) that already backed the now-expired Lumen-V 2 focus; they show no current interest in video generation as a field, so they do not justify a new two-week focus.",
+          "message_matches_change": "Same change (short-term, two weeks); the two 5/5 ratings on Lumen-V 2 news are stated correctly and video generation is indeed not in the profile."
+        },
+        "unsure": [
+          "evidence_supports_change"
+        ]
+      },
+      "13": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "The two low ratings (1/5, 2/5) are on agent papers from Oct 25, but the user's other signals are two later 5/5 ratings on agent items (whatsmyagentdoing, OpenAI's dots), which contradict lowering the weight.",
+          "message_matches_change": "Same change (1.0 to 0.8), and it states both the two 5/5 ratings on Oct 27 and the 1/5 and 2/5 on Oct 25 correctly."
+        },
+        "unsure": []
+      },
+      "14": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Two distinct papers genuinely about 3D generation (FlexPart, Gate3DGen) rated 5/5, one also liked, with no contradicting signals.",
+          "message_matches_change": "Same change; two 3D-generation papers rated 5/5 and one liked, with the right titles."
+        },
+        "unsure": []
+      },
+      "15": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "The ratings and the like are Oct 25 launch coverage of one model (the review repeats the announcement) that already backed the now-expired Lumen-V 2 focus, with no later signals, so they do not justify a new two-week video-generation focus.",
+          "message_matches_change": "Same change (new short-term video generation interest); the two 5/5 ratings and one like are right, and the profile does mark the Lumen-V 2 focus as expired (its date is not shown in the sheet)."
+        },
+        "unsure": [
+          "evidence_supports_change"
+        ]
+      },
+      "16": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "n"
+        },
+        "reasons": {
+          "evidence_supports_change": "The three items rated 5/5 (one also liked) are general video-generation research with nothing about Sora 2, so they do not support making Sora 2 long-term.",
+          "message_matches_change": "Counts are right (three 5/5, one like), but it calls them 'three Sora 2 items' although none of them is about Sora 2."
+        },
+        "unsure": [
+          "message_matches_change"
+        ]
+      },
+      "17": {
+        "labels": {
+          "evidence_supports_change": "y",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Two distinct, recent papers genuinely about 3D generation rated 5/5 (one also liked) support adding 3D generation as a short-term interest.",
+          "message_matches_change": "Same change (short-term), and 'two papers on image-to-3D generation 5/5, liked one' matches the evidence."
+        },
+        "unsure": []
+      },
+      "18": {
+        "labels": {
+          "evidence_supports_change": "n",
+          "message_matches_change": "y"
+        },
+        "reasons": {
+          "evidence_supports_change": "Both items are about Lumen-V 2 but are one launch-day story from Oct 25 (the review repeats the announcement), and the focus has already expired with no later signals, so they do not show a lasting interest.",
+          "message_matches_change": "Same change; 'both items 5/5' and the like on the release announcement are correct ('so it doesn't expire' describes the effect of the change, though the focus has already expired)."
+        },
+        "unsure": [
+          "evidence_supports_change"
+        ]
+      }
+    }
+  }
+}

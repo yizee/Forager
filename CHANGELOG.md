@@ -2,6 +2,15 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Draft calibration labels for the author to check)
+
+### Added
+- `eval/calibration.py draft`: pre-fills a labelling sheet with another annotator's labels, puts the reason for each in `note`, and keeps the draft in `draft-labels.json`. `score` then also reports how many draft labels the author changed. One offline test (131 in all).
+- Draft labels in both sheets: 125 labels (`items.csv` 50, `brief.csv` 39, `proposals.csv` 36), 29 of them marked unsure. Each CSV was labelled by a fresh Claude agent (Opus 5.5) that saw only a copy of that CSV and its README in a scratch folder. The agents saw no `key.json`, no judge results and nothing else in the repo.
+
+### Changed
+- The calibration labels are now drafted by Claude and checked row by row by the author (the author's decision, to save time). The report will say so and give the number of labels the author changed. `docs/stage5-eval-plan.md`, `CLAUDE.md` and `README.md` describe the method and its limitation: pre-filled labels pull the reviewer towards agreeing.
+
 ## 2026-10-28 (Judges and memory scenarios run)
 
 ### Added
