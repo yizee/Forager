@@ -2,6 +2,16 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Showcase page)
+
+### Added
+- `showcase/`: a static showcase page for the video and the report. Open `showcase/index.html`; it needs no server and calls no model. Its four views are built from recorded runs:
+  - **Brief**: one critic-mode digest, with its rule checks, the three specialists, and the Critic's issue with the text before and after the revision.
+  - **Interests**: the interest profile and two recorded proposals to approve or reject. The buttons change only the page.
+  - **Topics**: the topic mix against the 40% cap, the 7-day coverage of long-term interests, and the exploration share.
+  - **Evaluation**: the Stage 5 results, with the judge calibration.
+- `showcase/build_data.py` regenerates `showcase/data.js` from the committed result files.
+
 ## 2026-10-29 (Stage 5 results and judge calibration)
 
 ### Added
