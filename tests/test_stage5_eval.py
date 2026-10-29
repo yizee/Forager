@@ -369,9 +369,16 @@ def test_a_draft_prefills_the_sheet_and_the_score_counts_the_authors_changes(tmp
     results = calibration.score(tmp_path, judged)
     assert (results["items.worth_showing"]["drafted"], results["items.worth_showing"]["changed_from_draft"]) == (6, [1])
     assert results["items.label_correct"]["changed_from_draft"] == [] and results["brief.supported"]["drafted"] == 0
-    report = calibration.score_report(results, tmp_path, ["judge.jsonl"])
+    modes = calibration.by_mode(tmp_path, judged)
+    first = json.loads((tmp_path / "key.json").read_text())["rows"]["items"][0]["mode"]
+    assert list(modes["items.worth_showing"]) == ["single", "rules", "critic"]
+    assert {m: (c["n"], c["labels"], c["judge"]) for m, c in modes["items.all"].items()} == \
+           {m: (2, 1 if m == first else 2, 2) for m in ("single", "rules", "critic")}
+    assert "brief.supported" not in modes                              # no judgements, so no rows to compare
+    report = calibration.score_report(results, tmp_path, ["judge.jsonl"], modes)
     assert "Draft labels by Claude, reviewed by the author:" in report
     assert "- items.worth_showing: changed 1 of 6 (rows 1)" in report and "- items.label_correct: changed 0 of 3" in report
+    assert f"| items.all | {first} | 2 | 1 (50%) | 2 (100%) |" in report
 
 
 # ---- snapshots ----

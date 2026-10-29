@@ -6,6 +6,9 @@ Stage 5 paid call, and updated the same evening when the offline preparation was
 estimates from the ledger's per-run figures (`docs/live-runs.md`); every paid script
 prints its own estimate and asks first.
 
+Results for the digests, the memory scenarios and the judge calibration (2026-10-29):
+[stage5-results.md](stage5-results.md).
+
 ## Constraints
 
 - **Budget.** The lab's local ledger allows $1 in total for this lab copy and does not

@@ -315,7 +315,37 @@ def score(sheet: Path, judge_records) -> dict:
     return results
 
 
-def score_report(results: dict, sheet: Path, judge_files) -> str:
+def by_mode(sheet: Path, judge_records) -> dict:
+    """Per criterion, and for all of a row's criteria together ("<sheet>.all"): by mode, the rows with both a
+    label and a judgement, and how many pass by the labels and by the judge. Rows from a draft the Critic
+    reviewed count apart from final digests. Below the kappa threshold the labels are the result."""
+    key = json.loads((sheet / "key.json").read_text())
+    answers = judge_answers(judge_records)
+    order = {mode: n for n, mode in enumerate((*DIGEST_MODES, *MEMORY_MODES))}
+    table = {}
+    for name, rows in key["rows"].items():
+        spec = SHEETS[name]
+        with (sheet / spec["file"]).open(newline="", encoding="utf-8-sig") as f:
+            labelled = {int(row["row"]): row for row in csv.DictReader(f) if (row.get("row") or "").strip()}
+        for entry in sorted(rows, key=lambda e: (order.get(e["mode"], len(order)), e["version"] != "final")):
+            group = entry["mode"] if entry["version"] == "final" else f"{entry['mode']} · {entry['version'].replace('_', ' ')}"
+            line = labelled.get(entry["row"], {})
+            answer = answers.get((entry["file"], entry["index"], entry["version"], entry["kind"], entry["ref"])) or {}
+            pairs = {c: (parse_label(line.get(c)), answer.get(c)) for c in spec["criteria"]
+                     if (line.get(c) or "").strip().casefold() not in ("n/a", "na")}
+            done = {c: pair for c, pair in pairs.items() if None not in pair}
+            groups = list(done.items())
+            if done and len(done) == len(pairs):
+                groups.append(("all", (all(label for label, _ in done.values()), all(j for _, j in done.values()))))
+            for criterion, (label, judge) in groups:
+                cell = table.setdefault(f"{name}.{criterion}", {}).setdefault(group, {"n": 0, "labels": 0, "judge": 0})
+                cell["n"] += 1
+                cell["labels"] += label
+                cell["judge"] += judge
+    return table
+
+
+def score_report(results: dict, sheet: Path, judge_files, modes: dict | None = None) -> str:
     pct = lambda v: "-" if v is None else f"{v:.0%}"
     lines = [f"# Judge calibration · {sheet.name}", "",
              f"Author's labels in `{sheet}` against {', '.join(judge_files)}. Kappa of at least "
@@ -338,6 +368,13 @@ def score_report(results: dict, sheet: Path, judge_files) -> str:
         lines += [f"- {name}: changed {len(r['changed_from_draft'])} of {r['drafted']}"
                   + (f" (rows {', '.join(map(str, r['changed_from_draft']))})" if r["changed_from_draft"] else "")
                   for name, r in results.items() if r["drafted"]]
+    if modes:
+        lines += ["", "By mode, on the same rows: how many pass by the labels and by the judge (`.all`: every "
+                  "criterion of the row passes).", "",
+                  "| Criterion | Mode | Rows | Labels pass | Judge pass |", "|" + " --- |" * 5]
+        lines += [f"| {name} | {mode} | {c['n']} | {c['labels']} ({c['labels'] / c['n']:.0%}) "
+                  f"| {c['judge']} ({c['judge'] / c['n']:.0%}) |"
+                  for name, per_mode in modes.items() for mode, c in per_mode.items()]
     return "\n".join(lines) + "\n"
 
 
@@ -378,7 +415,7 @@ def main():
     else:
         records = [r for path in args.judge for r in load_jsonl(path)]
         results = score(args.sheet, records)
-        text = score_report(results, args.sheet, [p.name for p in args.judge])
+        text = score_report(results, args.sheet, [p.name for p in args.judge], by_mode(args.sheet, records))
         (args.sheet / "agreement.md").write_text(text)
         print(text)
 

@@ -2,6 +2,16 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Stage 5 results and judge calibration)
+
+### Added
+- `docs/stage5-results.md`: judge calibration, the three digest modes (Idea 3), approval versus silent updates (Idea 2), limitations, and what goes into the video and the report.
+- `eval/labels/digests/agreement.md` and `eval/labels/memory/agreement.md`: agreement and kappa for each criterion. The author reviewed all 125 draft labels and changed none.
+- `calibration.py score` now also lists, for each criterion and mode, how many rows pass by the labels and by the judge (`by_mode`). Rows from a draft the Critic reviewed are counted separately from final digests.
+
+### Changed
+- `CLAUDE.md`, `README.md` and `docs/stage5-eval-plan.md` point to the results. Three judges fall below the plan's kappa of 0.6: brief support (0.17), connections (0.14) and proposal evidence (0.27). For those criteria the reference labels are the result.
+
 ## 2026-10-29 (Draft calibration labels for the author to check)
 
 ### Added
