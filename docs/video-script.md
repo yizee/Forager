@@ -142,6 +142,30 @@ Notes:
 - `node video/make_video.mjs --scenes 3,4` renders only some scenes, for checking.
 - Chrome runs with a real device scale factor, not emulated metrics. With emulated metrics, the mouse moves Chrome synthesizes after each screenshot land at the wrong coordinates and hide every hover tooltip.
 
+### Your own voice
+
+The synthetic voice can be replaced with your own, one take per line.
+
+1. Start the studio: `.venv/bin/python video/voice_studio.py`.
+2. Open http://localhost:8766 in Chrome and allow the microphone.
+3. Record each line:
+   - **Space** starts and stops a take; recording again replaces it.
+   - **P** plays it back.
+   - **← and →** move between lines.
+4. How takes are saved:
+   - The studio trims the silence before and after each take and raises its peak to -1 dB.
+   - Each take is saved as `video/voice/NN.wav`. Git ignores this folder, so the recordings stay on this machine.
+5. Watch the projected speech time. With up to about 95 seconds of speech, the video stays within two minutes.
+6. Build the video with your takes:
+
+   ```bash
+   node video/make_video.mjs --voice video/voice
+   video/build/encode video/build
+   ```
+
+   - The takes are matched to the lines by their text, and each scene's timing follows your takes.
+   - If the live setup scene suggests a field other than AI copyright policy, the recorder stops; run it again.
+
 ## Facts behind the narration
 
 These are the numbers and claims the narration relies on; all are in `docs/stage5-results.md`.

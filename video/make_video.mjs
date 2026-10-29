@@ -5,7 +5,10 @@
 //
 // Needs the showcase on :8765 and the demo Streamlit app on :8502 (.claude/launch.json "showcase" and
 // "forager-demo"). Scene 2 makes one paid model call (the clarification step, about $0.001).
-// Usage: node video/make_video.mjs [--scenes 1,3]      (default: all six scenes)
+// Usage: node video/make_video.mjs [--scenes 1,3] [--voice video/voice]
+//   --scenes  render only these scenes (default: all six)
+//   --voice   narrate with your own takes (NN.wav from video/voice_studio.py, one per line of video/forager-demo.srt)
+//             instead of the synthetic voice; the timing then follows your takes
 
 import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -25,11 +28,24 @@ const VOICE = "Samantha", RATE = 172, GAP = 0.3;
 const SENTENCE = "I'm an AI student who follows AI agents, video editing and image generation, and lately I've been following Sora 2 closely.";
 
 // ---------- narration ----------
+const audioSeconds = file => Number(/estimated duration: ([\d.]+)/.exec(spawnSync("afinfo", [file]).stdout.toString())[1]);
 function tts(text, file) {
   const run = spawnSync("say", ["-v", VOICE, "-r", String(RATE), "-o", file, text]);
   if (run.status !== 0) throw new Error(`say failed: ${run.stderr}`);
-  const info = spawnSync("afinfo", [file]).stdout.toString();
-  return Number(/estimated duration: ([\d.]+)/.exec(info)[1]);
+  return audioSeconds(file);
+}
+// Your own takes, matched to the lines by their text, so a line the live scene leaves out cannot shift the rest.
+const voiceArg = process.argv.indexOf("--voice");
+const TAKES = voiceArg > 0 ? loadTakes(path.resolve(process.argv[voiceArg + 1])) : null;
+function loadTakes(dir) {
+  const takes = new Map(), missing = [];
+  for (const block of fs.readFileSync(path.join(ROOT, "video", "forager-demo.srt"), "utf8").trim().split(/\n\s*\n/)) {
+    const rows = block.split("\n");
+    const file = path.join(dir, `${String(Number(rows[0]) - 1).padStart(2, "0")}.wav`);
+    if (fs.existsSync(file)) takes.set(rows.slice(2).join(" ").trim(), file); else missing.push(rows[0]);
+  }
+  if (missing.length) throw new Error(`no take for line(s) ${missing.join(", ")} in ${dir}: record them in the studio first`);
+  return takes;
 }
 
 // ---------- a minimal DevTools protocol client (Node's built-in WebSocket) ----------
@@ -160,8 +176,12 @@ class Director {
   async hold(seconds) { await this.frames(Math.max(0, Math.round(seconds * FPS))); }
   async say(text, spoken = text.replace(/Sora 2/g, "Sora two")) {
     if (this.t < this.narrationEnd + GAP) await this.hold(this.narrationEnd + GAP - this.t);
-    const file = path.join(AUDIO, `n${String(this.audio.length).padStart(2, "0")}.aiff`);
-    const duration = tts(spoken, file);
+    let file = path.join(AUDIO, `n${String(this.audio.length).padStart(2, "0")}.aiff`), duration;
+    if (TAKES) {
+      file = TAKES.get(text.trim());
+      if (!file) throw new Error(`no recorded take for "${text}" (the live scene may have suggested another field: run again)`);
+      duration = audioSeconds(file);
+    } else duration = tts(spoken, file);
     this.audio.push({ file, start: this.t, duration, text });
     this.captions.push({ text, start: this.t, end: this.t + duration + 0.2 });
     this.narrationEnd = this.t + duration;
@@ -489,7 +509,9 @@ try {
   fs.writeFileSync(path.join(BUILD, "forager-demo.srt"), srt);
   fs.writeFileSync(path.join(BUILD, "timeline.json"), JSON.stringify({ fps: FPS, frames: v.frame, duration: v.t,
     audio: v.audio.map(a => ({ file: a.file, start: a.start })) }, null, 1));
-  console.log(`done: ${v.frame} frames, ${v.t.toFixed(1)} s of video, ${v.audio.length} narration lines`);
+  console.log(`done: ${v.frame} frames, ${v.t.toFixed(1)} s of video, ${v.audio.length} narration lines` +
+    (TAKES ? ", in your voice" : ""));
+  if (v.t > 120) console.log(`warning: the video is ${v.t.toFixed(1)} s, over two minutes: re-record the slowest lines`);
 } finally {
   chrome.kill();
 }

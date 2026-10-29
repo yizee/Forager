@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Narration studio</title>
+  <style>
+    :root { --page: #f4f1e8; --surface: #fffdf8; --ink: #1e1c17; --ink-2: #545046; --muted: #7d786c; --hairline: #e4dfd2;
+      --brand: #2f6a3d; --brand-soft: #e2ecdc; --rec: #b8392b; --warn: #8a5a00;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif; --serif: "Iowan Old Style", Georgia, serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 var(--sans); }
+    main { max-width: 920px; margin: 0 auto; padding: 28px 18px 60px; }
+    h1 { font-family: var(--serif); font-size: 32px; margin: 0 0 6px; }
+    .lede { color: var(--ink-2); margin: 0 0 14px; max-width: 70ch; }
+    .stats { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: var(--ink-2); margin-bottom: 18px; }
+    .stats b { color: var(--ink); }
+    .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 20px 22px; margin-bottom: 16px; }
+    .meta { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; }
+    .line { font-family: var(--serif); font-size: 28px; line-height: 1.4; margin: 12px 0 16px; }
+    .meter { height: 8px; border-radius: 999px; background: var(--brand-soft); overflow: hidden; margin-bottom: 16px; }
+    .meter span { display: block; height: 100%; width: 0; background: var(--brand); transition: width 60ms linear; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; }
+    button { appearance: none; border: 1px solid #c9c3b4; background: var(--surface); color: var(--ink); font: 600 14px/1 var(--sans);
+      padding: 11px 16px; border-radius: 10px; cursor: pointer; }
+    button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    button.recording { background: var(--rec); border-color: var(--rec); color: #fff; }
+    button:disabled { opacity: .45; cursor: default; }
+    .status { min-height: 1.5em; margin: 12px 0 0; font-size: 14px; color: var(--ink-2); }
+    .status.warn { color: var(--warn); }
+    ol { margin: 0; padding: 0; list-style: none; }
+    .list-card { max-height: 440px; overflow-y: auto; }
+    li { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; padding: 9px 6px; border-top: 1px solid var(--hairline); cursor: pointer; font-size: 14px; }
+    li:first-child { border-top: 0; }
+    li.current { background: var(--brand-soft); border-radius: 8px; }
+    li .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+    li .d { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+    li.done .d { color: var(--brand); font-weight: 600; }
+    li.long .d { color: var(--warn); }
+    button.primary kbd, button.recording kbd { background: rgba(255,255,255,.16); color: #fff; border-color: rgba(255,255,255,.45); }
+    kbd { font: 12px/1 ui-monospace, Menlo, monospace; border: 1px solid #c9c3b4; border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; background: #fff; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Record the narration</h1>
+  <p class="lede">Read each line at a natural, steady pace, then stop. Silence at the start and end is trimmed for you.
+    The video is rebuilt around your takes, so you don't need to hit the target time exactly, but keep the total
+    under the budget so the video stays within two minutes.</p>
+  <div class="stats" id="stats"></div>
+  <section class="card">
+    <div class="meta" id="meta"></div>
+    <p class="line" id="line">Loading…</p>
+    <div class="meter"><span id="level"></span></div>
+    <div class="controls">
+      <button class="primary" id="rec">Record <kbd>Space</kbd></button>
+      <button id="play">Play take <kbd>P</kbd></button>
+      <button id="prev">Previous <kbd>←</kbd></button>
+      <button id="next">Next <kbd>→</kbd></button>
+    </div>
+    <p class="status" id="status"></p>
+  </section>
+  <section class="card list-card" id="list-card">
+    <ol id="list"></ol>
+  </section>
+</main>
+<script>
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const BUDGET = 95;   // seconds of speech that keep the rebuilt video within 2:00, with some room
+  let lines = [], index = 0, stream = null, context = null, session = null, player = null;
+
+  const status = (text, warn = false) => { $("status").textContent = text; $("status").className = warn ? "status warn" : "status"; };
+  const fmt = s => (s == null ? "–" : `${s.toFixed(1)} s`);
+
+  function render() {
+    const line = lines[index];
+    const done = lines.filter(l => l.take != null);
+    const yours = done.reduce((a, l) => a + l.take, 0);
+    const projected = lines.reduce((a, l) => a + (l.take ?? l.target), 0);
+    $("stats").replaceChildren(...[
+      ["Recorded", `${done.length} / ${lines.length}`],
+      ["Your takes so far", fmt(yours)],
+      ["Projected speech", fmt(projected)],
+      ["Budget", `${BUDGET} s`],
+    ].map(([k, v]) => { const s = document.createElement("span"); s.append(`${k}: `); const b = document.createElement("b"); b.textContent = v; s.append(b); return s; }));
+    if (projected > BUDGET) status(`Projected speech is ${fmt(projected)}, over the ${BUDGET} s budget: re-record the slow lines a little faster.`, true);
+    $("meta").replaceChildren(...[`Line ${index + 1} of ${lines.length}`, `Synthetic voice: ${fmt(line.target)}`, `Your take: ${fmt(line.take)}`]
+      .map(t => { const s = document.createElement("span"); s.textContent = t; return s; }));
+    $("line").textContent = line.text;
+    $("play").disabled = line.take == null || !!session;
+    $("prev").disabled = index === 0 || !!session;
+    $("next").disabled = index === lines.length - 1 || !!session;
+    $("list").replaceChildren(...lines.map((l, i) => {
+      const li = document.createElement("li");
+      li.className = [i === index ? "current" : "", l.take != null ? "done" : "", l.take != null && l.take > l.target * 1.35 ? "long" : ""].join(" ");
+      for (const [cls, text] of [["n", String(i + 1)], ["t", l.text], ["d", fmt(l.take)]]) { const s = document.createElement("span"); s.className = cls; s.textContent = text; li.append(s); }
+      li.addEventListener("click", () => { if (!session) { index = i; render(); } });
+      return li;
+    }));
+    const box = $("list-card"), current = box.querySelector("li.current");   // scroll the list, never the page
+    if (current) box.scrollTop = Math.max(0, current.offsetTop - box.offsetTop - box.clientHeight / 3);
+  }
+
+  async function start() {
+    try {
+      stream = stream || await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: true, autoGainControl: false } });
+    } catch (error) { status(`No microphone: ${error.message}. Allow microphone access for this page and try again.`, true); return; }
+    context = context || new AudioContext();
+    await context.resume();
+    const source = context.createMediaStreamSource(stream);
+    const processor = context.createScriptProcessor(4096, 1, 1);
+    const chunks = [];
+    processor.onaudioprocess = event => {
+      const data = event.inputBuffer.getChannelData(0);
+      chunks.push(new Float32Array(data));
+      let peak = 0; for (const v of data) peak = Math.max(peak, Math.abs(v));
+      $("level").style.width = `${Math.min(100, peak * 140)}%`;
+    };
+    source.connect(processor); processor.connect(context.destination);   // output stays silent: nothing is written to it
+    session = { source, processor, chunks, rate: context.sampleRate };
+    $("rec").textContent = "Stop "; $("rec").append(Object.assign(document.createElement("kbd"), { textContent: "Space" }));
+    $("rec").classList.add("recording");
+    status("Recording… read the line, then press Space.");
+    render();
+  }
+
+  function trim(samples, rate) {   // drop the silence before and after the speech, keep 0.15 s of air
+    const win = Math.round(rate * 0.01), rms = [];
+    for (let i = 0; i < samples.length; i += win) {
+      let sum = 0; const end = Math.min(samples.length, i + win);
+      for (let j = i; j < end; j++) sum += samples[j] * samples[j];
+      rms.push(Math.sqrt(sum / (end - i)));
+    }
+    const loudest = Math.max(...rms);
+    const threshold = Math.max(0.01, loudest * 0.08);
+    const first = rms.findIndex(v => v > threshold), last = rms.length - 1 - [...rms].reverse().findIndex(v => v > threshold);
+    if (first < 0) return new Float32Array(0);
+    const pad = Math.round(rate * 0.15);
+    return samples.slice(Math.max(0, first * win - pad), Math.min(samples.length, (last + 1) * win + pad));
+  }
+
+  function wav(samples, rate) {   // 16-bit mono PCM, peak raised to -1 dBFS (at most 4x gain)
+    let peak = 0; for (const v of samples) peak = Math.max(peak, Math.abs(v));
+    const gain = peak > 0 ? Math.min(4, 0.89 / peak) : 1;
+    const buffer = new ArrayBuffer(44 + samples.length * 2), view = new DataView(buffer);
+    const text = (offset, s) => { for (let i = 0; i < s.length; i++) view.setUint8(offset + i, s.charCodeAt(i)); };
+    text(0, "RIFF"); view.setUint32(4, 36 + samples.length * 2, true); text(8, "WAVE"); text(12, "fmt ");
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, rate, true);
+    view.setUint32(28, rate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true); text(36, "data");
+    view.setUint32(40, samples.length * 2, true);
+    samples.forEach((v, i) => view.setInt16(44 + i * 2, Math.max(-1, Math.min(1, v * gain)) * 0x7fff, true));
+    return new Blob([buffer], { type: "audio/wav" });
+  }
+
+  async function stop() {
+    const { source, processor, chunks, rate } = session;
+    session = null;
+    source.disconnect(); processor.disconnect();
+    $("level").style.width = "0";
+    $("rec").textContent = "Record "; $("rec").append(Object.assign(document.createElement("kbd"), { textContent: "Space" }));
+    $("rec").classList.remove("recording");
+    const all = new Float32Array(chunks.reduce((a, c) => a + c.length, 0));
+    let offset = 0; for (const c of chunks) { all.set(c, offset); offset += c.length; }
+    const speech = trim(all, rate);
+    if (speech.length < rate * 0.4) { status("That take was silent or too short. Press Space to try again.", true); render(); return; }
+    const response = await fetch(`/save/${lines[index].n}`, { method: "POST", body: wav(speech, rate) });
+    if (!response.ok) { status(`Saving failed: ${(await response.json()).error}`, true); render(); return; }
+    lines[index].take = (await response.json()).take;
+    status(`Saved line ${index + 1} (${fmt(lines[index].take)}). Press P to listen, Space to redo, or → for the next line.`);
+    render();
+  }
+
+  function play() {
+    const line = lines[index];
+    if (line.take == null) return;
+    if (player) player.pause();
+    player = new Audio(`/voice/${String(line.n).padStart(2, "0")}.wav?t=${Date.now()}`);
+    player.play();
+  }
+
+  $("rec").addEventListener("click", () => (session ? stop() : start()));
+  $("play").addEventListener("click", play);
+  $("prev").addEventListener("click", () => { if (index > 0) { index--; status(""); render(); } });
+  $("next").addEventListener("click", () => { if (index < lines.length - 1) { index++; status(""); render(); } });
+  document.addEventListener("keydown", event => {
+    if (event.repeat) return;
+    if (event.code === "Space") { event.preventDefault(); session ? stop() : start(); }
+    else if (session) return;
+    else if (event.key === "p" || event.key === "P") play();
+    else if (event.key === "ArrowLeft" && index > 0) { index--; status(""); render(); }
+    else if (event.key === "ArrowRight" && index < lines.length - 1) { index++; status(""); render(); }
+  });
+
+  fetch("/lines").then(r => r.json()).then(data => {
+    lines = data;
+    const next = lines.findIndex(l => l.take == null);
+    index = next < 0 ? 0 : next;
+    status("Press Space to record the line, and Space again to stop.");
+    render();
+  });
+})();
+</script>
+</body>
+</html>

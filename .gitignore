@@ -10,3 +10,5 @@ lab/
 # Local tool settings
 .claude/
 video/build/
+# Your narration takes: personal recordings, kept on this machine
+video/voice/

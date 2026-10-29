@@ -2,6 +2,18 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-29 (Narrate the video in your own voice)
+
+### Added
+- `video/voice_studio.py` and `video/studio.html`: a local studio on port 8766 for recording the narration one line at a time.
+  - Space records, P plays back, and the arrow keys move between lines.
+  - Each take is trimmed, raised to -1 dB and saved as `video/voice/NN.wav`. Git ignores that folder.
+  - The studio shows the projected speech time against a 95-second budget.
+- `node video/make_video.mjs --voice video/voice` narrates with those takes instead of the synthetic voice.
+  - Takes are matched to lines by text, and the timing follows them.
+  - A missing take, or a live suggestion other than AI copyright policy, stops the run.
+  - The recorder warns if the video comes out longer than two minutes.
+
 ## 2026-10-29 (Demo video, recorded by script)
 
 ### Added
