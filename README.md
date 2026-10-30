@@ -35,7 +35,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
-- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)); the user study and the report are next
+- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)). The report is drafted ([PDF](report/forager-report.pdf)) with placeholders for the user study, which is next
 
 Fallback if time is short: drop Hugging Face first.
 
@@ -59,6 +59,7 @@ data/snapshot/   fixed content snapshots for offline tests and evaluation
 tests/           offline tests (scripted model replies, no key needed)
 eval/            Critic case set (eval/cases/critic) and its builder; runners for the case set, the three digest
                  modes and the memory scenarios; LLM judges and judge calibration
+report/          the project report: report.html and report.css, printed to forager-report.pdf by build.py
 lab/             course lab package, not committed (unzip lab2.zip here)
 CHANGELOG.md
 ```
@@ -93,6 +94,9 @@ python3.11 -m venv .venv
 .venv/bin/python eval/calibration.py score eval/labels/NAME JUDGE.jsonl   # agreement with a judge run (free)
 .venv/bin/python showcase/build_data.py      # rebuild the showcase page's data from recorded runs (free)
 open showcase/index.html                     # the static showcase page (English or Chinese): brief, interests, topics, evaluation
+node report/shots.mjs                        # showcase screenshots for the report's appendix (free)
+.venv/bin/python report/make_figures.py      # the report's results chart and Idea 1 crops (free)
+.venv/bin/python report/build.py             # print the report to PDF; fails if the main body is over 6 pages
 ```
 
 Digests are written to `runtime/digests/<date>.json` and `.md`.

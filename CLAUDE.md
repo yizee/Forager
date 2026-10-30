@@ -117,7 +117,8 @@
     - 右上角可以切换中英文。页面自己的文字在 `app.js` 里中英成对写好。简报等记录下来的英文内容由 Claude 翻译，存在 `showcase/translations-zh.json` 里，标题保留英文。每条译文都附带英文原文，`build_data.py` 发现原文变了或缺少翻译就停止，不会显示过期的译文。logo 是抽象的线条画：一只以圆框眼镜为头的蜜蜂，外面是一圈蜂蜜色的开口笔触圆环（`showcase/bee.svg`）。页头里的是同一幅图的内联 SVG，线条颜色跟随浅色和深色主题；两处要一起改。
     - 用于录视频和给报告配图。页面如实显示了一个问题：探索度设置是 20%，但这份简报有 4/10 是广度补充，rule 模式平均是 36–38%。写作 agent 收到的指令只是"大约这个比例（至少一条）"。
   - **演示视频已定稿（2026-10-30）**：1:58，Fenrir 配音，修改版文案。成片固定副本在 `video/build/final/forager-demo-final.mp4`（还有无声版和字幕），重新渲染不会覆盖，也不提交。
-  - 下一步：用户研究（想法 1 和 think-aloud）和报告。报告的评估部分以 `docs/stage5-results.md` 为准。可选：用新的真实简报给 Critic 标注、核对 Critic 用例集的标注。付费调用暂停时按上面的方式核对。第 4 阶段最后两处改动已在真实运行中验证：兴趣标题检查触发过多次，`reviewed_draft` 在每次 Critic 审查后都保存了。
+  - **报告初稿已完成（2026-10-30）**：`report/forager-report.pdf`，正文 5 页多一点、附录 5 页，构成和构建方式见第 9 节末尾。用户研究的结果留了黄色占位符。
+  - 下一步：用户研究（想法 1 和 think-aloud），把结果填进报告的占位符。报告的评估部分以 `docs/stage5-results.md` 为准。可选：用新的真实简报给 Critic 标注、核对 Critic 用例集的标注。付费调用暂停时按上面的方式核对。第 4 阶段最后两处改动已在真实运行中验证：兴趣标题检查触发过多次，`reviewed_draft` 在每次 Critic 审查后都保存了。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
@@ -327,6 +328,8 @@ Forager/
 
 画面标签改成课程概念：Intent expression、Verifiable output、Memory with consent、Multi-agent + Critic。
 
+
+报告初稿（2026-10-30）：`report/report.html`（源文件）和 `report/report.css`，用 `report/build.py` 让 Chrome 打印成 `report/forager-report.pdf`（A4，和提案一样由 Chromium 生成）。正文 5 页多一点（第 6 页约三分之一；上限 6 页，`build.py` 超过就报错），附录 5 页是截图和补充表格。初稿经独立 agent 对照 `docs/` 和代码逐条核对，改了 27 处。报告如实写了两点：澄清时"方向"默认保留并沿用模型起的名字（录制时的 "Video generation" 就是这样进的档案）；原型只收集打分和点赞，点击和阅读时长只有授权开关。黄色占位符是用户研究要填的：第 1 节 Findings in brief 的最后一句、§6.4 和 Table 4。填完后重新运行 `build.py`，确认正文仍不超过 6 页。图：`report/make_figures.py` 从 `docs/stage5-results.md` 读数生成结果图 `figures/modes.svg`，并从视频帧裁出想法 1 的两张截图（视频帧在 `video/build/frames`，不提交）；`report/shots.mjs` 截展示页；图 1（架构）和图 A6（事件时间线草图）是报告里的内联 SVG。报告对老师问题的回答：Critic 能抓到构造的明显错误，但在真实简报上几乎抓不到，相对仅规则的端到端效果测不出来；可测的增益来自代码规则加团队写作。
 ## 10. 报告写作要求（来自老师反馈）
 
 - **开头直接写问题和解决方案**，就像本文件第 1 节的三句话；动机压缩成一小段。

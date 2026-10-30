@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Forager: CS 619 Project Report</title>
+<meta name="description" content="CS 619 project report for Forager, a personalized agent that delivers a daily, source-traceable AI brief.">
+<link rel="stylesheet" href="report.css">
+<script>
+  // build.py prints the report twice: in full, and with ?main to count the main body's pages.
+  if (location.search.includes("main")) {
+    document.addEventListener("DOMContentLoaded", () => document.querySelectorAll(".appendix").forEach(e => e.remove()));
+  }
+</script>
+</head>
+<body>
+
+<header class="title-block">
+  <p class="course">CS 619 Project Report</p>
+  <p class="title">Forager: A Daily AI Brief That Stays Broad, Shows Its Sources and Asks Before It Learns</p>
+  <p class="author">SHI YIZE · 01532875</p>
+  <p class="links">Code and evaluation data: <a href="https://github.com/yizee/Forager">github.com/yizee/Forager</a> · Demo video: forager-demo-final.mp4 (1:58)</p>
+</header>
+
+<h2>1&ensp;Problem and solution</h2>
+
+<p><b>Problem.</b> People who try to keep up with several fast-moving fields, such as AI news, papers and open-source tools, are either flooded with items or, once a recommender filters for them, see the feed quietly narrow to whatever they clicked last. <b>Solution.</b> Forager is a personalized agent that delivers a daily two-layer brief in which every point cites its sources, and lets users see and govern what it learns about them. <b>Contributions.</b> (1)&nbsp;<i>Option-based interest clarification</i> that turns one rough sentence into an editable profile; (2)&nbsp;<i>consented, evidence-backed preference memory</i> with long- and short-term interests, where the application, not the model, enforces approval before anything is written; (3)&nbsp;<i>source specialists checked by code rules and a context-independent Critic</i>, which protect breadth and evidence.</p>
+
+<p>Our target user is an AI student who follows AI agents, video editing and image generation and who, when a model such as Sora&nbsp;2 launches, follows it closely for a couple of weeks. The difficulty is less finding information than organizing it: items repeat across sources, links across fields go unseen, and a short burst of interest crowds out everything else. Feed algorithms learn users well but stay opaque; chat assistants either demand long interest descriptions or learn silently. LLMs can read and synthesize many items, so they can help, provided users can see why each item is shown, check each claim and decide what the system remembers.</p>
+
+<p><b>Findings in brief.</b> All agents and judges ran on <code>z-ai/glm-5.3-flash</code> over fixed snapshots. Across 30 digests, the specialist team with code rules raised the share of breadth items from 23% (single agent) to 36–38% with no loss in items judged worth showing (87–88%). The Critic found the planted problem in 45 of 48 reviews of digests that pass every rule, with no false alarms, but none of the four problems in the one real digest we labelled (0 of 12 reviews), and its end-to-end effect over rules alone was not measurable. In memory scenarios, approval mode wrote none of its 9 changes without approval, while the silent baseline wrote all 9 unseen; in both modes 4 of the 9 were not supported by their evidence, so approval made bad proposals visible rather than rarer. Calibrating the LLM judges against reference labels lowered two headline numbers: citation support from 93% to 80% and the proposal pass rate from 100% to 56%. <span class="todo">[User study: one sentence on Idea&nbsp;1 accuracy vs free text, n = ?]</span></p>
+
+<h2>2&ensp;Forager at a glance</h2>
+
+<p>Forager draws on three source types: arXiv (cs.AI, cs.CL, cs.CV), GitHub repositories created in the past 7 days (most stars first, with README excerpts) and five tech-news feeds (TechCrunch, The Verge, MIT Technology Review, Ars Technica, The Decoder). Up to 24 candidates, interleaved by source, enter each day's run. The digest has two linked layers (Figure&nbsp;A2). The <i>quick brief</i> has 5–8 points grouped by field, cross-field connections and changes since the last brief; every point cites item IDs that link to the full items. Each <i>item</i> has a summary, a source link and a “why you see this” label: <i>Interest match: &lt;interest&gt;</i> or <i>Breadth: &lt;reason&gt;</i>. Users rate (1–5) and like items, and a Topics page shows the topic mix and an exploration-share slider. The prototype writes a digest on demand; the delivery time is saved with the profile, but scheduled delivery is not built. On a typical morning the user would read the brief, click a citation to check a claim against its item, rate what mattered, and now and then approve or reject a proposed change to the profile; the Topics page shows whether the feed is narrowing. The app is a Streamlit interface with four pages (Digest, Set up, Memory, Topics) on a Python package of about 3,400 lines with 133 offline tests that use scripted model replies; a static showcase page replays recorded runs for the video. All calls go through the course's Lab&nbsp;2 harness and the OpenAI Agents SDK <span class="cite">[7]</span> under a $1 budget; the whole project, evaluation included, used $0.34 over 759 requests. Figure&nbsp;1 shows how the three ideas form one loop: the profile shapes the digest, ratings on the digest feed the memory agent, and approved changes return to the profile.</p>
+
+<figure id="fig-arch">
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" role="img" aria-label="Forager's architecture: setup, daily digest and memory loop">
+  <defs>
+    <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0.6 L7.4 4 L0 7.4 Z" fill="#5b5850"/>
+    </marker>
+    <style>
+      .agent { fill: #eef4fc; stroke: #2a78d6; stroke-width: 1.1; }
+      .code  { fill: #ecebe5; stroke: #8f8b80; stroke-width: 1.1; }
+      .user  { fill: #e5f0e7; stroke: #2f6a3d; stroke-width: 1.1; }
+      .data  { fill: #ffffff; stroke: #aaa69a; stroke-width: 1.1; }
+      .team  { fill: none; stroke: #2a78d6; stroke-width: 0.8; stroke-dasharray: 3 2; }
+      .t  { font-size: 8.8px; font-weight: 700; fill: #141414; }
+      .d  { font-size: 7.7px; fill: #3d3b35; }
+      .tag { font-size: 7.4px; font-weight: 700; letter-spacing: 0.06em; fill: #5b5850; }
+      .lg { font-size: 7.6px; fill: #3d3b35; }
+      .flow { fill: none; stroke: #5b5850; stroke-width: 1.05; marker-end: url(#ah); }
+      .flow2 { fill: none; stroke: #5b5850; stroke-width: 1.05; marker-start: url(#ah); marker-end: url(#ah); }
+      .note { font-size: 7.4px; font-style: italic; fill: #5b5850; }
+    </style>
+  </defs>
+
+  <!-- row tags -->
+  <text class="tag" x="1" y="15">IDEA 1 · SETUP</text>
+  <text class="tag" x="599" y="15" text-anchor="end">IDEA 2 · MEMORY (WRITES ONLY AFTER APPROVAL)</text>
+  <text class="tag" x="1" y="99">IDEA 3 · DAILY DIGEST</text>
+
+  <!-- top row: setup (left to right) and memory (right to left) meet at the profile -->
+  <rect class="user"  x="1"      y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="38"  y="38" text-anchor="middle">One sentence</text>
+  <text class="d" x="38"  y="49" text-anchor="middle">about what</text>
+  <text class="d" x="38"  y="58.5" text-anchor="middle">you follow</text>
+
+  <rect class="agent" x="88.3"   y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="125.3" y="38" text-anchor="middle">Clarifier</text>
+  <text class="d" x="125.3" y="49" text-anchor="middle">directions with</text>
+  <text class="d" x="125.3" y="58.5" text-anchor="middle">option questions</text>
+
+  <rect class="user"  x="175.7"  y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="212.7" y="38" text-anchor="middle">User picks</text>
+  <text class="d" x="212.7" y="49" text-anchor="middle">options, fields,</text>
+  <text class="d" x="212.7" y="58.5" text-anchor="middle">14-day focuses</text>
+
+  <rect class="data"  x="263"    y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="300" y="38" text-anchor="middle">Profile</text>
+  <text class="d" x="300" y="49" text-anchor="middle">stated · inferred</text>
+  <text class="d" x="300" y="58.5" text-anchor="middle">long · short-term</text>
+
+  <rect class="user"  x="350.3"  y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="387.3" y="38" text-anchor="middle">User decides</text>
+  <text class="d" x="387.3" y="49" text-anchor="middle">SDK pauses the</text>
+  <text class="d" x="387.3" y="58.5" text-anchor="middle">write until then</text>
+
+  <rect class="code"  x="437.7"  y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="474.7" y="38" text-anchor="middle">Code checks</text>
+  <text class="d" x="474.7" y="49" text-anchor="middle">evidence, target,</text>
+  <text class="d" x="474.7" y="58.5" text-anchor="middle">no repeat, ≤ 3</text>
+
+  <rect class="agent" x="525"    y="24" width="74" height="44" rx="4"/>
+  <text class="t" x="562" y="38" text-anchor="middle">Memory agent</text>
+  <text class="d" x="562" y="49" text-anchor="middle">proposes change</text>
+  <text class="d" x="562" y="58.5" text-anchor="middle">+ evidence IDs</text>
+
+  <line class="flow" x1="75" y1="46" x2="87.6" y2="46"/>
+  <line class="flow" x1="162.3" y1="46" x2="175" y2="46"/>
+  <line class="flow" x1="249.7" y1="46" x2="262.3" y2="46"/>
+  <line class="flow" x1="350.3" y1="46" x2="337.7" y2="46"/>
+  <line class="flow" x1="437.7" y1="46" x2="425" y2="46"/>
+  <line class="flow" x1="525" y1="46" x2="512.4" y2="46"/>
+
+  <!-- bottom row: the daily digest -->
+  <rect class="team" x="85.3" y="105" width="167.4" height="54" rx="6"/>
+  <rect class="data"  x="1"      y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="38"  y="124" text-anchor="middle">Candidates</text>
+  <text class="d" x="38"  y="135" text-anchor="middle">arXiv · GitHub ·</text>
+  <text class="d" x="38"  y="144.5" text-anchor="middle">news, ≤ 24</text>
+
+  <rect class="agent" x="88.3"   y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="125.3" y="124" text-anchor="middle">Manager</text>
+  <text class="d" x="125.3" y="135" text-anchor="middle">sees IDs, titles;</text>
+  <text class="d" x="125.3" y="144.5" text-anchor="middle">asks via as_tool()</text>
+
+  <rect class="agent" x="175.7"  y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="212.7" y="124" text-anchor="middle">3 specialists</text>
+  <text class="d" x="212.7" y="135" text-anchor="middle">paper, repo, news;</text>
+  <text class="d" x="212.7" y="144.5" text-anchor="middle">read source text</text>
+
+  <rect class="code"  x="263"    y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="300" y="124" text-anchor="middle">Code checks</text>
+  <text class="d" x="300" y="135" text-anchor="middle">team + 4 rules;</text>
+  <text class="d" x="300" y="144.5" text-anchor="middle">repair once</text>
+
+  <rect class="agent" x="350.3"  y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="387.3" y="124" text-anchor="middle">Critic</text>
+  <text class="d" x="387.3" y="135" text-anchor="middle">meaning only;</text>
+  <text class="d" x="387.3" y="144.5" text-anchor="middle">PASS or ADJUST</text>
+
+  <rect class="data"  x="437.7"  y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="474.7" y="124" text-anchor="middle">Digest</text>
+  <text class="d" x="474.7" y="135" text-anchor="middle">points cite items;</text>
+  <text class="d" x="474.7" y="144.5" text-anchor="middle">reason labels</text>
+
+  <rect class="data"  x="525"    y="110" width="74" height="44" rx="4"/>
+  <text class="t" x="562" y="124" text-anchor="middle">Ratings, likes</text>
+  <text class="d" x="562" y="135" text-anchor="middle">kept only if</text>
+  <text class="d" x="562" y="144.5" text-anchor="middle">consented</text>
+
+  <line class="flow"  x1="75" y1="132" x2="84.6" y2="132"/>
+  <line class="flow2" x1="163" y1="132" x2="175" y2="132"/>
+  <line class="flow"  x1="252.7" y1="132" x2="262.3" y2="132"/>
+  <line class="flow"  x1="337" y1="132" x2="349.6" y2="132"/>
+  <line class="flow"  x1="424.3" y1="132" x2="437" y2="132"/>
+  <line class="flow"  x1="511.7" y1="132" x2="524.3" y2="132"/>
+
+  <!-- profile feeds the team; ratings feed the memory agent; ADJUST returns to the team -->
+  <path class="flow" d="M300 68 V84 H232 V104.3"/>
+  <line class="flow" x1="562" y1="110" x2="562" y2="68.7"/>
+  <path class="flow" d="M387.3 154 V168 H125.3 V154.7"/>
+  <text class="note" x="300" y="177" text-anchor="middle">ADJUST: the Manager revises once, then the rules run again</text>
+
+  <!-- legend -->
+  <g transform="translate(330 186)">
+    <rect class="agent" x="0" y="0" width="12" height="8" rx="2"/><text class="lg" x="16" y="7">Agent (LLM)</text>
+    <rect class="code" x="66" y="0" width="12" height="8" rx="2"/><text class="lg" x="82" y="7">Code, runs every time</text>
+    <rect class="user" x="164" y="0" width="12" height="8" rx="2"/><text class="lg" x="180" y="7">User</text>
+    <rect class="data" x="206" y="0" width="12" height="8" rx="2"/><text class="lg" x="222" y="7">Data</text>
+  </g>
+</svg>
+<figcaption><b>Figure 1.</b> One loop, three ideas. Idea&nbsp;1 builds the profile from the user's picks; Idea&nbsp;3's Manager and source specialists (dashed: the writer team) write the digest, which code rules and the Critic check; Idea&nbsp;2 turns consented ratings into proposed changes that reach the profile only after the user approves. Interface screenshots are in the appendix (Figures A1–A5).</figcaption>
+</figure>
+
+<h2>3&ensp;Idea 1: clarification-based interest elicitation (Week 1, intent expression)</h2>
+
+<p><b>What.</b> The user writes one sentence about what they follow. A clarifier agent splits it into 1–5 directions and asks one question per direction with 3–6 clickable options, suggests nearby fields (for example, AI copyright policy) and lists current focuses (Sora&nbsp;2) that can be tracked for 14 days. The user clicks, may add their own facets or mark a direction “not interested”, and edits the resulting profile table before saving (Figure&nbsp;A1). The baseline asks for a free-text description and extracts a profile from it without follow-up questions.</p>
+
+<p><b>Why.</b> Saying what you want is hard: intentions are often underdeveloped (the <i>intentionality gap</i>), and users who know what they want may still be unable to phrase it in terms a system can act on (the <i>instruction gap</i>) <span class="cite">[9]</span>. Options let people recognize rather than recall <span class="cite">[6]</span> and turn a vague “AI agents” into facets a digest can filter on; in the course's terms, they are prompt suggestions plus a manual-edit step. Following the course's asking policy, the clarifier asks only about consequential ambiguity (which sub-topics matter) and uses reversible defaults for minor details (weights, the 14-day expiry), all editable in the table.</p>
+
+<p><b>How.</b> The model proposes; the user's picks decide. Code checks the clarifier's JSON (1–5 directions, 3–6 distinct options each, a specific release such as Sora&nbsp;2 only as a short-term focus) and asks for one repair if it fails. Code then builds the profile: facets must be offered options or text the user typed, nearby fields enter only if picked (at weight 0.5), focuses only if picked (as short-term interests at 0.8 that expire after 14 days), and every tracking permission starts off. Directions are the exception: each stays at weight 1.0, under the model's label, unless the user marks it “not interested”. Two early live runs showed why the checks matter: the model once returned Sora&nbsp;2 as both a direction and a focus, which would have created duplicate interests (now a code check), and once asked about the user's role instead of a topic (fixed with one instruction line).</p>
+
+<p><b>Design tension.</b> Options can also frame intent: a user who has not decided what a good feed looks like may adopt the model's framing, the risk side of the intentionality gap. Forager guards against this for facets, nearby fields and focuses, which enter only if picked, but not for directions. In the recorded setup (Figure&nbsp;A1) the clarifier turned “lately I've been following Sora&nbsp;2 closely” into a broader “Video generation” direction, which entered the profile at full weight and is shown as stated, although none of its options was picked. Making directions opt-in, or showing model-named directions as suggested, would close this gap; whether users notice it in the editable table is a question for the user study (§6.4).</p>
+
+<h2>4&ensp;Idea 2: consented, evidence-backed preference memory (Week 4, oversight and memory)</h2>
+
+<p><b>What.</b> Before anything is collected, users choose which signals Forager may track: ratings and likes, which the prototype collects, and clicks and reading time, which it lists but does not collect yet; all start off. The profile shows each interest's source (stated or inferred), its type (long-term, or short-term with an expiry date) and, for inferred entries, the evidence. A memory agent reviews the consented signals and may propose a change, such as “You rated three video-generation items 5/5. Add video generation as a long-term interest?”, which is written only if the user approves (Figure&nbsp;A3). Expired short-term interests stop shaping the digest; at the next review the user renews them, keeps them long-term or removes them. The baseline is the same agent and tool writing silently.</p>
+
+<p><b>Why.</b> The course separates instructions, guardrails and approval: an instruction such as “ask the user first” is not an approval gate, because only the application can pause before an effect <span class="cite">[2]</span>. Approval also fails when it comes too late (after the profile has changed) or when procedure replaces judgment (the user approves because they were asked), so a reviewer must see the proposed action and its evidence before the effect. Memory adds that storing a signal is not the same as using it. Amershi et al.'s guidelines point the same way: update and adapt cautiously, and make clear why the system did what it did <span class="cite">[1]</span>.</p>
+
+<p><b>How.</b> Consent is enforced at three points: an unconsented signal is never recorded; at use time only signals that are consented now and are from the last 30 days reach the agent, so no other signal is ever sent to the model; withdrawing consent deletes what was collected. The only write path is the tool <code>propose_profile_update</code>, declared with <code>needs_approval=True</code>, so the Agents SDK interrupts the run before the tool body executes: propose, check, pause, show, decide, continue. Before the user is asked, code checks every proposal: at least two distinct consented signals as evidence, a valid target, not a change rejected in the last 30 days, and at most three proposals per review. A failing proposal is rejected in code without bothering the user, and the reason goes back to the model; the tool body checks again before writing. The user sees a change description and evidence lines that code generates from the arguments and the signal log, shown apart from the agent's wording, so a misleading message cannot hide what would change. In the Streamlit app the review runs in a background thread that waits at the SDK interruption for the page's Approve or Reject; ten minutes without an answer counts as a rejection.</p>
+
+<h2>5&ensp;Idea 3: source specialists, code rules and a Critic (Week 6, agent teams; Week 2, judging outputs)</h2>
+
+<p><b>What.</b> A Manager writes the digest with three source specialists, a Paper, an Open-Source and a News Researcher, which it calls as tools through <code>as_tool()</code>. Every draft goes through code checks; a draft that passes them goes to a Critic, a separate agent that judges only meaning, and if the Critic returns ADJUST, the Manager revises once (Figure&nbsp;1). Users see a reason label on every item, the topic mix, an exploration slider and, under each digest, “How this digest was checked”: who wrote it, whether the rules passed, any interest left uncovered and the Critic's issues (the showcase expands this into one row per check; Figures&nbsp;A4 and A5). Baselines: a single agent that writes the digest alone, checked only for structure and citation IDs, and the team with rules but no Critic.</p>
+
+<p><b>Why.</b> A recommender optimized for relevance drifts narrow <span class="cite">[8, 11]</span>. Like crop rotation, which keeps a field from wearing out under one crop, Forager rotates in items next to the user's interests and has a second agent with a different goal check them. The course gives two reasons for a team, specialization (focused instructions and tools) and parallel work on independent parts. Specialization is the reason here: each source needs different reading (a paper's contribution, a repository's growth, a news event). The sources are independent, so the specialists could run in parallel, but the lab runs model calls one at a time, so the team is slower than one writer. It also says that what reaches a coordinator matters, because a short summary can drop evidence, and it distinguishes coordination patterns by who decides the next step: the application (a fixed workflow), a manager that calls workers as tools, or the current specialist (handoffs) <span class="cite">[2]</span>. Forager nests the first two. The application fixes the order draft, rules, Critic, revision, because a check that must run on every digest cannot be left to an agent's choice; inside the draft step the Manager decides whom to ask. Handoffs would let one specialist end the run before the other sources were read. Week&nbsp;2 adds that fluent output looks credible, so for appropriate reliance <span class="cite">[5]</span> each claim should lead to its evidence at a low checking cost.</p>
+
+<p><b>How: the writer team.</b> The Manager sees only an index of the day's candidates (ID, type, title), never their text, and asks each specialist a focused question. Each specialist reads only its own source through its own tool (the Open-Source Researcher's tool computes stars per day in code) and reports item notes: a summary, topics, and either an interest match or a breadth reason. Code checks the Manager's answer and asks for one repair when it fails: the Manager must have asked every specialist that has candidates; it may include only items a specialist reported; an item may carry an interest label only if the specialist that read it named that interest; and a point under an interest's heading must cite an item matched to that interest. The Manager returns only item IDs and the brief, and code copies each item's summary, topics and label from the specialist's note (the Manager may turn an interest match into breadth, never the reverse), so every agent writes only about what it read. Two live observations shaped this design. In the first real digest, a single writer labelled two video-research items “Sora&nbsp;2”, apparently to cover that interest, and the wrong labels then travelled with ratings of those items into the memory agent's proposals; the provenance rule targets that failure. And the lab caps each response at 4,096 tokens, reasoning included; when the Manager's reasoning grew, two of its answers hit the cap. Reducing it to listing IDs roughly halved its final answers (925–945 tokens instead of 1,708–2,051), though one later repair answer was still cut off.</p>
+
+<p><b>How: rules and the Critic.</b> Four rules run in code on every digest: no topic above 40% of the items (each interest is one bucket and all breadth items one more; checked from five items), every long-term interest at least once in 7 days (counting earlier digests), more than one source type when several are available, and every cited ID present. A failed rule triggers one repair whose request ends with the current topic counts and the cap. Coverage is a soft rule: an interest still uncovered after the repair becomes a visible warning, not a failure, and the repair asks for it only if a specialist matched some candidate to it; when none did, a hard rule would force a false label, the very error the Critic hunts. The Critic is context-independent: it sees only the profile, the numbered brief and the items (title, source text, and the writer's summary, topics and label), and reports issues of five types (irrelevant exploration, near-duplicate, unsupported citation, overstated connection, mislabelled interest), each tied to a position that code validates. After a revision the rules run again; if the revision breaks one, the draft that passed is kept.</p>
+
+<p><b>Change from the proposal.</b> In the proposal the Critic also checked breadth (topic share, coverage). In response to the instructor's question whether a Critic adds value beyond simple rules, every check that can be stated exactly moved into code, and the Critic judges only meaning. This also makes the question testable: rules alone and rules plus Critic are separate conditions.</p>
+
+<h2>6&ensp;Evaluation</h2>
+
+<h3>6.1&ensp;Setup and judge calibration</h3>
+
+<p>Automated tests use fixed snapshots so that runs are comparable: S1 (arXiv of 25 Oct, GitHub and news of 27 Oct) and S2 (arXiv of 27 Oct, GitHub and news of 28 Oct), 24 candidates each, 4 of them shared. Every run is a fresh session. We generated 30 digests, 10 per mode (6 on S1, 4 on S2). Code computes breadth share, topic entropy and the rules; LLM judges in the Week&nbsp;6 rubric style give each criterion a pass or fail with a reason, and a malformed answer gets one repair and then counts as an error. An item is <i>worth showing</i> if, given all the user's interests, they would plausibly want to see it today (for a breadth item, its stated reason must also be true of the source and give a real link); an interest <i>label is correct</i> if the source is mainly about that interest or one of its facets; a brief entry is <i>supported</i> if every factual claim follows from the items it cites; a connection is <i>not overstated</i> if the link it draws is no stronger than the sources allow; a proposal's <i>evidence supports the change</i> if the rated items are actually about it, judged by their content rather than where they were filed. Means carry bootstrap 95% intervals <span class="cite">[4]</span>. For the Critic we also built a case set: 16 digests with one planted semantic problem each, 4 clean controls (2 of them hard negatives) and the unmodified first real digest (4 problems); every case passes all four rules, and each was reviewed three times. For Idea&nbsp;2 we ran 8 memory scenarios built from real items, except the expiry scenario, which uses the case set's fictional Lumen-V&nbsp;2 (strong, weak, mixed, negative and mislabelled evidence; unconsented signals; a change rejected within 30 days; an expired short-term interest) in approval and silent mode, twice each; in approval mode a scripted user approves everything it is shown, the worst case for approval.</p>
+
+<p>Because the judges are the same model as the agents, we checked them against reference labels first, as the course recommends for LLM judges <span class="cite">[2, 10]</span>. Fresh Claude agents that saw only the labelling sheet and the criteria drafted 125 labels on 78 rows (30 items, 30 brief entries, all 18 proposals); the author reviewed every row and changed none, so the reference is Claude's labels endorsed by the author. A judge is used on the full set only if Cohen's κ <span class="cite">[3]</span> is at least 0.6; otherwise, and for the proposals, which are all labelled, results come from the reference labels (Table&nbsp;1). The judge errs in one direction: in 18 of its 20 disagreements it passes what the reference fails. Uncalibrated, we would have reported 93–96% citation support and a 100% proposal pass rate.</p>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table 1.</b> Judge agreement with the reference labels. Three criteria clear κ ≥ 0.6. The item judges are then used on all 30 digests; brief entries use the reference labels on the sample, and proposals the reference labels on all 18.</p>
+<table>
+<thead><tr><th>Criterion</th><th class="num">Pairs</th><th class="num">Agreement</th><th class="num">κ</th><th class="num">Judge pass, ref. fail</th><th class="num">Judge fail, ref. pass</th><th>Used for results</th></tr></thead>
+<tbody>
+<tr><td>Item interest label correct</td><td class="num">20</td><td class="num">90%</td><td class="num">0.79</td><td class="num">2</td><td class="num">0</td><td>judge, all 30 digests</td></tr>
+<tr><td>Item worth showing</td><td class="num">30</td><td class="num">97%</td><td class="num">0.89</td><td class="num">1</td><td class="num">0</td><td>judge, all 30 digests</td></tr>
+<tr><td>Proposal message matches the change</td><td class="num">18</td><td class="num">94%</td><td class="num">0.82</td><td class="num">1</td><td class="num">0</td><td>reference, all 18 proposals</td></tr>
+<tr class="group"><td>Brief entry supported by its citations</td><td class="num">30</td><td class="num">80%</td><td class="num">0.17</td><td class="num">5</td><td class="num">1</td><td>reference, 30-entry sample</td></tr>
+<tr><td>Connection not overstated</td><td class="num">9</td><td class="num">56%</td><td class="num">0.14</td><td class="num">3</td><td class="num">1</td><td>reference, 30-entry sample</td></tr>
+<tr><td>Proposal evidence supports the change</td><td class="num">18</td><td class="num">67%</td><td class="num">0.27</td><td class="num">6</td><td class="num">0</td><td>reference, all 18 proposals</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>6.2&ensp;Idea 3: breadth, relevance and the Critic</h3>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table 2.</b> The three digest modes, 10 digests each: mean [bootstrap 95% interval]. Breadth share is computed in code; labels and worth showing by the calibrated judge; citation support by the reference labels on the 30-entry sample (critic: final digest, then the draft the Critic reviewed). Cost and time are per digest, S1 / S2.</p>
+<table>
+<thead><tr><th>Mode</th><th class="num">Breadth share</th><th class="num">Worth showing</th><th class="num">Breadth items worth showing</th><th class="num">Labels correct</th><th class="num">Entries supported</th><th class="num">Cost</th><th class="num">Time</th></tr></thead>
+<tbody>
+<tr><td>Single agent</td><td class="num">23% [19, 26]</td><td class="num">88% [82, 93]</td><td class="num">59% [35, 83]</td><td class="num">83% [76, 91]</td><td class="num">9/10</td><td class="num">$0.0008 / 0.0012</td><td class="num">11 / 20 s</td></tr>
+<tr><td>Team + rules</td><td class="num">36% [33, 39]</td><td class="num">88% [84, 92]</td><td class="num">77% [66, 88]</td><td class="num">88% [85, 92]</td><td class="num">7/10</td><td class="num">$0.0023 / 0.0022</td><td class="num">32 / 36 s</td></tr>
+<tr><td>Team + rules + Critic</td><td class="num">38% [35, 40]</td><td class="num">87% [79, 94]</td><td class="num">75% [59, 89]</td><td class="num">91% [84, 97]</td><td class="num">5/6, 3/4</td><td class="num">$0.0027 / 0.0034</td><td class="num">38 / 64 s</td></tr>
+<tr class="group"><td>rules − single</td><td class="num"><b>+14 [+9, +18]</b></td><td class="num">+0 [−7, +8]</td><td class="num">+17 [−8, +44]</td><td class="num">+5 [−4, +13]</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td>critic − rules</td><td class="num">+1 [−2, +5]</td><td class="num">−2 [−11, +7]</td><td class="num">−2 [−22, +17]</td><td class="num">+3 [−5, +10]</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>Breadth without a relevance cost.</b> The rule modes raised the breadth share from 23% to 36–38% (rules − single +14 points, the only interval that excludes zero) while the share of items worth showing stayed at 87–88% (Table&nbsp;2, Figure&nbsp;2); breadth items were, if anything, more often worth showing. Topic entropy did not change (0.63–0.65). Since both rule modes use the team writer, this contrast measures the writer and the rules together. The team cost 1.8–3.4 times as much per digest and took 32–64&nbsp;s instead of 11–20&nbsp;s. After one change to the repair step (each repair request now states the current topic counts, and asks for an uncovered interest only if a specialist matched a candidate to it), the share of team drafts that still broke a rule after their one repair fell from 37% (10 of 27) to 15% (3 of 20), all three on topic share.</p>
+
+<figure id="fig-modes">
+  <img src="figures/modes.svg" alt="Dot plot of breadth share, worth showing and label accuracy for the three modes, with 95% intervals">
+  <figcaption><b>Figure 2.</b> The three digest modes: mean (dot, value above) and bootstrap 95% interval (line) over 10 digests each, on a common 0–100 scale. Only breadth share separates the modes; relevance (worth showing) and label accuracy do not move. Numbers as in Table&nbsp;2.</figcaption>
+</figure>
+
+<p><b>Citation support is lower than the judge says.</b> By the reference labels, 24 of the 30 sampled brief entries are supported by their citations and only 4 of 9 cross-field connections are not overstated; with 10 entries per mode the modes cannot be told apart.</p>
+
+<p><b>Is the Critic worth more than simple rules?</b> On the case set, rules caught none of the 60 problem instances (20 problems, three reviews each) by construction. The Critic caught 45, all with the right type, and raised no false alarm in 12 control reviews, hard negatives included (Table&nbsp;A1): 45 of 48 on the constructed cases but 0 of 12 on the real digest. In the 30-digest comparison no critic − rules interval excludes zero. The Critic ran in 8 of 10 critic runs (twice the draft still broke a rule after its repair), passed 5 drafts and asked for 3 revisions (one unsupported citation, two overstated connections), all of which passed the rules again. In S1, where it ran every time, critic mode cost $0.0004 and 6&nbsp;s more per digest than rules mode. In live runs it also caught real errors: a survey of video world models filed under Video editing, a feature its source never mentions, star counts computed from the wrong date, and a news item about API prices filed under image generation. Its misses concentrate on labels that look plausible: it never flagged “Sora&nbsp;2” labels on other video research, neither in the case set nor in the live runs where they occurred. Its fixes also stop at what the Manager writes: in the showcased digest it flagged a claim that a repository improves “physics plausibility”, which its source shows only as a topic tag; the point and connection were rewritten, but the item summary, copied from the specialist's note, still carries the claim. <i>Our answer:</i> the Critic is the only layer that checks meaning, and it catches clear, isolated errors, planted or real, but with this model it misses plausible-looking ones, such as a neighbouring topic filed under an interest, and its end-to-end effect is not detectable at this sample size. The measurable gain comes from the code rules with the team writer. A second opinion from the same model is not independent: the judges share the Critic's blind spot.</p>
+
+<h3>6.3&ensp;Idea 2: approval versus silent updates</h3>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table 3.</b> Memory scenarios: 8 scenarios × 2 runs per mode (32 reviews). Evidence and the pass rate come from the reference labels (judge κ 0.27 for evidence); a proposal passes if its evidence supports it, its message matches the change and it was approved.</p>
+<table>
+<thead><tr><th>Mode</th><th class="num">Proposals</th><th class="num">Blocked by code</th><th class="num">Shown to the user</th><th class="num">Written</th><th class="num">Written without approval</th><th class="num">Evidence supports change</th><th class="num">Passed</th></tr></thead>
+<tbody>
+<tr><td>Approval (<code>needs_approval=True</code>)</td><td class="num">11</td><td class="num">2</td><td class="num">9</td><td class="num">9</td><td class="num">0</td><td class="num">5 of 9</td><td class="num">5 of 9 (56%)</td></tr>
+<tr><td>Silent baseline</td><td class="num">11</td><td class="num">2</td><td class="num">0</td><td class="num">9</td><td class="num">9</td><td class="num">5 of 9</td><td class="num">0 (never approved)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>The approval gate held, and the code checks did their share.</b> All 9 approval-mode changes were written only after approval, which the SDK enforces; in silent mode all 9 went into the profile unseen. No unconsented signal reached the agent, the weak-evidence and unconsented-signal scenarios produced no proposal, and all 4 repeats of a rejected change were blocked before the user saw them (the check compares the action and the label, so a renamed label would pass). <b>Approval does not make proposals better; it makes the bad ones visible.</b> The same agent and checks gave 5 supported proposals out of 9 in both modes. Approval showed the 4 unsupported ones with their evidence, such as “Make Sora&nbsp;2 a long-term interest” based on items filed under Sora&nbsp;2 that are about other video work, while silent mode wrote them. Whether people reject such proposals is what the user study's second task tests. What remains is evidence quality: the agent trusts filing labels and overlooks contradicting signals (it lowered the AI-agents weight although the user had rated two agent tools 5/5), which a count of signals cannot see.</p>
+
+<h3>6.4&ensp;Idea 1 and think-aloud: user study</h3>
+
+<p><span class="todo">[After the study: check this paragraph against what was done.]</span> <span class="todo">n = ?</span> people who follow AI news took part in a within-subject, counterbalanced study: each set up a profile with clarification and with the free-text baseline (order alternating), rated each profile's accuracy from 1 to 7 (“This profile describes what I want to follow”), and we counted edits and time. Think-aloud tasks on the clarification profile: (1) set up from scratch; (2) review two proposals, one built on mislabelled evidence; (3) find why an item appears and correct an unwanted recommendation. We used only neutral prompts (“What is on your mind?”) and kept observations apart from interpretations. With n ≤ 3 the results are descriptive.</p>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table 4.</b> Profile setup, clarification versus free text (per participant). <span class="todo">[To fill]</span></p>
+<table>
+<thead><tr><th>Participant</th><th>Order</th><th class="num">Accuracy, clarification</th><th class="num">Accuracy, free text</th><th class="num">Edits (C / F)</th><th class="num">Time (C / F)</th><th>Rejected the mislabelled proposal?</th></tr></thead>
+<tbody>
+<tr><td>P1</td><td><span class="todo">C→F</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">? / ?</span></td><td class="num"><span class="todo">? / ?</span></td><td><span class="todo">?</span></td></tr>
+<tr><td>P2</td><td><span class="todo">F→C</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">? / ?</span></td><td class="num"><span class="todo">? / ?</span></td><td><span class="todo">?</span></td></tr>
+<tr><td>P3</td><td><span class="todo">C→F</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">?</span></td><td class="num"><span class="todo">? / ?</span></td><td class="num"><span class="todo">? / ?</span></td><td><span class="todo">?</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<p><span class="todo">[Observations, 3–4 sentences: what participants noticed, expected and tried in each task, with interpretations marked as such.]</span></p>
+
+<p><b>Limitations.</b> The agents, the Critic and the judges are one model. The reference labels were drafted by Claude and accepted unchanged, and a pre-filled label pulls a reviewer toward agreeing; the Critic case-set labels have not yet been checked by the author. There are 10 digests per mode on two snapshot sets; rules − single changes the writer and the rules at once; the memory scenarios use a scripted user.</p>
+
+<h2>7&ensp;Design variants</h2>
+
+<ul>
+<li><b>Immediate or batched proposals.</b> Forager proposes during a review, at most three at a time, not after every rating. Immediate proposals feel responsive but interrupt, rest on less evidence and invite approval by habit, the “procedure replaces judgment” failure. Batching collects at least two signals per proposal and keeps to “no repeated questions”. The variant we would test next attaches a daily “two changes waiting” note to the digest.</li>
+<li><b>Granularity of reasons.</b> Forager explains at three levels: an item's label, a point's citations and a field heading. Live runs showed that headings are interest claims too (a point under “AI copyright policy” citing a breadth item), so headings became checked. A finer level, highlighting the source sentence behind each point, would lower the checking cost further (Week&nbsp;2: an explanation's value is the work it saves minus the work it adds) and would show users what the Critic's “unsupported citation” means.</li>
+<li><b>How long short-term interests last.</b> Fourteen days is a fixed guess; coverage of an event fading (no matched items for a week) is a better trigger. In the expiry scenario the agent either promoted the expired interest to long-term or added a broader one on two items about a single launch, and the reference labels found the evidence insufficient in all four runs, which argues for leaving that choice to the user at expiry, as Forager does.</li>
+<li><b>Evidence that checks content, not labels.</b> The two-signal rule counts signals but cannot see what the rated items are about, so mislabelled items become evidence. A variant runs the Critic's label check before ratings are stored, or shows each evidence item's own topics next to the proposal so the reviewer can compare.</li>
+<li><b>An honest exploration slider.</b> The slider is set to 20%, but rule-mode digests contain 36–38% breadth items. The writer is only told “about this share”, and the only upper bound is the 40% cap that applies to every bucket, breadth included; with each interest capped as well, items that match no interest a second time likely end up as breadth. The page should show the actual share beside the target, or a rule should keep breadth within a band around it.</li>
+<li><b>Event timelines (design only).</b> For a short-term interest, a timeline that threads items across days (announcement, benchmarks, open replication, licensing dispute) and marks what is new since the last brief would turn a burst of interest into one story instead of repeated items (sketch in Figure&nbsp;A6).</li>
+</ul>
+
+<h2>8&ensp;Lessons learned</h2>
+
+<ul>
+<li><b>Breadth was cheap; meaning was not.</b> Code rules with the team raised breadth by 14 points without a measurable loss in relevance, probably in part because every candidate already comes from AI sources, so breadth lands next to the user's interests; in a general feed the trade-off would likely be steeper. The hard part was meaning: whether a label, a citation or a connection is right.</li>
+<li><b>Guarantees belong in code.</b> The properties that had to hold (approval before a write, consent before use, labels only from the agent that read the item) hold because code enforces them, and the four rules are checked on every digest and flagged when one repair cannot fix them. Where we relied on instructions alone, the model drifted: coverage pressure apparently produced false labels, and the Manager once grouped points by source instead of by field.</li>
+<li><b>A second opinion from the same model is not independent.</b> The Critic and the judges share a blind spot for plausible labels. Constructed cases flatter the Critic (94% of reviews against 0 of 12 on the labelled real digest), and the uncalibrated judges overstated citation support and proposal evidence; calibration against human-checked labels changed two of our conclusions.</li>
+<li><b>Teams cost more and repair less.</b> The team cost and took two to three times as much as one writer and added failure modes (a request timeout, output limits), and its repairs are partial because the Manager cannot fix summaries it did not write. In exchange it gives provenance: every label comes from an agent that read the source, which is what made the label rule possible.</li>
+</ul>
+
+<h2>References</h2>
+<div class="refs">
+<ol>
+<li>Saleema Amershi, Dan Weld, Mihaela Vorvoreanu, Adam Fourney, Besmira Nushi, Penny Collisson, Jina Suh, Shamsi Iqbal, Paul N. Bennett, Kori Inkpen, Jaime Teevan, Ruth Kikin-Gil and Eric Horvitz. 2019. Guidelines for Human-AI Interaction. In <i>Proc. CHI 2019</i>. ACM.</li>
+<li>CS 619 Human-AI Interaction, Singapore Management University. 2026. Lecture materials for Weeks 1, 2, 4 and 6, and Lab 2.</li>
+<li>Jacob Cohen. 1960. A coefficient of agreement for nominal scales. <i>Educational and Psychological Measurement</i> 20(1), 37–46.</li>
+<li>Bradley Efron and Robert J. Tibshirani. 1993. <i>An Introduction to the Bootstrap</i>. Chapman &amp; Hall.</li>
+<li>John D. Lee and Katrina A. See. 2004. Trust in automation: Designing for appropriate reliance. <i>Human Factors</i> 46(1), 50–80.</li>
+<li>Jakob Nielsen. 1994. Enhancing the explanatory power of usability heuristics. In <i>Proc. CHI '94</i>. ACM, 152–158.</li>
+<li>OpenAI. OpenAI Agents SDK for Python (version 0.22.2): tools, agents as tools and human-in-the-loop approvals. <a href="https://openai.github.io/openai-agents-python/">https://openai.github.io/openai-agents-python/</a></li>
+<li>Eli Pariser. 2011. <i>The Filter Bubble: What the Internet Is Hiding from You</i>. Penguin Press.</li>
+<li>Hari Subramonyam, Roy Pea, Christopher Pondoc, Maneesh Agrawala and Colleen Seifert. 2024. Bridging the Gulf of Envisioning: Cognitive Challenges in Prompt Based Interactions with LLMs. In <i>Proc. CHI 2024</i>. ACM.</li>
+<li>Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi Lin, Zhuohan Li, Dacheng Li, Eric P. Xing, Hao Zhang, Joseph E. Gonzalez and Ion Stoica. 2023. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. In <i>NeurIPS 2023 Datasets and Benchmarks Track</i>.</li>
+<li>Cai-Nicolas Ziegler, Sean M. McNee, Joseph A. Konstan and Georg Lausen. 2005. Improving recommendation lists through topic diversification. In <i>Proc. WWW 2005</i>. ACM, 22–32.</li>
+</ol>
+</div>
+
+<!-- ======================= appendix ======================= -->
+<section class="appendix">
+<h2>Appendix: figures and supplementary tables</h2>
+<p class="lede">Figure A1 comes from the Streamlit app as recorded for the demo video (one live clarification call). Figures A2–A5 come from the static showcase, which replays a recorded critic-mode digest (S1, 27 Oct) and the recorded memory runs; nothing in the showcase calls a model.</p>
+
+<figure>
+  <div class="stack">
+    <div><p class="panel-label">(a) One question per direction, answered by clicking; nearby fields and 14-day focuses follow below</p><img class="shot" src="figures/setup-options.png" alt="Option questions for each interest direction in the Streamlit setup page"></div>
+    <div><p class="panel-label">(b) The editable profile; every tracking permission starts off</p><img class="shot" src="figures/setup-profile.png" alt="Editable profile table with tracking toggles off"></div>
+  </div>
+  <figcaption><b>Figure A1.</b> Idea 1 in the Streamlit app, from the sentence “I'm an AI student who follows AI agents, video editing and image generation, and lately I've been following Sora 2 closely.” Picked options become facets; the accepted nearby field (AI copyright policy) enters at weight 0.5, and Sora&nbsp;2 as a short-term interest that expires after 14 days. “Video generation”, a direction the clarifier derived from the Sora&nbsp;2 mention, entered at weight 1.0 although none of its options was picked (§3).</figcaption>
+</figure>
+
+<figure>
+  <div class="two-up wide-left">
+    <div><p class="panel-label">(a) The quick brief: every point cites item IDs</p><img class="shot" src="figures/brief.png" alt="The quick brief with points grouped by field and citation chips"></div>
+    <div><p class="panel-label">(b) Every item carries its reason</p><img class="shot" src="figures/items.png" alt="Two item cards, one interest match and one breadth"></div>
+  </div>
+  <figcaption><b>Figure A2.</b> The two layers of a digest. Clicking a citation chip scrolls to the item. The r08 card in (b) shows the limit of a revision noted in §6.2: its summary, copied from the specialist's note, still claims “physics plausibility”, which the Critic flagged in the brief (Figure&nbsp;A4).</figcaption>
+</figure>
+
+<figure>
+  <div class="two-up">
+    <div><p class="panel-label">(a) The visible profile: source, type, expiry, evidence</p><img class="shot" src="figures/profile.png" alt="Profile entries showing stated or inferred, long or short term"></div>
+    <div><p class="panel-label">(b) A proposal: code-generated change and evidence, then a decision</p><img class="shot" src="figures/proposal.png" alt="A proposed change with evidence and Approve and Reject buttons"></div>
+  </div>
+  <figcaption><b>Figure A3.</b> Idea 2. The proposal in (b) was recorded in the mislabelled-evidence scenario: the rated items are about camera control, a video world-model survey and a video model, not Sora&nbsp;2, so the right decision is to reject it.</figcaption>
+</figure>
+
+<figure>
+  <div class="two-up">
+    <div><p class="panel-label">(a) The four rules and the team's heading check, run in code</p><img class="shot" src="figures/rules.png" alt="How this digest was checked: five rules, all passed"></div>
+    <div><p class="panel-label">(b) The Critic's issue and the revision it caused</p><img class="shot" src="figures/critic.png" alt="The Critic card with an unsupported-citation issue and before and after text"></div>
+  </div>
+  <figcaption><b>Figure A4.</b> The checks users see under each digest (Idea 3). Here the Critic found that point 7 and connection 2 claim more than the r08 source says; the Manager rewrote both and the rules passed again.</figcaption>
+</figure>
+
+<figure>
+  <img class="shot" src="figures/topics.png" alt="Topic mix chart with the 40 percent cap, weekly interest coverage and the exploration share slider">
+  <figcaption><b>Figure A5.</b> Breadth the user can see: the topic mix with the 40% cap, 7-day coverage of each interest and the exploration slider. The slider shows the mismatch discussed in §7: the setting is 20%, while this digest has 4 breadth items out of 10.</figcaption>
+</figure>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table A1.</b> The Critic on the case set: 21 cases, three fresh reviews each (63 reviews, $0.036). Every case passes the four code rules, so rules alone catch 0 by construction.</p>
+<table>
+<thead><tr><th>Problem type (planted unless noted)</th><th class="num">Caught</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Near-duplicates under different labels</td><td class="num">9/9</td><td></td></tr>
+<tr><td>Irrelevant exploration item</td><td class="num">8/9</td><td></td></tr>
+<tr><td>Citation does not support the point</td><td class="num">12/15</td><td></td></tr>
+<tr><td>Overstated cross-field connection</td><td class="num">9/12</td><td></td></tr>
+<tr><td>Wrong interest label</td><td class="num">7/15</td><td>fictional Lumen-V 2 caught 2/3; real Sora&nbsp;2 never</td></tr>
+<tr class="group"><td>Constructed cases (16, one problem each)</td><td class="num">45/48</td><td>each miss was caught in the other two repeats</td></tr>
+<tr><td>Real digest from the first live run (4 problems)</td><td class="num">0/12</td><td>flagged a debatable connection instead</td></tr>
+<tr><td>Clean controls (4, two hard negatives): false alarms</td><td class="num">0/12</td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<p class="table-caption"><b>Table A2.</b> The memory scenarios, both modes, two runs each (reference labels for whether the evidence supports the change).</p>
+<table>
+<thead><tr><th>Scenario</th><th>What the agent did</th><th>Evidence supports it?</th></tr></thead>
+<tbody>
+<tr><td>Strong evidence</td><td>added 3D generation in all 4 runs</td><td>yes</td></tr>
+<tr><td>Weak evidence; unconsented signals</td><td>no proposal in any of the 8 runs; unconsented clicks and reading time never reached the agent</td><td>(nothing proposed)</td></tr>
+<tr><td>Rejected within 30 days</td><td>proposed the rejected change again in all 4 runs; code blocked each before the user saw it</td><td>(blocked)</td></tr>
+<tr><td>Negative evidence</td><td>lowered the AI-agents weight to 0.5–0.6 in all 4 runs</td><td>yes</td></tr>
+<tr><td>Mixed evidence</td><td>one approval run lowered AI agents to 0.8 despite two 5/5 ratings of agent tools</td><td>no</td></tr>
+<tr><td>Mislabelled evidence</td><td>three Sora&nbsp;2 changes (long-term twice, a higher weight once); two “Video generation” proposals</td><td>Sora&nbsp;2: no; video generation: yes</td></tr>
+<tr><td>Expired short-term interest (Lumen-V 2)</td><td>per mode, one run made it long-term and one added a “Video generation” focus</td><td>no (two items, one launch)</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<svg viewBox="0 0 600 168" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" role="img" aria-label="Design sketch of an event timeline for a short-term interest">
+  <style>
+    .frame { fill: #fbfaf7; stroke: #b9b5a8; stroke-width: 1; }
+    .h  { font-size: 10px; font-weight: 700; fill: #141414; }
+    .s  { font-size: 7.8px; fill: #5b5850; }
+    .ev { font-size: 7.8px; fill: #141414; }
+    .evs { font-size: 7.2px; fill: #5b5850; }
+    .axis { stroke: #8f8b80; stroke-width: 1.2; }
+    .tick { stroke: #c9c6bd; stroke-width: 1; }
+    .btn { fill: #ffffff; stroke: #8f8b80; stroke-width: 0.9; }
+    .btnp { fill: #2f6a3d; }
+    .bt { font-size: 7.6px; fill: #141414; }
+    .btw { font-size: 7.6px; fill: #ffffff; font-weight: 700; }
+    .new { fill: #2a78d6; }
+    .old { fill: #ffffff; stroke: #5b5850; stroke-width: 1.2; }
+  </style>
+  <rect class="frame" x="1" y="1" width="598" height="166" rx="5"/>
+  <text class="h" x="14" y="20">Lumen-V 2 · short-term interest · day 9 of 14</text>
+  <text class="s" x="14" y="32">One thread instead of repeated items: each dot is an event, with the items that cover it</text>
+  <rect class="btn" x="452" y="10" width="136" height="17" rx="3"/>
+  <text class="bt" x="460" y="21.5">Follow until: coverage fades ▾</text>
+
+  <line class="axis" x1="30" y1="92" x2="570" y2="92"/>
+  <g>
+    <line class="tick" x1="30" y1="88" x2="30" y2="96"/><text class="s" x="30" y="106" text-anchor="middle">day 1</text>
+    <line class="tick" x1="217" y1="88" x2="217" y2="96"/><text class="s" x="217" y="106" text-anchor="middle">day 5</text>
+    <line class="tick" x1="403" y1="88" x2="403" y2="96"/><text class="s" x="403" y="106" text-anchor="middle">day 9 (today)</text>
+    <line class="tick" x1="570" y1="88" x2="570" y2="96"/><text class="s" x="570" y="106" text-anchor="middle">day 14</text>
+  </g>
+  <circle class="old" cx="30" cy="92" r="4.5"/>
+  <text class="ev" x="36" y="56">Announcement</text><text class="evs" x="36" y="66">2 news items</text>
+  <line class="tick" x1="30" y1="70" x2="30" y2="86"/>
+  <circle class="old" cx="77" cy="92" r="4.5"/>
+  <text class="ev" x="83" y="120">Benchmarks paper</text><text class="evs" x="83" y="130">1 paper</text>
+  <circle class="old" cx="170" cy="92" r="4.5"/>
+  <text class="ev" x="176" y="56">Open replication</text><text class="evs" x="176" y="66">1 repository, 412 stars in 3 days</text>
+  <line class="tick" x1="170" y1="70" x2="170" y2="86"/>
+  <circle class="old" cx="263" cy="92" r="4.5"/>
+  <text class="ev" x="269" y="120">API pricing</text><text class="evs" x="269" y="130">1 news item</text>
+  <circle class="new" cx="403" cy="92" r="5.5"/>
+  <text class="ev" x="409" y="56" font-weight="700">Licensing dispute · new since your last brief</text>
+  <text class="evs" x="409" y="66">2 news items · cited in today's brief</text>
+  <line class="tick" x1="403" y1="70" x2="403" y2="85"/>
+
+  <text class="s" x="14" y="153">When the interest expires:</text>
+  <rect class="btnp" x="112" y="143" width="74" height="15" rx="3"/><text class="btw" x="149" y="153.5" text-anchor="middle">Keep following</text>
+  <rect class="btn" x="192" y="143" width="74" height="15" rx="3"/><text class="bt" x="229" y="153.5" text-anchor="middle">Make long-term</text>
+  <rect class="btn" x="272" y="143" width="40" height="15" rx="3"/><text class="bt" x="292" y="153.5" text-anchor="middle">Stop</text>
+</svg>
+<figcaption><b>Figure A6.</b> Design sketch, not implemented: an event timeline for a short-term interest (§7). Lumen-V&nbsp;2 is the fictional model from the Critic case set, and the events and counts are illustrative.</figcaption>
+</figure>
+</section>
+
+</body>
+</html>

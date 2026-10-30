@@ -2,6 +2,21 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-30 (Project report draft)
+
+### Added
+- `report/`: the project report, printed to A4 PDF by headless Chrome, as the proposal was.
+  - `report/forager-report.pdf` has a main body of just over 5 pages (the limit is 6) and a 5-page appendix of figures and tables.
+  - Before the first commit, an independent agent checked every number and description against `docs/` and the code. Its findings led to 27 corrections, most of them in how the system was described. For example, setup directions are opt-out and keep the model's labels, and the prototype collects only ratings and likes.
+  - `report/report.html` and `report/report.css` are the source. `report/build.py` prints the PDF and fails if the main body is over six pages.
+  - The main body covers the problem and solution, the three ideas (what, why, how, baseline), the evaluation, design variants and lessons learned.
+  - The evaluation section answers the instructor's question about the Critic directly. The answer: it catches clear planted errors, but its end-to-end effect over rules alone is not measurable here.
+  - Yellow placeholders mark what the user study will fill in: one sentence in "Findings in brief", §6.4 and Table 4.
+- Figures:
+  - `report/make_figures.py` draws the mode comparison (`figures/modes.svg`). It reads the numbers from `docs/stage5-results.md`. It also crops the Idea 1 screens from the demo video's frames.
+  - `report/shots.mjs` takes the showcase screenshots for the appendix.
+  - Figure 1, the architecture, and Figure A6, a design sketch of an event timeline, are inline SVG in the report.
+
 ## 2026-10-30 (Demo video final)
 
 ### Changed

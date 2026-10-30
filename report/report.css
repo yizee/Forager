@@ -1,0 +1,125 @@
+/* Print styles for the Forager project report (A4, printed by headless Chrome: see build.py). */
+
+@page {
+  size: A4;
+  margin: 17mm 18mm 18mm;
+  @bottom-center {
+    content: counter(page);
+    font: 9pt "Times New Roman", Times, serif;
+    color: #555;
+  }
+}
+
+:root {
+  --ink: #141414;
+  --muted: #5b5850;
+  --rule: #1d1d1d;
+  --hair: #c9c6bd;
+  --todo-bg: #fff1a8;
+  --todo-line: #d8a800;
+}
+
+html {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11pt;
+  line-height: 1.34;
+  color: var(--ink);
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  text-align: justify;
+  hyphens: auto;
+  font-kerning: normal;
+}
+
+/* ---------- title block ---------- */
+.title-block { text-align: center; margin-bottom: 0.7em; }
+.title-block .course { font-size: 16pt; font-weight: 700; margin: 0; }
+.title-block .title { font-size: 11.5pt; font-weight: 700; margin: 0.3em 0 0.15em; }
+.title-block .author { font-size: 10pt; margin: 0; }
+.title-block .links { font-size: 9pt; color: var(--muted); margin: 0.15em 0 0; }
+
+/* ---------- headings and text ---------- */
+h2 {
+  font-size: 12pt;
+  margin: 0.9em 0 0.3em;
+  break-after: avoid;
+}
+h3 {
+  font-size: 10.5pt;
+  margin: 0.55em 0 0.2em;
+  break-after: avoid;
+}
+p { margin: 0 0 0.5em; orphans: 2; widows: 2; }
+ul, ol { margin: 0.1em 0 0.45em; padding-left: 1.25em; }
+li { margin: 0 0 0.18em; }
+b.lead { font-weight: 700; }
+code {
+  font-family: Menlo, "SF Mono", monospace;
+  font-size: 0.82em;
+  letter-spacing: -0.01em;
+}
+.nowrap { white-space: nowrap; }
+sup.cite, .cite { white-space: nowrap; }
+a { color: inherit; text-decoration: none; }
+
+/* A visible placeholder for what the user study will fill in. */
+.todo {
+  background: var(--todo-bg);
+  box-shadow: 0 0 0 0.6pt var(--todo-line);
+  padding: 0 2pt;
+}
+
+/* ---------- figures and tables ---------- */
+figure { margin: 0.45em 0 0.6em; break-inside: avoid; }
+figure img, figure svg { display: block; width: 100%; height: auto; }
+figcaption, .table-caption {
+  font-size: 9pt;
+  line-height: 1.25;
+  text-align: left;
+  hyphens: manual;
+}
+figcaption { margin-top: 0.35em; }
+.table-caption { margin: 0.5em 0 0.25em; }
+figcaption b, .table-caption b { font-weight: 700; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.8pt;
+  line-height: 1.22;
+  margin: 0 0 0.65em;
+  break-inside: avoid;
+  font-variant-numeric: tabular-nums;
+}
+th, td { padding: 1.6pt 4pt; text-align: left; vertical-align: top; hyphens: manual; }
+th { font-weight: 700; }
+thead th { border-top: 0.9pt solid var(--rule); border-bottom: 0.5pt solid var(--rule); }
+tbody tr:last-child td { border-bottom: 0.9pt solid var(--rule); }
+tbody tr.group td { border-top: 0.4pt solid var(--hair); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+td.sub { color: var(--muted); }
+.table-wrap { break-inside: avoid; }
+
+/* ---------- references ---------- */
+.refs { font-size: 8.8pt; line-height: 1.24; text-align: left; hyphens: manual; }
+.refs ol { padding-left: 1.7em; margin: 0; }
+.refs li { margin-bottom: 0.15em; }
+
+/* ---------- appendix ---------- */
+.appendix { break-before: page; }
+.appendix h2 { margin-top: 0; }
+.appendix .lede { font-size: 9.5pt; color: var(--muted); }
+.shot {
+  border: 0.5pt solid var(--hair);
+  border-radius: 2pt;
+}
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; align-items: start; }
+.two-up.wide-left { grid-template-columns: 1.18fr 1fr; }
+.two-up.wide-right { grid-template-columns: 1fr 1.5fr; }
+.panel-label { font: 700 8.5pt "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 0 0 1.5mm; color: var(--muted); }
+.stack > * + * { margin-top: 3mm; }
