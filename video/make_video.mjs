@@ -24,7 +24,7 @@ const SHOWCASE = "http://localhost:8765/index.html";
 const STREAMLIT = "http://localhost:8502/";
 const FPS = 30;
 const VIEW = { width: 1536, height: 864, scale: 1.25 };   // CSS pixels; frames come out at 1920 x 1080
-const VOICE = "Samantha", RATE = 172, GAP = 0.3;
+const VOICE = "Samantha", RATE = 172, GAP = 0.24;
 const SENTENCE = "I'm an AI student who follows AI agents, video editing and image generation, and lately I've been following Sora 2 closely.";
 
 // ---------- narration ----------
@@ -276,9 +276,9 @@ async function scene1(v) {
   v.cursorHidden = false;
   await v.say("and most feeds quietly narrow to what you clicked last week.");
   await v.scrollTo(260, 3.2);
-  await v.say("Forager is a daily brief that stays broad, shows its sources, and asks before it learns.");
+  await v.say("Forager keeps me in the loop: a daily brief that stays broad, shows its sources, and asks before it learns.");
   await v.moveToEl(byText(".point", "BrickWright"), 1.2, 0.3, 0.3);
-  await v.spoken(0.5);
+  await v.spoken(0.35);
 }
 
 async function scene2(v) {
@@ -286,7 +286,7 @@ async function scene2(v) {
   await v.waitFor(byText('[data-testid="stSidebar"] label', "Set up"));
   await v.js(`(() => { const s = document.createElement("style"); s.textContent = ${JSON.stringify(STREAMLIT_CSS)}; document.head.append(s); })()`);
   v.scroller = '[data-testid="stMain"]';
-  v.label = { title: "Idea 1 · Clarification, not more typing", note: "Live in the Streamlit app" };
+  v.label = { title: "Idea 1 · Intent expression: options, not more typing", note: "Live in the Streamlit app" };
   await v.hold(0.4);
   await v.moveToEl(byText('[data-testid="stSidebar"] label', "Set up"), 0.8);
   await v.click();
@@ -316,7 +316,7 @@ async function scene2(v) {
   await v.moveToEl(pill(directions[0].i, 0), 0.8);
   await v.click();
   if (directions[0].options.length > 1) { await v.moveToEl(pill(directions[0].i, 1), 0.5); await v.click(); }
-  await v.say("and asks about each with options I can just click.");
+  await v.say("and asks about each with options to click, because recognizing what I want is easier than recalling it.");
   for (const d of directions.slice(1, 3)) { await v.moveToEl(pill(d.i, 0), 0.7); await v.click(); }
   let pick = adjacent ? adjacent.options.findIndex(o => /copyright/i.test(o)) : -1;
   if (adjacent && pick < 0) pick = 0;
@@ -341,13 +341,13 @@ async function scene2(v) {
   await v.moveToEl('document.querySelector(\'[data-testid="stDataFrameGlideDataEditor"]\') || document.querySelector(\'[data-testid="stDataFrame"]\')', 0.9, 0.35, 0.35);
   await v.say("and tracking stays off until I turn it on.");
   await v.moveToEl('document.querySelector(\'[data-testid="stCheckbox"]\')', 0.9, 0.06, 0.5);
-  await v.spoken(0.6);
+  await v.spoken(0.35);
 }
 
 async function scene3(v) {
   await v.open(`${SHOWCASE}#brief`);
   v.scroller = "window";
-  v.label = { title: "The two-layer brief", note: "Recorded digest · 27 Oct (rules and Critic mode)" };
+  v.label = { title: "Verifiable output: every point cites its items", note: "Recorded digest · 27 Oct (rules and Critic mode)" };
   await v.say("Each morning I get a two-layer brief.");
   await v.scrollTo(150, 1.2);
   await v.moveToEl(byText(".point", "Agent tooling"), 0.9, 0.35, 0.3);
@@ -355,21 +355,20 @@ async function scene3(v) {
   const chip = `document.querySelector('.cite[aria-label^="Open p08"]')`;
   await v.moveToEl(chip, 1.0);
   await v.spoken(0.1);
-  await v.say("click one, and I land on the item, with a summary and a link to the source.");
+  await v.say("click one to check the source myself.");
   await v.click();
   v.keep.push(`document.getElementById("item-p08").classList.add("flash")`);
   const card = await v.rect(`document.getElementById("item-p08")`);
   const top = await v.js("document.scrollingElement.scrollTop");
   await v.scrollTo(top + card.y + card.h / 2 - VIEW.height * 0.42, 1.0);
   await v.moveToEl(`document.querySelector("#item-p08 .item-title")`, 0.8, 0.3, 0.5);
-  await v.hold(0.8);
-  await v.moveToEl(`document.querySelector("#item-p08 .item-summary")`, 0.8, 0.5, 0.5);
+  await v.hold(0.5);
   await v.spoken(0.1);
   v.keep = [];
   await v.js(`document.getElementById("item-p08").classList.remove("flash")`);
   await v.say("And each item says why it is here:");
   await v.moveToEl(`document.querySelector("#item-p08 .pill")`, 0.8, 0.4, 0.5);
-  await v.say("a match to one of my interests, or breadth, something next to them that I didn't ask for.");
+  await v.say("one of my interests, or breadth I didn't ask for.");
   await v.moveToEl(`document.querySelector("#item-n06 .pill")`, 1.4, 0.3, 0.5);
   await v.moveToEl(`document.querySelector("#item-n06 .reason-text")`, 0.8, 0.4, 0.5);
   await v.spoken(0.4);
@@ -378,14 +377,14 @@ async function scene3(v) {
 async function scene4(v) {
   if (!(await v.js("location.href")).startsWith(SHOWCASE)) await v.open(`${SHOWCASE}#brief`);   // when scenes are rendered alone
   v.scroller = "window";
-  v.label = { title: "Idea 2 · Nothing is written until you decide", note: "Proposals recorded from the memory agent (scenario runs, 28 Oct)" };
+  v.label = { title: "Idea 2 · Memory with consent: nothing is written until you decide", note: "Proposals recorded from the memory agent (scenario runs, 28 Oct)" };
   await v.moveToEl(byText(".tab", "Interests"), 0.8);
   await v.click();
   await v.hold(0.3);
   const first = `document.querySelectorAll(".proposal")[0]`;
   await v.say("From my ratings, Forager may propose a change to my profile,");
   await v.moveToEl(`${first}.querySelector("h3")`, 0.9, 0.3, 0.5);
-  await v.say("but it can't write anything itself: the tool pauses until I decide.");
+  await v.say("but it can't write anything itself: the system pauses until I decide, and the evidence comes from code, not the agent's words.");
   await v.scrollTo(230, 1.0);
   await v.moveToEl(`${first}.querySelector(".btn.primary")`, 0.9);
   await v.say("Here the evidence is camera control, a video survey and a video model, not Sora 2,");
@@ -402,12 +401,12 @@ async function scene4(v) {
   await v.click();
   await v.hold(0.3);
   await v.moveToEl(`document.querySelector(".interest-row.new")`, 1.0, 0.3, 0.4);
-  await v.spoken(0.7);
+  await v.spoken(0.35);
 }
 
 async function scene5(v) {
   v.scroller = "window";
-  v.label = { title: "Idea 3 · Breadth you can see, checked twice", note: "A Manager and three source specialists write; code rules and a Critic check" };
+  v.label = { title: "Idea 3 · Multi-agent + Critic: breadth you can see, checked twice", note: "A Manager and three source specialists write; code rules and a Critic check" };
   await v.moveToEl(byText(".tab", "Topics"), 0.8);
   await v.click();
   await v.hold(0.4);
@@ -423,7 +422,7 @@ async function scene5(v) {
   await v.moveTo(s.x + s.w * 0.62, s.y + s.h / 2, 0.8, { buttons: 1 });
   await v.mouse("mouseReleased");
   await v.spoken(0.1);
-  await v.say("Code checks every digest, and then a separate Critic checks meaning.");
+  await v.say("A manager and three source specialists write it; code checks every digest, and a separate Critic checks meaning.");
   await v.moveToEl(byText(".tab", "Brief"), 0.7);
   await v.click();
   await v.hold(0.3);
@@ -436,7 +435,7 @@ async function scene5(v) {
   await v.moveToEl(`document.querySelector(".aside .diff .before")`, 0.9, 0.5, 0.5);
   await v.hold(0.6);
   await v.moveToEl(`document.querySelector(".aside .diff .after")`, 0.8, 0.5, 0.5);
-  await v.spoken(0.5);
+  await v.spoken(0.35);
 }
 
 async function scene6(v) {
@@ -445,18 +444,21 @@ async function scene6(v) {
   await v.moveToEl(byText(".tab", "Evaluation"), 0.8);
   await v.click();
   await v.hold(0.3);
-  await v.say("Across thirty recorded digests, the team with rules raised breadth from 23 to about 37 percent,");
+  await v.say("Across thirty recorded digests, the team with rules raised breadth from 23 to about 37 percent, with no loss in relevance.");
   await v.moveToEl(`document.querySelector("#panel-evaluation .tile")`, 0.8, 0.5, 0.5);
   const chart = `document.querySelector("#panel-evaluation .fig-grid .figure")`;
   await v.reveal(chart, 0.45);
   await v.moveToEl(`${chart}.querySelectorAll(".mark .ci-dot")[1]`, 0.9);
-  await v.say("and items worth reading held at about 88.");
-  await v.moveToEl(`document.querySelectorAll("#panel-evaluation .fig-grid .figure")[1].querySelectorAll(".mark .ci-dot")[1]`, 1.0);
-  await v.spoken(0.5);
+  await v.hold(0.5);
+  await v.moveToEl(`document.querySelectorAll("#panel-evaluation .fig-grid .figure")[1].querySelectorAll(".mark .ci-dot")[1]`, 0.9);
+  await v.say("The Critic caught 45 of 48 planted errors, but helped little on real digests.");
+  await v.scrollTo(0, 0.9);
+  await v.moveToEl(`document.querySelectorAll("#panel-evaluation .tile")[3]`, 0.9, 0.5, 0.55);
+  await v.spoken(0.35);
   v.label = null;
   v.cursorHidden = true;
-  v.cards.push({ start: v.t, end: v.t + 3.2, fadeIn: 0.4, sub: "Forage widely. Show your sources. Ask before you learn.", by: "SHI YIZE · CS 619 Human-AI Interaction" });
-  await v.hold(3.2);
+  v.cards.push({ start: v.t, end: v.t + 2.8, fadeIn: 0.4, sub: "Forage widely. Show your sources. Ask before you learn.", by: "SHI YIZE · CS 619 Human-AI Interaction" });
+  await v.hold(2.8);
 }
 
 // ---------- run ----------
@@ -510,7 +512,7 @@ try {
   fs.writeFileSync(path.join(BUILD, "timeline.json"), JSON.stringify({ fps: FPS, frames: v.frame, duration: v.t,
     audio: v.audio.map(a => ({ file: a.file, start: a.start })) }, null, 1));
   console.log(`done: ${v.frame} frames, ${v.t.toFixed(1)} s of video, ${v.audio.length} narration lines` +
-    (TAKES ? ", in your voice" : ""));
+    (TAKES ? ", from the recorded takes" : ""));
   if (v.t > 120) console.log(`warning: the video is ${v.t.toFixed(1)} s, over two minutes: re-record the slowest lines`);
 } finally {
   chrome.kill();

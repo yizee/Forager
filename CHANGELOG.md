@@ -2,6 +2,21 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-30 (Demo video: revised narration in the Fenrir voice)
+
+### Changed
+- Eight narration lines were rewritten, and the subtitles in `video/forager-demo.srt` follow them.
+  - The first line now says that the user stays in the loop.
+  - Idea 1 gives its reason: recognizing what you want is easier than recalling it.
+  - Idea 2 says the system pauses until the user decides, and that the evidence comes from code, not from the agent's words.
+  - Idea 3 names the Manager and the three source specialists.
+  - The closing lines add "with no loss in relevance" and answer the instructor's question: the Critic caught 45 of 48 planted errors but helped little on real digests.
+- The on-screen labels now name the course concepts: Intent expression, Verifiable output, Memory with consent, and Multi-agent + Critic.
+- The last scene points at the evaluation tile that shows 45 of 48 while the Critic line plays.
+- Shorter pauses between lines and a shorter end card.
+- The video is voiced by Kokoro's Fenrir (`am_fenrir`) at 1.06× speed and runs 1:58 (`video/build/forager-demo.mp4`, not committed).
+- `docs/video-script.md` has the revised narration and labels, and the facts behind the new claims.
+
 ## 2026-10-30 (An open-source narration voice)
 
 ### Added

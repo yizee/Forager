@@ -9,7 +9,9 @@ What is recorded where:
   - It shows a recorded critic-mode digest from 27 October and proposals recorded from the memory agent.
   - A caption on screen says so. Nothing in the video claims a live run that did not happen.
 
-The narration is about 270 words, about 135 words a minute. Times are targets; trim the pauses before the words.
+The narration is about 295 words. The current cut is 1:58 long, voiced by Kokoro's Fenrir at 1.06× speed, with about 92 seconds of speech. Times are targets; trim the pauses before the words. In the last scene, the Critic line plays over the evaluation tile that shows 45 of 48.
+
+The narration was revised on 2026-10-30 to state the course's lens, which is that the user stays in the loop, and to give each idea's reason. It also names the source specialists and answers the instructor's question about the Critic against the rules. The on-screen labels name the course concept behind each idea.
 
 ## Script
 
@@ -17,9 +19,9 @@ The narration is about 270 words, about 135 words a minute. Times are targets; t
 
 - **Screen**: The showcase header with the bee logo. Scroll slowly through the brief on the Brief tab.
 - **On-screen text**: "Forager · a daily AI brief that stays broad".
-- **Narration** (37 words):
+- **Narration** (41 words):
 
-> Keeping up with AI news, papers and tools is hard, and most feeds quietly narrow to what you clicked last week. Forager is a daily brief that stays broad, shows its sources, and asks before it learns.
+> Keeping up with AI news, papers and tools is hard, and most feeds quietly narrow to what you clicked last week. Forager keeps me in the loop: a daily brief that stays broad, shows its sources, and asks before it learns.
 
 ### 0:15–0:45 · Idea 1: one sentence, then options to click
 
@@ -30,10 +32,10 @@ The narration is about 270 words, about 135 words a minute. Times are targets; t
   4. Select Sora 2 under "Track them for 14 days?".
   5. Click *Build my profile*. Show the editable table: stated or inferred, long-term or short-term with its expiry date.
   6. Show the tracking toggles, all off.
-- **On-screen text**: "Idea 1 · Clarification, not more typing".
-- **Narration** (65 words):
+- **On-screen text**: "Idea 1 · Intent expression: options, not more typing".
+- **Narration** (73 words):
 
-> Setup starts with one sentence about me. Instead of asking me to write more, Forager splits it into directions and asks about each with options I can just click. It suggests nearby fields too, like AI copyright policy, and offers to follow Sora 2 for two weeks only. Nothing I don't pick goes into my profile, and tracking stays off until I turn it on.
+> Setup starts with one sentence about me. Instead of asking me to write more, Forager splits it into directions and asks about each with options to click, because recognizing what I want is easier than recalling it. It suggests nearby fields too, like AI copyright policy, and offers to follow Sora 2 for two weeks only. Nothing I don't pick goes into my profile, and tracking stays off until I turn it on.
 
 If the live call suggests a different nearby field, name that one instead of AI copyright policy.
 
@@ -44,12 +46,12 @@ Sentence to type: *I'm an AI student who follows AI agents, video editing and im
 - **Screen**: Showcase, *Brief* tab.
   1. Hover over a point under "AI agents".
   2. Click its citation chip (for example `p08`). The page scrolls to the BrickWright card and highlights it.
-  3. Point at the summary and the title link.
+  3. Point at the title link.
   4. Move to a Breadth card (for example `n06`) and its reason.
-- **On-screen text**: "Recorded digest · 27 Oct". Then "Every point cites its items", then "Why you see this: interest match or breadth".
-- **Narration** (57 words):
+- **On-screen text**: "Verifiable output: every point cites its items", noting "Recorded digest · 27 Oct".
+- **Narration** (39 words):
 
-> Each morning I get a two-layer brief. Every point cites the items behind it: click one, and I land on the item, with a summary and a link to the source. And each item says why it is here: a match to one of my interests, or breadth, something next to them that I didn't ask for.
+> Each morning I get a two-layer brief. Every point cites the items behind it: click one to check the source myself. And each item says why it is here: one of my interests, or breadth I didn't ask for.
 
 ### 1:10–1:30 · Idea 2: memory you approve
 
@@ -58,10 +60,10 @@ Sentence to type: *I'm an AI student who follows AI agents, video editing and im
   2. Slowly point along its evidence titles: WorldForge V2 (camera control), the video world-model survey, TencentARC/Looking-Ahead.
   3. Click *Reject*.
   4. On the second proposal, "Add Video generation", click *Approve*. The new interest appears on the left.
-- **On-screen text**: "Idea 2 · Nothing is written until you decide". Then "Proposals recorded from the memory agent".
-- **Narration** (47 words):
+- **On-screen text**: "Idea 2 · Memory with consent: nothing is written until you decide", noting "Proposals recorded from the memory agent".
+- **Narration** (57 words):
 
-> From my ratings, Forager may propose a change to my profile, but it can't write anything itself: the tool pauses until I decide. Here the evidence is camera control, a video survey and a video model, not Sora 2, so I reject it and approve video generation.
+> From my ratings, Forager may propose a change to my profile, but it can't write anything itself: the system pauses until I decide, and the evidence comes from code, not the agent's words. Here the evidence is camera control, a video survey and a video model, not Sora 2, so I reject it and approve video generation.
 
 ### 1:30–1:50 · Idea 3: breadth you can see, checked twice
 
@@ -69,18 +71,18 @@ Sentence to type: *I'm an AI student who follows AI agents, video editing and im
   1. Showcase, *Topics* tab: the topic chart with the "cap 4" line, then move the exploration slider.
   2. Switch to the *Brief* tab. Scroll the right column to "How this digest was checked" (all five rules ticked).
   3. Show the Critic card: "Unsupported citation · Point 7 · Connection 2", then the struck-through *before* and the new *after*.
-- **On-screen text**: "Idea 3 · A Manager and 3 source specialists write; code rules and a Critic check".
-- **Narration** (42 words):
+- **On-screen text**: "Idea 3 · Multi-agent + Critic: breadth you can see, checked twice", noting "A Manager and three source specialists write; code rules and a Critic check".
+- **Narration** (49 words):
 
-> Breadth stays visible: no topic may take more than forty percent, and I set the exploration share. Code checks every digest, and then a separate Critic checks meaning. Here it caught a claim the source never made, and the point was rewritten.
+> Breadth stays visible: no topic may take more than forty percent, and I set the exploration share. A manager and three source specialists write it; code checks every digest, and a separate Critic checks meaning. Here it caught a claim the source never made, and the point was rewritten.
 
 ### 1:50–2:00 · One result
 
 - **Screen**: Showcase, *Evaluation* tab: the four tiles, then the "Share of breadth items" chart.
 - **On-screen text**: "30 recorded digests · breadth items: single agent 23% → team with rules 36–38% · worth showing 87–88% in every mode". Last two seconds: the logo, "Forager", and "SHI YIZE · CS 619".
-- **Narration** (24 words):
+- **Narration** (35 words):
 
-> Across thirty recorded digests, the team with rules raised breadth from 23 to about 37 percent, and items worth reading held at about 88.
+> Across thirty recorded digests, the team with rules raised breadth from 23 to about 37 percent, with no loss in relevance. The Critic caught 45 of 48 planted errors, but helped little on real digests.
 
 ## Recording checklist
 
@@ -186,10 +188,15 @@ video/build/encode video/build
 
 These are the numbers and claims the narration relies on; all are in `docs/stage5-results.md`.
 
-- **"The tool pauses until I decide"**: `propose_profile_update` uses `needs_approval=True`. In the evaluation, 0 of 9 approval-mode changes were written without approval.
+- **"Recognizing what I want is easier than recalling it"**: the design reason for Idea 1, which is recognition over recall.
+- **"The system pauses until I decide"**: `propose_profile_update` uses `needs_approval=True`. In the evaluation, 0 of 9 approval-mode changes were written without approval.
+- **"The evidence comes from code, not the agent's words"**: the change description and the evidence lines the user sees are generated by code from the arguments and the signal records. They are shown apart from the agent's message.
 - **"No topic may take more than forty percent"**: a hard rule in code. The recorded digest has AI agents 4/10 and breadth 4/10.
 - **"A claim the source never made"**: the Critic's issue on `r08`. The source never says the method improves physics plausibility, and the revision removed that claim.
 - **"From 23 to about 37 percent"**: breadth share for single agent 23%, rules 36%, rules + Critic 38%. The interval for rules − single is [+9, +18] points.
   - The contrast covers the specialist team and the rules together, which is why the narration says "the team with rules".
-  - "Worth showing" is 87–88% in all three modes.
-- The video does not claim that the Critic itself raised breadth or quality. End to end, critic − rules showed no measurable difference; that belongs in the report.
+  - "Worth showing" is 87–88% in all three modes, so there is "no loss in relevance": rules − single is +0 points [−7, +8], and that judge's kappa is 0.89.
+- **"The Critic caught 45 of 48 planted errors, but helped little on real digests"**:
+  - On the constructed case set (Stage 4), the Critic caught 45 of 48 problem instances (16 problems × 3 repeats), with no false alarms. The rules caught none.
+  - On the first real digest, `live-01`, the Critic caught 0 of 12. End to end, no critic − rules interval excludes zero.
+  - The video does not claim that the Critic raised breadth or quality.
