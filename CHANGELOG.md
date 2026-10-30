@@ -2,6 +2,12 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-30 (Demo video final)
+
+### Changed
+- The demo video is final: 1:58, voiced by Fenrir, with the revised narration. A fixed copy, with the silent version and the subtitles, is in `video/build/final/` so later renders do not overwrite it. It is not committed.
+- README: the demo video is done; the user study and the report are next.
+
 ## 2026-10-30 (Demo video: revised narration in the Fenrir voice)
 
 ### Changed
