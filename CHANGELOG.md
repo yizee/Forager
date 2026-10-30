@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-30 (An open-source narration voice)
+
+### Added
+- `video/tts_kokoro.py` writes the narration takes with Kokoro-82M (Apache-2.0), running locally. `make_video.mjs --voice` can use the result directly.
+  - It writes one WAV per subtitle line, trimmed, or a sample of several voices to choose from.
+  - It runs in its own environment, `video/build/tts-venv`, with the model files in `video/build/kokoro`. Git ignores both.
+  - The macOS voice used so far may not be licensed for public sharing; Kokoro's output can be used freely.
+
 ## 2026-10-29 (Narrate the video in your own voice)
 
 ### Added

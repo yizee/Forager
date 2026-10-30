@@ -315,6 +315,8 @@ Forager/
 
 2026-10-29 已用脚本自动录好视频：`video/make_video.mjs` 加 `video/encode.swift`，输出在 `video/build/`（不提交）。时长 1:53，英文配音用 macOS 的系统语音 Samantha，字幕画进画面里。另有一个无声的带字幕版本，方便作者用自己的声音重新配音。重新生成的命令见 `docs/video-script.md` 的 Automated recording 一节。作者决定用自己的声音配音：在本地录音工具里逐句录（`video/voice_studio.py`，端口 8766），录音存在 `video/voice/`，不提交；然后用 `make_video.mjs --voice video/voice` 重新生成，时间轴跟随录音。
 
+10-30 改为考虑开源声线：用 `video/tts_kokoro.py` 调用 Kokoro-82M（Apache-2.0，本地运行）生成 25 句旁白，再用 `--voice` 合成。它装在单独的环境 `video/build/tts-venv` 里，模型文件在 `video/build/kokoro`，都不提交。原因是 macOS 系统语音的许可可能只允许个人、非商业使用，不能公开分享；Kokoro 的输出可以随便用。
+
 ## 10. 报告写作要求（来自老师反馈）
 
 - **开头直接写问题和解决方案**，就像本文件第 1 节的三句话；动机压缩成一小段。

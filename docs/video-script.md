@@ -166,6 +166,22 @@ The synthetic voice can be replaced with your own, one take per line.
    - The takes are matched to the lines by their text, and each scene's timing follows your takes.
    - If the live setup scene suggests a field other than AI copyright policy, the recorder stops; run it again.
 
+### An open-source voice (Kokoro)
+
+`video/tts_kokoro.py` writes the same takes with Kokoro-82M, an Apache-2.0 text-to-speech model that runs locally.
+
+- **Why not the macOS voice:** its output may be used freely, unlike the macOS system voices, whose licence (as we understand it) covers personal, non-commercial work only.
+- **Where it runs:** it has its own environment, `video/build/tts-venv`, so the project's pinned packages stay as they are.
+- **Model files:** `kokoro-v1.0.onnx` (326 MB) and `voices-v1.0.bin` (28 MB), from the kokoro-onnx releases on GitHub, in `video/build/kokoro`.
+- **Pronunciation:** checked from the phonemes. "AI" is read as letters, "Sora 2" as "Sora two", and the numbers and "Critic" come out right.
+
+```bash
+video/build/tts-venv/bin/python video/tts_kokoro.py --samples af_heart,af_bella,am_michael,am_fenrir,bf_emma,bm_george --out video/build/samples
+video/build/tts-venv/bin/python video/tts_kokoro.py --voice af_heart --out video/build/voice-af_heart
+node video/make_video.mjs --voice video/build/voice-af_heart
+video/build/encode video/build
+```
+
 ## Facts behind the narration
 
 These are the numbers and claims the narration relies on; all are in `docs/stage5-results.md`.
