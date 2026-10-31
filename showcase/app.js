@@ -95,10 +95,6 @@
   const tile = (label, value, sub) => h("div", { class: "card tile" }, h("div", { class: "tile-label", text: label }),
     h("div", { class: "tile-value", text: value }), sub ? h("div", { class: "tile-sub", text: sub }) : null);
   const key = (cls, text) => h("span", { class: "key" }, h("span", { class: `swatch ${cls}` }), text);
-  const footNote = () => h("footer", { class: "panel-foot" }, tr("Showcase page built from recorded runs (", "展示页由记录下来的运行生成（"),
-    D.source_files.map((file, i) => [i ? ", " : "", h("code", { text: file })]),
-    tr("). Nothing here calls a model, and ratings, likes and decisions are not saved.",
-      "）。页面不调用模型，评分、点赞和批准都不会保存。中文由 Claude 根据英文原文翻译，标题保留原文。"));
 
   // ---------- tooltip: values lead, labels follow; same on hover and focus ----------
   const tip = h("div", { class: "tooltip", role: "tooltip", hidden: true });
@@ -360,7 +356,7 @@
           h("div", { class: "legend" }, h("span", { class: "key" }, h("span", { class: "dot interest" }), tr("Interest match", "兴趣匹配")),
             h("span", { class: "key" }, h("span", { class: "dot breadth" }), tr("Breadth: next to your interests", "广度补充：与你的兴趣相邻")))),
         h("div", { class: "items" }, digest.items.map(itemCard))),
-      h("aside", { class: "aside", "aria-label": tr("How this digest was checked", "这份简报是怎么检查的") }, rulesCard, criticCard, teamCard)), footNote());
+      h("aside", { class: "aside", "aria-label": tr("How this digest was checked", "这份简报是怎么检查的") }, rulesCard, criticCard, teamCard)));
   }
 
   // ---------- interests and memory ----------
@@ -455,7 +451,7 @@
           "Forager 不能自己改你的档案：写入档案的工具会暂停，直到你做出决定。改动内容和证据由代码生成，和 agent 的措辞分开显示。") })),
       D.proposals.map((p, k) => proposalCard(p, k, () => renderInterests(panel))),
       consentCard());
-    panel.replaceChildren(h("div", { class: "two-col" }, left, right), footNote());
+    panel.replaceChildren(h("div", { class: "two-col" }, left, right));
   }
 
   // ---------- topics ----------
@@ -501,15 +497,14 @@
       h("h2", { class: "block", text: tr("Exploration share", "探索度") }),
       h("p", { class: "sub", text: tr("Breadth items rotate the feed, the way rotating crops keeps a field from wearing out.", "广度补充让信息流轮作，就像轮作让田地不会变贫瘠。") }),
       h("div", { class: "slider-row" }, slider, value), hint,
-      h("p", { class: "note", text: tr(`Today: ${breadthToday} of ${n} items were breadth, with the setting at ${pct(profile.exploration)}. Moving the slider here does not rebuild the digest.`,
-        `今天：${breadthToday}/${n} 条是广度补充，设置是 ${pct(profile.exploration)}。在这里拖动滑块不会重新生成简报。`) }));
+      h("p", { class: "note", text: tr(`Today: ${breadthToday} of ${n} items were breadth, with the setting at ${pct(profile.exploration)}.`,
+        `今天：${breadthToday}/${n} 条是广度补充，设置是 ${pct(profile.exploration)}。`) }));
     panel.replaceChildren(
       h("div", { class: "kicker", text: tr("Idea 3 · Breadth you can see", "想法 3 · 看得见的广度") }),
       h("h2", { class: "section-title", text: tr("Topic mix", "话题分布") }),
       h("p", { class: "lede", text: tr("A feed that only follows what you clicked last week narrows. Forager shows how today's items split across your interests and breadth, and keeps any one topic below 40%.",
         "只跟着你上周点击走的信息流会越来越窄。Forager 显示今天的内容在你的兴趣和广度补充之间怎么分配，并让任何一个话题都不超过 40%。") }),
-      h("div", { class: "two-col" }, h("div", { class: "stack" }, topicFigure, typeTiles), h("div", { class: "stack" }, coverage, explore)),
-      footNote());
+      h("div", { class: "two-col" }, h("div", { class: "stack" }, topicFigure, typeTiles), h("div", { class: "stack" }, coverage, explore)));
   }
 
   // ---------- evaluation ----------
@@ -633,7 +628,7 @@
       h("h2", { class: "section-title", text: tr("What the evaluation found", "评估发现了什么") }),
       h("p", { class: "lede", text: tr("Recorded runs on fixed snapshots, rated by an LLM judge that was first checked against reference labels.",
         "在固定快照上记录的运行，由一个先用参照标注校准过的 LLM 判定打分。") }),
-      tiles, idea3, citations, idea2, calibration, footNote());
+      tiles, idea3, citations, idea2, calibration);
   }
 
   // ---------- tabs, language and theme ----------
@@ -694,6 +689,8 @@
     langButton.textContent = tr("中文", "EN");
     langButton.setAttribute("aria-label", tr("切换到中文", "Switch to English"));
     langButton.setAttribute("lang", tr("zh-CN", "en"));
+    if (lang === "zh") langButton.title = "中文由 Claude 根据英文原文翻译，标题保留原文";
+    else langButton.removeAttribute("title");
     paintTheme();
   }
   langButton.addEventListener("click", () => {

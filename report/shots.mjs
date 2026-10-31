@@ -93,7 +93,7 @@ const FIGURES = [
   { name: "proposal", hash: "interests",
     els: `() => [document.querySelector("#panel-interests .card.proposal")]` },
   { name: "topics", hash: "topics",
-    els: `() => [...document.querySelectorAll("#panel-topics > *")].filter(e => !e.matches(".panel-foot"))` },
+    els: `() => [document.querySelector("#panel-topics")]` },
 ];
 
 const surveyArg = process.argv.indexOf("--survey");

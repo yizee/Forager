@@ -3,12 +3,14 @@
 - figures/modes.svg: the three digest modes, mean and bootstrap 95% interval per metric, read from the
   tables in docs/stage5-results.md so the figure cannot drift from the reported numbers.
 - figures/setup-options.png, figures/setup-profile.png: the Idea 1 screens, cropped from the frames of the
-  recorded demo video (video/build/frames, kept locally and not committed). Skipped if the frames are gone.
+  recorded demo video (video/build/frames, kept locally and not committed). Only with --crop-video: every
+  recording makes a new live call, so a later render may show other options than the report describes.
 
-Run: .venv/bin/python report/make_figures.py
+Run: .venv/bin/python report/make_figures.py [--crop-video]
 """
 
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -96,4 +98,5 @@ if __name__ == "__main__":
     rows = mode_rows()
     (FIGURES / "modes.svg").write_text(modes_svg(rows))
     print("figures/modes.svg:", {m: {c: v[0] for c, v in r.items()} for m, r in rows.items()})
-    crop_frames()
+    if "--crop-video" in sys.argv:
+        crop_frames()

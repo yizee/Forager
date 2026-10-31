@@ -73,7 +73,8 @@ somewhere else, for example one with your own OpenRouter key and its own ledger,
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pytest                    # offline, free
-.venv/bin/streamlit run forager/app.py         # the app in your browser (paid calls only on buttons marked "paid")
+.venv/bin/streamlit run forager/app.py         # the app in your browser (paid calls: Make digest, Continue on Set up,
+                                              # Review my feedback; FORAGER_SHOW_COSTS=1 marks them and shows the ledger)
 .venv/bin/python -m forager onboard           # set up your profile with option follow-ups (paid call)
 .venv/bin/python -m forager onboard --baseline   # free-text baseline, no follow-ups
 .venv/bin/python -m forager consent           # choose which feedback signals may be tracked

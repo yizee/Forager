@@ -2,6 +2,22 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-10-31 (No developer notes on screen; demo video re-rendered)
+
+### Changed
+- The Streamlit app no longer shows the lab ledger in the sidebar or "(paid)" on its buttons, which looked odd in a demo and would confuse study participants.
+  - `FORAGER_SHOW_COSTS=1` brings both back as a developer view.
+  - The ledger line now reads "Lab ledger: … of its $1.00 cap", since the course key's quota is now $20 while the lab code still caps each ledger at $1.
+- The showcase drops its footer (the source run files and "nothing here is saved") and the note under the exploration slider.
+  - The Chinese translation note is now the language button's tooltip in Chinese mode.
+  - The source runs stay listed in `showcase/data.js` (`source_files`).
+- The demo video was re-rendered with the same Fenrir narration and runs 1:59. An OCR scan of every fifth frame finds none of these notes. The 30 Oct version is kept in `video/build/final/v1-2026-10-30/`, and `video/forager-demo.srt` has the new timings.
+- Report:
+  - The Topics screenshot was re-taken.
+  - The video length now reads 1:59.
+  - Figure A1 is credited to the 30 Oct recording.
+  - `report/make_figures.py` crops video frames only with `--crop-video`, so a new recording cannot silently replace Figure A1.
+
 ## 2026-10-30 (Project report draft)
 
 ### Added

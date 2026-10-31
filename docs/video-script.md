@@ -142,6 +142,8 @@ Notes:
 
 - The output goes to `video/build/`, which git ignores.
 - `node video/make_video.mjs --scenes 3,4` renders only some scenes, for checking.
+- Nothing developer-facing is on screen. The Streamlit app hides the ledger line and the "paid" marks on its buttons unless `FORAGER_SHOW_COSTS=1` is set, and the showcase has no footer listing its source files (they stay in `showcase/data.js` as `source_files`).
+- The final render (31 Oct, 1:59) is in `video/build/final/`. The 30 Oct version, which still showed those developer notes, is kept in `video/build/final/v1-2026-10-30/`.
 - Chrome runs with a real device scale factor, not emulated metrics. With emulated metrics, the mouse moves Chrome synthesizes after each screenshot land at the wrong coordinates and hide every hover tooltip.
 
 ### Your own voice

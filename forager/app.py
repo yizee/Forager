@@ -2,10 +2,12 @@
 
 Pages: Digest (two-layer brief, ratings, how it was made and checked), Set up (Idea 1), Memory
 (Idea 2: consent, visible profile, evidence-backed updates you approve) and Topics
-(Idea 3: this week's topic mix, exploration share). Paid model calls happen only on
-buttons marked "paid".
+(Idea 3: this week's topic mix, exploration share). Paid model calls happen only on three
+buttons: Make digest, Continue (Set up) and Review my feedback. Set FORAGER_SHOW_COSTS=1 to mark
+them as paid and show the lab ledger in the sidebar (a developer view, off for demos and studies).
 """
 
+import os
 import sys
 import time
 from datetime import date, datetime
@@ -26,9 +28,15 @@ from forager.signals import SIGNALS, describe, load_signals, purge_signal, recor
 from forager.sources import arxiv, github, load_snapshot, news  # noqa: E402
 
 MODES = {"critic": "Team + rules + Critic", "rules": "Team + rules", "single": "Single agent"}
+SHOW_COSTS = os.environ.get("FORAGER_SHOW_COSTS") == "1"
 ISSUE_NAMES = {"irrelevant_exploration": "Irrelevant exploration", "near_duplicate": "Near-duplicate",
                "unsupported_citation": "Citation does not support the point",
                "overstated_connection": "Overstated connection", "mislabeled_interest": "Wrong interest label"}
+
+
+def paid(label: str, note: str) -> str:
+    """A button label, marked as a paid call in the developer view."""
+    return f"{label} ({note})" if SHOW_COSTS else label
 
 
 def today() -> str:
@@ -70,7 +78,7 @@ def digest_page():
         mode = st.segmented_control("Pipeline", list(MODES), format_func=MODES.get, default="critic", key="mode")
         st.caption("Team: a Manager delegates to a Paper, an Open-source and a News researcher, each reading "
                    "only its own source. Single agent: one writer reads everything (the baseline).")
-        if st.button("Make digest (paid model calls)", type="primary", key="make_digest"):
+        if st.button(paid("Make digest", "paid model calls"), type="primary", key="make_digest"):
             make_digest(profile, snapshots if use_snapshots else None, mode or "critic")
     if not days:
         return
@@ -213,7 +221,7 @@ def setup_page():
                                            "generation, and lately Sora 2.")
     baseline = st.toggle("Study baseline: build the profile straight from this sentence, without questions",
                          key="setup_baseline")
-    if st.button("Continue (1 paid call)", type="primary", key="setup_ask", disabled=not description.strip()):
+    if st.button(paid("Continue", "1 paid call"), type="primary", key="setup_ask", disabled=not description.strip()):
         with st.spinner("Preparing questions..." if not baseline else "Building your profile..."):
             try:
                 with ui_runtime.open_connection() as lab:
@@ -368,7 +376,7 @@ def review_section(store: MemoryStore):
         usable = len(store.usable())
         st.caption(f"{usable} signal(s) you allowed, from the last 30 days. Forager suggests changes only with "
                    f"evidence and changes nothing without your approval.")
-        if st.button("Review my feedback (paid)", key="review_start", disabled=usable < MIN_EVIDENCE):
+        if st.button(paid("Review my feedback", "paid"), key="review_start", disabled=usable < MIN_EVIDENCE):
             st.session_state.review_worker = ui_runtime.ReviewWorker(store).start()
             st.rerun()
         return
@@ -455,7 +463,7 @@ with st.sidebar:
     page = st.radio("Go to", list(PAGES), key="page")
     current = current_profile()
     st.caption(f"Profile: {len(current['interests'])} interests" if current else "No profile yet")
-    spend = ui_runtime.budget()
+    spend = ui_runtime.budget() if SHOW_COSTS else None
     if spend:
-        st.caption(f"Course budget used: \\${spend['cost']:.3f} of \\$1.00 ({spend['requests']} requests)")
+        st.caption(f"Lab ledger: \\${spend['cost']:.3f} spent of its \\$1.00 cap ({spend['requests']} requests)")
 PAGES[page]()

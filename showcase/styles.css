@@ -258,8 +258,6 @@ details p { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
 .eval-section { margin-top: 34px; }
 .eval-section > .kicker { margin-bottom: 4px; }
 .eval-section h2 { font-family: var(--serif); font-size: 24px; font-weight: 600; margin: 0 0 6px; }
-.panel-foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--hairline); font-size: 12.5px; color: var(--muted); }
-.panel-foot code { font-family: var(--mono); font-size: 11.5px; }
 .slider-row { display: flex; align-items: center; gap: 14px; margin: 10px 0 6px; }
 .slider-row input { flex: 1; accent-color: var(--brand); }
 .slider-value { font-size: 22px; font-weight: 650; min-width: 3ch; text-align: right; }
@@ -311,6 +309,6 @@ details p { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
 }
 
 /* long titles and repo names may break anywhere rather than widen the page */
-.item-title, .ev-title, .point, .connection, .change, .reason-text, .item-summary, .panel-foot { overflow-wrap: anywhere; }
+.item-title, .ev-title, .point, .connection, .change, .reason-text, .item-summary { overflow-wrap: anywhere; }
 .tile-sub { overflow-wrap: anywhere; }
 @media (max-width: 560px) { .tiles.compact { grid-template-columns: minmax(0, 1fr); } }
