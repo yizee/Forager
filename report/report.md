@@ -2,8 +2,6 @@
 
 SHI YIZE · 01532875 · CS 619 Project Report · Nov 1, 2026
 
-Code and evaluation data: [github.com/yizee/Forager](https://github.com/yizee/Forager) · Demo video: submitted separately (1:59)
-
 ## 1 Problem and solution
 
 **Problem.** People who try to keep up with several fast-moving fields, such as AI news, papers and open-source tools, are either flooded with items or, once a recommender filters for them, see the feed quietly narrow to whatever they clicked last. **Solution.** Forager is a personalized agent that delivers a daily two-layer brief in which every point cites its sources, and lets users see and govern what it learns about them. **Contributions.** (1) *Option-based interest clarification* that turns one rough sentence into an editable profile; (2) *consented, evidence-backed preference memory* with long- and short-term interests, where the application, not the model, enforces approval before anything is written; (3) *source specialists checked by code rules and a context-independent Critic*, which protect breadth and evidence.

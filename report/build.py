@@ -71,11 +71,12 @@ def title_block(match: re.Match) -> str:
     parts = [p.strip() for p in html.unescape(byline).split("·")]
     course = next((p for p in parts if "Report" in p), None)
     author = " · ".join(parts[:parts.index(course)]) if course else byline
+    links = f'  <p class="links">{links}</p>\n' if links else ""
     return ('<header class="title-block">\n'
             f'  <p class="course">{course or "CS 619 Project Report"}</p>\n'
             f'  <p class="title">{title}</p>\n'
             f'  <p class="author">{author}</p>\n'
-            f'  <p class="links">{links}</p>\n'
+            f'{links}'
             '</header>\n')
 
 
@@ -91,7 +92,7 @@ def figure(match: re.Match) -> str:
 
 
 def page(fragment: str) -> str:
-    body = re.sub(r"<h1[^>]*>(.*?)</h1>\s*<p>(.*?)</p>\s*<p>(Code and evaluation data:.*?)</p>", title_block,
+    body = re.sub(r"<h1[^>]*>(.*?)</h1>\s*<p>(.*?)</p>(?:\s*<p>(Code and evaluation data:.*?)</p>)?", title_block,
                   fragment, count=1, flags=re.S)
     body = re.sub(r"(<h[23][^>]*>)(\d+(?:\.\d+)?) ", r"\1\2&ensp;", body)
     body = re.sub(r"<p>FIGURE-SLOT</p>\s*<p><strong>(Figure A?\d+)\.</strong>(.*?)</p>", figure, body, flags=re.S)
