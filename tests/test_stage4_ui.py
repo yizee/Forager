@@ -192,6 +192,11 @@ def test_setup_page_builds_and_saves_a_profile(runtime, monkeypatch):
     assert [i["label"] for i in saved["interests"]] == ["AI agents", "AI copyright policy", "Sora 2"]
     assert saved["interests"][0]["facets"] == ["tool use", "evaluation"]
     assert saved["consent"] == {"ratings": True, "likes": False, "clicks": False, "reading_time": False}
+    # The setup log keeps the profile as built and as saved, for the user study's edit count.
+    log = [json.loads(line) for line in storage.setup_log_path().read_text().splitlines()]
+    assert len(log) == 1 and log[0]["method"] == "clarification"
+    assert [i["label"] for i in log[0]["draft"]] == [i["label"] for i in log[0]["saved"]]
+    assert all(log[0][key] >= 0 for key in ("wait_seconds", "answer_seconds", "edit_seconds"))
 
 
 def snapshot_candidates():

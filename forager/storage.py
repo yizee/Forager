@@ -23,6 +23,17 @@ def profile_path() -> Path:
     return runtime_dir() / "profile.json"
 
 
+def setup_log_path() -> Path:
+    return runtime_dir() / "setup-log.jsonl"
+
+
+def log_setup(entry: dict) -> None:
+    """Append one saved setup: the profile as built, as saved, and how long each step took (user study)."""
+    runtime_dir().mkdir(parents=True, exist_ok=True)
+    with setup_log_path().open("a") as handle:
+        handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
 def digest_dir() -> Path:
     return runtime_dir() / "digests"
 

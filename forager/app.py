@@ -222,6 +222,7 @@ def setup_page():
     baseline = st.toggle("Study baseline: build the profile straight from this sentence, without questions",
                          key="setup_baseline")
     if st.button(paid("Continue", "1 paid call"), type="primary", key="setup_ask", disabled=not description.strip()):
+        asked = time.time()
         with st.spinner("Preparing questions..." if not baseline else "Building your profile..."):
             try:
                 with ui_runtime.open_connection() as lab:
@@ -233,8 +234,11 @@ def setup_page():
             st.error("The answer could not be used: " + "; ".join(outcome["errors"]))
             return
         state.clear()
+        # The timings go to the setup log, which the user study reads (eval/study_summary.py).
+        shown = time.time()
         state.update(description=description.strip(), clarification=None if baseline else outcome["data"],
-                     draft=outcome.get("profile"))
+                     draft=outcome.get("profile"), method="free_text" if baseline else "clarification",
+                     wait_seconds=round(shown - asked, 1), shown_at=shown, draft_at=shown)
     if state.get("clarification") and not state.get("draft"):
         ask_questions(state)
     if state.get("draft"):
@@ -268,6 +272,7 @@ def ask_questions(state: dict):
             "adjacent": st.session_state.get("setup_adjacent") or [],
             "short_term": st.session_state.get("setup_short") or []}
         state["draft"] = build_profile(data, answers, description=state["description"])
+        state["draft_at"] = time.time()
         st.rerun()
 
 
@@ -298,6 +303,13 @@ def edit_and_save(state: dict):
             if not allowed:
                 purge_signal(memory_store().signals_path, key)
         save_profile(profile, storage.profile_path())
+        saved_at = time.time()
+        storage.log_setup({
+            "time": datetime.now().isoformat(timespec="seconds"), "method": state.get("method"),
+            "description": state.get("description"), "wait_seconds": state.get("wait_seconds"),
+            "answer_seconds": round(state.get("draft_at", saved_at) - state.get("shown_at", saved_at), 1),
+            "edit_seconds": round(saved_at - state.get("draft_at", saved_at), 1),
+            "draft": draft["interests"], "saved": profile["interests"]})
         state.clear()
         st.success("Saved. Your next digest will use this profile.")
 

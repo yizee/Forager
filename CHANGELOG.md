@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (User study materials)
+
+### Added
+- `docs/user-study.md`: the protocol for the Idea 1 study and think-aloud, with a session script, task wording, the accuracy question, debrief questions and a record sheet that keeps observations apart from interpretations. Two or three participants of different kinds (papers, open-source tools, industry news), about 35 minutes each.
+- `eval/study_app.sh P1 clarification|free_text` starts the app for one session in its own runtime folder, `runtime/study/P1/<condition>`.
+- The Set up page appends each saved setup to `setup-log.jsonl` in the runtime folder: the profile as built, the profile as saved, the model wait, and the participant's time answering questions and editing (`storage.log_setup`).
+- `eval/study_summary.py` counts the edits between the two profiles, adds the ratings from `eval/study/ratings.csv` (template `ratings-template.csv`) and prints Table 4 with medians. Two offline tests cover the log and the summary (134 in total).
+
 ## 2026-11-01 (No budget in the report)
 
 ### Removed

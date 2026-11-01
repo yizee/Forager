@@ -1,5 +1,5 @@
-"""Stage 5 offline tests: the LLM judges, the calibration sheet, the memory scenario cases
-and the snapshot guard.
+"""Stage 5 offline tests: the LLM judges, the calibration sheet, the memory scenario cases,
+the user-study summary and the snapshot guard.
 
 Scripted model replies; no key, network or spending. Run: .venv/bin/python -m pytest
 """
@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT / "eval"))
 import calibration  # noqa: E402
 import judge_runs  # noqa: E402
 import run_memory_cases as memory_cases  # noqa: E402
+import study_summary  # noqa: E402
 
 TODAY = "2026-10-28"
 PROFILE = {"interests": [
@@ -394,3 +395,27 @@ def test_snapshot_keeps_an_existing_file(tmp_path, monkeypatch):
     assert fetched == [["arxiv"]] and (tmp_path / f"github-{today}.json").read_text() == "[]\n"
     cli.cmd_snapshot(Namespace(sources=["github"], max_results=30, overwrite=True))
     assert json.loads((tmp_path / f"github-{today}.json").read_text()) == [{"title": "github"}]
+
+
+# ---- user study ----
+
+def test_study_summary_counts_edits_and_fills_table_4(tmp_path):
+    draft = [{"id": "i1", "label": "AI agents", "facets": ["Tool use", "Evaluation"], "type": "long_term", "weight": 1.0},
+             {"id": "i2", "label": "Video generation", "facets": [], "type": "long_term", "weight": 1.0},
+             {"id": "i3", "label": "Sora 2", "facets": [], "type": "short_term", "weight": 0.8}]
+    saved = [{**draft[0], "facets": ["tool use", "Coding agents"]},                 # one facet out, one in
+             {**draft[2], "type": "long_term", "weight": 0.5},                       # type and weight
+             {"id": "i4", "label": "Robotics", "facets": [], "type": "long_term", "weight": 1.0}]
+    counts = study_summary.count_edits(draft, saved)
+    assert counts == {"added": 1, "removed": 1, "label": 0, "type": 1, "weight": 1, "facets": 2, "total": 6}
+    for method, (d, s, answer, edit) in {"clarification": (draft, saved, 50.0, 30.4),
+                                         "free_text": (draft, draft, 0, 20.0)}.items():
+        folder = tmp_path / "P1" / method
+        folder.mkdir(parents=True)
+        (folder / "setup-log.jsonl").write_text(json.dumps({"method": method, "draft": d, "saved": s,
+            "wait_seconds": 9.0, "answer_seconds": answer, "edit_seconds": edit}) + "\n")
+    sheet = [{"participant": "P1", "order": "C→F", "accuracy_clarification": "6", "accuracy_free_text": "4",
+              "rejected_mislabelled": "yes"}, {"participant": "P2", "order": "F→C"}]
+    rows, problems = study_summary.summarize(tmp_path, sheet)
+    assert study_summary.table(rows).splitlines()[2] == "| P1 | C→F | 6 | 4 | 6 / 0 | 1:20 / 0:20 | yes |"
+    assert len(problems) == 2 and all(p.startswith("P2: no saved") for p in problems)

@@ -35,7 +35,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
-- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)). The report is drafted as a Claude Doc and built into a [PDF](report/forager-report.pdf) from its export, with placeholders for the user study, which is next
+- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)). The report is drafted as a Claude Doc and built into a [PDF](report/forager-report.pdf) from its export, with placeholders for the user study, which is next ([protocol](docs/user-study.md))
 
 Fallback if time is short: drop Hugging Face first.
 
@@ -94,6 +94,8 @@ python3.11 -m venv .venv
 .venv/bin/python eval/calibration.py make RUNS --out eval/labels/NAME   # blinded labelling sheet (free)
 .venv/bin/python eval/calibration.py draft eval/labels/NAME items LABELS.json --by WHO   # draft labels to check (free)
 .venv/bin/python eval/calibration.py score eval/labels/NAME JUDGE.jsonl   # agreement with a judge run (free)
+eval/study_app.sh P1 clarification             # the app for one user-study session, in runtime/study/P1/... (paid calls)
+.venv/bin/python eval/study_summary.py       # Table 4 of the report from the study's setup logs and ratings (free)
 .venv/bin/python showcase/build_data.py      # rebuild the showcase page's data from recorded runs (free)
 open showcase/index.html                     # the static showcase page (English or Chinese): brief, interests, topics, evaluation
 node report/shots.mjs                        # showcase screenshots for the report's appendix (free)

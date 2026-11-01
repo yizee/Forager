@@ -1,0 +1,4 @@
+participant,order,accuracy_clarification,accuracy_free_text,rejected_mislabelled,approved_other,preferred_setup
+P1,C→F,,,,,
+P2,F→C,,,,,
+P3,C→F,,,,,
