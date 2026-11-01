@@ -2,6 +2,16 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (Idea 1 evaluated on synthetic personas)
+
+### Added
+- `eval/run_setup_cases.py`: the Idea 1 benchmark. Nine synthetic personas (`eval/cases/setup/personas.json`, committed before the run) each set up a profile with clarification, answered by a simulated-user agent that can only click, and with the free-text baseline. Code scores the profile as built against the persona's gold profile: interests found, facets covered, unrequested interests, short- or long-term mistakes and edits to gold. Two offline tests (136 in total).
+- Results: `eval/results/setup-20261101-162904.*` (36 setups, $0.0081) and section 3b of `docs/stage5-results.md`. Clarification found every wanted interest (free text 70%), covered 76% of facets (48%) and needed a median of 2 edits instead of 4 (1 instead of 5 on vague sentences).
+
+### Changed
+- The report evaluates Idea 1 with this benchmark instead of a user study: §6.4 and Table 4 are rewritten, the placeholders in §1 are filled, and §3, §6.3 and the limitations no longer refer to a study. Both the English tab and the Chinese copy. The PDF is still 6 + 4 pages.
+- README and CLAUDE.md list the benchmark as Idea 1's method; `docs/user-study.md` stays for a study with real participants.
+
 ## 2026-11-01 (User study materials)
 
 ### Added

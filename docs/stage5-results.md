@@ -100,9 +100,33 @@ By scenario (both modes, two runs each):
 Findings:
 
 1. **The approval gate holds.** Every approval-mode change was written only after approval, which the SDK enforces. In silent mode, all 9 changes were written without the user seeing them.
-2. **Approval does not make proposals better; it makes the bad ones visible.** The same agent and the same code checks give 5 of 9 supported proposals in both modes. In approval mode, the 4 unsupported proposals reached the user, with the code-generated change and evidence (each rated item by title), before anything was written. In silent mode, the 4 unsupported changes went straight into the profile. Whether real users reject such proposals is the question for user-study task 2.
+2. **Approval does not make proposals better; it makes the bad ones visible.** The same agent and the same code checks give 5 of 9 supported proposals in both modes. In approval mode, the 4 unsupported proposals reached the user, with the code-generated change and evidence (each rated item by title), before anything was written. In silent mode, the 4 unsupported changes went straight into the profile. Whether real users would reject such proposals is untested: the evaluation has no human participants.
 3. **The code checks did their share.** No unconsented signal reached the agent, weak evidence produced no proposal, and all 4 repeats of a rejected change were blocked.
 4. **What remains is evidence quality.** The agent trusts filing labels (Sora 2) and overlooks contradicting signals (mixed evidence). The two-signal rule cannot see what the items are about. Checking evidence against item content is a design-variant topic for the report.
+
+## 3b. Idea 1: synthetic-persona benchmark (2026-11-01)
+
+The planned user study was replaced by a synthetic benchmark, which the course allows ("benchmarking on existing or synthetic datasets ... or real user studies"). Run: `eval/results/setup-20261101-162904.*` (36 setups, 54 requests, $0.0081), script `eval/run_setup_cases.py`, personas `eval/cases/setup/personas.json` (committed in 356bbeb before the run).
+
+- Nine personas: papers (2), open source, industry news, mixed (2), design, policy, infrastructure. Three sentences are vague, three mention a short-term focus. Each has a sentence, a hidden "wants" paragraph and a gold profile with match terms, all written by Claude.
+- Clarification: the clarifier asks; a simulated-user agent (same model, sees only the wants, can only click) answers; code builds the profile. Free text: the baseline extractor on the same sentence. Scored before any editing.
+
+| Personas | Method | Interests found | Facets covered | Unrequested per profile | Type errors | Edits to gold, median (mean) |
+| --- | --- | --: | --: | --: | --: | --- |
+| All 9 | Clarification | 100% | 76% | 1.0 | 0 | 2 (2.0) |
+| All 9 | Free text | 70% | 48% | 1.0 | 3 | 4 (3.9) |
+| 6 explicit | Clarification | 100% | 74% | 1.3 | 0 | 2.5 (2.5) |
+| 6 explicit | Free text | 83% | 66% | 1.1 | 3 | 3 (3.4) |
+| 3 vague | Clarification | 100% | 79% | 0.3 | 0 | 1 (1.0) |
+| 3 vague | Free text | 44% | 14% | 0.8 | 0 | 5 (5.0) |
+
+Findings:
+
+1. Clarification needed fewer edits in 14 of 18 paired runs, as many in 2, more in 2 (rag-dev #1, infra #2). The gap is mostly on vague sentences (median 1 vs 5).
+2. Short-term focus: clarification set it right in 6 of 6 runs; free text never sets a short-term interest (3 missing, 3 long-term).
+3. Unrequested interests: about one per profile in both. Free text invents generic fields ("PhD Research Life", "Python Development"); clarification's come from nearby fields the simulated user accepted and model-named directions it did not drop ("Python tooling", full weight, both rag-dev runs).
+4. Hand check of every match (Claude): 10 of clarification's 18 unrequested interests overlap a wanted one (finer splits such as "Sim-to-real transfer", or an accepted nearby field such as "AI copyright law" inside AI policy), which counts against clarification. One free-text pairing is wrong without changing a count (law-vague #1: "Law Studies" matched instead of "AI Regulation"). Generous matches for free text: catch-all interests ("Artificial Intelligence", "Design") count as found.
+5. Upper bound: the hidden wants favour a method that asks, and the simulated user comes from the same model family. No subjective accuracy rating exists; the 1-7 rating of the plan needs real participants (`docs/user-study.md` stays ready if any are found).
 
 ## 4. Limitations
 
@@ -110,6 +134,7 @@ Findings:
 - **Sample size.** There are 10 digests per mode on two snapshot sets, so the intervals are wide.
 - **A mixed contrast.** rules − single changes the writer and the rules at the same time.
 - **Same model.** The agents and the judges are the same model. Calibration exposes their shared blind spot but does not remove it.
+- **Idea 1 has no people.** Personas, wants and gold profiles were written by Claude; the user is simulated by the same model family.
 - **The digest sheet.** It over-represents distinctive item labels (section 1), so it is not used for per-mode item rates.
 
 ## 5. For the video and the report

@@ -35,7 +35,7 @@ Built incrementally, each stage runnable before the next starts:
 - [x] Stage 2: Idea 1. Clarification onboarding and JSON profile
 - [x] Stage 3: Idea 2. Ratings, consent and evidence-backed update proposals
 - [x] Stage 4: Idea 3. GitHub and news sources, Manager with three source specialists, rules + Critic; Streamlit app
-- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)). The report is drafted as a Claude Doc and built into a [PDF](report/forager-report.pdf) from its export, with placeholders for the user study, which is next ([protocol](docs/user-study.md))
+- [ ] Stage 5: evaluation ([plan](docs/stage5-eval-plan.md)): the three digest modes compared with code statistics and LLM judges in the Week 6 rubric style, memory scenarios, and a small user study with think-aloud. Scripts and offline tests are ready; the digests, the judges, the memory scenarios and the judge calibration are done (see [results](docs/stage5-results.md) and [live runs](docs/live-runs.md)). The 2-minute demo video is final ([script](docs/video-script.md)). The report is drafted as a Claude Doc and built into a [PDF](report/forager-report.pdf) from its export, with Idea 1 evaluated on synthetic personas instead of a user study (a [study protocol](docs/user-study.md) stays ready)
 
 Fallback if time is short: drop Hugging Face first.
 
@@ -43,7 +43,7 @@ Fallback if time is short: drop Hugging Face first.
 
 | Idea | Metric | Method |
 | --- | --- | --- |
-| 1 | Self-rated profile accuracy (1–7) vs. free text | User study |
+| 1 | Profile accuracy vs. free text: interests and facets found, edits to the wanted profile | Synthetic-persona benchmark (simulated user) |
 | 2 | Pass rate: updates cite evidence and wait for approval | LLM-judged test cases |
 | 3 | Topic diversity vs. relevance across single agent / rules / rules + Critic | Code metrics + LLM-judged relevance |
 | 3 | Citation support rate of brief points | LLM-judged test cases |
@@ -89,6 +89,7 @@ python3.11 -m venv .venv
 .venv/bin/python -m forager digest --snapshot data/snapshot/arxiv-2026-10-25.json data/snapshot/github-2026-10-27.json
 .venv/bin/python eval/run_critic_cases.py     # Critic on the case set, scored (paid; asks first)
 .venv/bin/python eval/run_digest_modes.py     # the three digest modes on the same snapshots (paid; asks first)
+.venv/bin/python eval/run_setup_cases.py      # Idea 1 benchmark: synthetic personas, clarification vs free text (paid; asks first)
 .venv/bin/python eval/run_memory_cases.py     # the memory agent on eight scenarios, approval vs silent (paid; asks first)
 .venv/bin/python eval/judge_runs.py RUNS      # LLM judges on saved runs (paid; asks first)
 .venv/bin/python eval/calibration.py make RUNS --out eval/labels/NAME   # blinded labelling sheet (free)
