@@ -120,8 +120,10 @@
     - 用于录视频和给报告配图。页面如实显示了一个问题：探索度设置是 20%，但这份简报有 4/10 是广度补充，rule 模式平均是 36–38%。写作 agent 收到的指令只是"大约这个比例（至少一条）"。
   - **演示视频已定稿（2026-10-30）**：1:58，Fenrir 配音，修改版文案。成片固定副本在 `video/build/final/forager-demo-final.mp4`（还有无声版和字幕），重新渲染不会覆盖，也不提交。
   - **视频重新渲染（v2，2026-10-31）**：作者指出侧栏预算行和展示页页脚这类开发信息不该出现在正式视频里。去掉后用同样的 Fenrir 配音整段重录，现在 1:59（118.6 秒）。用文字识别每 5 帧扫一遍，这类文字都没有了；评估页的方法说明是给观众看的，保留。新定稿在 `video/build/final/`，10-30 的旧版移到 `video/build/final/v1-2026-10-30/`。这次现场调用拆出的方向是 AI agents、Video editing、Image generation（没有 Video generation），相关领域里仍有 AI copyright policy，和旁白一致。报告的图 A1 仍用 10-30 那次录制的截图（§3 的 Video generation 例子来自那次），所以 `report/make_figures.py` 只有加 `--crop-video` 才会从视频帧重新裁图。
-  - **报告初稿已完成（2026-10-30）**：`report/forager-report.pdf`，正文 5 页多一点、附录 5 页，构成和构建方式见第 9 节末尾。用户研究的结果留了黄色占位符。
-  - 下一步：用户研究（想法 1 和 think-aloud），把结果填进报告的占位符。报告的评估部分以 `docs/stage5-results.md` 为准。可选：用新的真实简报给 Critic 标注、核对 Critic 用例集的标注。付费调用暂停时按上面的方式核对。第 4 阶段最后两处改动已在真实运行中验证：兴趣标题检查触发过多次，`reviewed_draft` 在每次 Critic 审查后都保存了。
+  - **报告初稿已完成（2026-10-30）**：`report/forager-report.pdf`，构成和构建方式见第 9 节末尾。用户研究的结果留了黄色占位符。
+  - **报告改为 Claude Docs 文档（2026-11-01，作者要求）**：内容以文档"Forager: CS 619 project report"为准（作者的 Artifacts 列表里能找到，链接也记在 Claude 的记忆里）。`report/report.md` 是它导出的 markdown。文档自带的 PDF 导出字大、页边距宽，正文要排到第 13 页，所以提交用的 PDF 由 `report/build.py` 从 `report.md` 生成，见第 9 节末尾。按作者的意思减少了图：去掉了图 2（数字都在表 2 里），附录每张图只留一张截图。
+  - **视频已对照课程要求检查（2026-11-01）**：课程只要求"2 分钟，展示项目"，11-03 前交。成片 118.6 秒，1920×1080、30 fps 的 H.264，配 AAC 单声道 24 kHz，MP4 格式，64 MB；旁白峰值 −1.4 dBFS、语音均方根约 −21 dBFS，没有削波；最长的停顿是 1:18–1:22 的 4 秒（点批准后切到想法 3）。内容覆盖问题、应用做什么、三个想法和一个评估结果，满足要求。
+  - 下一步：用户研究（想法 1 和 think-aloud），把结果填进报告的占位符：在文档里填，然后导出 markdown 存为 `report/report.md`，再运行 `build.py`。报告的评估部分以 `docs/stage5-results.md` 为准。可选：用新的真实简报给 Critic 标注、核对 Critic 用例集的标注。付费调用暂停时按上面的方式核对。第 4 阶段最后两处改动已在真实运行中验证：兴趣标题检查触发过多次，`reviewed_draft` 在每次 Critic 审查后都保存了。
 - `lab/` 是从 `~/Desktop/Human-AI/week5/week3-lab-ta` 复制来的（带 `.env`）。本地账本 `lab/.lab-state` 从 2026-10-25 开始记，起点 $0；之前 week4 和 week6 的账本里另有约 $0.025 的花费。
 - `runtime/profile.json` 目前是用典型用户人设生成的演示档案（含审批通过的"3D generation"）。用户可以随时用 `python -m forager onboard` 重做。
 - 真实调用发现的关键问题（第 4 阶段要用）：简报通过了所有代码检查，但有错误的"兴趣匹配"标签（两条被标成 Sora 2 的内容其实与 Sora 2 无关）和夸大的跨领域关联；而且错误标签会随用户打分传进偏好记忆，导致 agent 提出基于错误归因的建议。这正是 Critic 要解决、规则解决不了的问题。
@@ -332,7 +334,17 @@ Forager/
 画面标签改成课程概念：Intent expression、Verifiable output、Memory with consent、Multi-agent + Critic。
 
 
-报告初稿（2026-10-30）：`report/report.html`（源文件）和 `report/report.css`，用 `report/build.py` 让 Chrome 打印成 `report/forager-report.pdf`（A4，和提案一样由 Chromium 生成）。正文 5 页多一点（第 6 页约三分之一；上限 6 页，`build.py` 超过就报错），附录 5 页是截图和补充表格。初稿经独立 agent 对照 `docs/` 和代码逐条核对，改了 27 处。报告如实写了两点：澄清时"方向"默认保留并沿用模型起的名字（录制时的 "Video generation" 就是这样进的档案）；原型只收集打分和点赞，点击和阅读时长只有授权开关。黄色占位符是用户研究要填的：第 1 节 Findings in brief 的最后一句、§6.4 和 Table 4。填完后重新运行 `build.py`，确认正文仍不超过 6 页。图：`report/make_figures.py` 从 `docs/stage5-results.md` 读数生成结果图 `figures/modes.svg`，并从视频帧裁出想法 1 的两张截图（视频帧在 `video/build/frames`，不提交）；`report/shots.mjs` 截展示页；图 1（架构）和图 A6（事件时间线草图）是报告里的内联 SVG。报告对老师问题的回答：Critic 能抓到构造的明显错误，但在真实简报上几乎抓不到，相对仅规则的端到端效果测不出来；可测的增益来自代码规则加团队写作。
+报告初稿（2026-10-30）：`report/report.html`（源文件）和 `report/report.css`，用 `report/build.py` 让 Chrome 打印成 `report/forager-report.pdf`（A4，和提案一样由 Chromium 生成）。
+
+2026-11-01 起报告的内容以 Claude Docs 文档为准（见第 3 节）。`report/build.py` 的流程改为：
+- 用 pandoc 把文档导出的 `report/report.md` 转成 `report.html`。生成的 HTML 不要手改。
+- 按图注编号把图放回去（导出时图片被换成了占位文字；对应关系在 `FIGURES` 里）。
+- 打印成 PDF：正文 6 页（第 6 页约剩四分之一，够填用户研究的结果），附录 4 页。
+- 正文 9.5 号 Times，表格和参考文献 8.5 号，图注 8.8 号。
+
+旧版 PDF 写的是 11 号字，但有不换行的表格单元格超出了版心，Chrome 把每页缩到约 81%，正文实际只有 8.9 号、表格 7.2 号。现在数字照样不换行，但表格放得进版心，页数反映的就是真实字号。
+
+以下是初稿时的说明，图的部分已按上面的减少：初稿经独立 agent 对照 `docs/` 和代码逐条核对，改了 27 处。报告如实写了两点：澄清时"方向"默认保留并沿用模型起的名字（录制时的 "Video generation" 就是这样进的档案）；原型只收集打分和点赞，点击和阅读时长只有授权开关。黄色占位符是用户研究要填的：第 1 节 Findings in brief 的最后一句、§6.4 和 Table 4。填完后重新运行 `build.py`，确认正文仍不超过 6 页。图：`report/make_figures.py` 从 `docs/stage5-results.md` 读数生成结果图 `figures/modes.svg`，并从视频帧裁出想法 1 的两张截图（视频帧在 `video/build/frames`，不提交）；`report/shots.mjs` 截展示页；图 1（架构）和图 A6（事件时间线草图）是报告里的内联 SVG。报告对老师问题的回答：Critic 能抓到构造的明显错误，但在真实简报上几乎抓不到，相对仅规则的端到端效果测不出来；可测的增益来自代码规则加团队写作。
 ## 10. 报告写作要求（来自老师反馈）
 
 - **开头直接写问题和解决方案**，就像本文件第 1 节的三句话；动机压缩成一小段。

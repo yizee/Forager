@@ -2,6 +2,21 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (The report as a Claude Doc; the PDF is built from its export)
+
+### Added
+- The report now lives in a Claude Doc ("Forager: CS 619 project report"), which the author can edit, comment on and share; `report/report.md` is its markdown export.
+- `report/figures/architecture.svg` and `report/figures/timeline-sketch.svg`, split out of the old hand-written HTML, and `report/figures/brief-top.png`, the top of the brief screenshot.
+
+### Changed
+- `report/build.py` builds `report.html` from `report.md` with pandoc, puts each figure back by its caption label (the export replaces pictures with placeholders) and prints the PDF as before. The doc's own PDF export uses large type and runs the main body to 13 pages, so the submission PDF comes from this build.
+- Fewer figures, as the author asked. Figure 2 is gone, since Table 2 holds all its numbers, and each appendix figure keeps one screenshot: A1 setup options, A2 the top of the brief, A3 a proposal, A4 the Critic's card, A5 the Topics page and A6 the timeline sketch. The PDF is now 6 + 4 pages.
+- Figure 1 now sits under the heading of §2, which fills the gap it left at the foot of page 1.
+- Type sizes are now set explicitly: body 9.5pt Times, tables and references 8.5pt, captions 8.8pt.
+
+### Fixed
+- The old PDF was shrunk by Chrome. Table cells that never wrapped overflowed the column, so Chrome scaled every page to about 81%: the "11pt" body printed at 8.9pt and the tables at 7.2pt. Numbers still stay on one line, but the tables now fit the column, so the page count reflects the real type size.
+
 ## 2026-10-31 (No developer notes on screen; demo video re-rendered)
 
 ### Changed

@@ -1,0 +1,49 @@
+<svg viewBox="0 0 600 168" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" role="img" aria-label="Design sketch of an event timeline for a short-term interest">
+  <style>
+    .frame { fill: #fbfaf7; stroke: #b9b5a8; stroke-width: 1; }
+    .h  { font-size: 10px; font-weight: 700; fill: #141414; }
+    .s  { font-size: 7.8px; fill: #5b5850; }
+    .ev { font-size: 7.8px; fill: #141414; }
+    .evs { font-size: 7.2px; fill: #5b5850; }
+    .axis { stroke: #8f8b80; stroke-width: 1.2; }
+    .tick { stroke: #c9c6bd; stroke-width: 1; }
+    .btn { fill: #ffffff; stroke: #8f8b80; stroke-width: 0.9; }
+    .btnp { fill: #2f6a3d; }
+    .bt { font-size: 7.6px; fill: #141414; }
+    .btw { font-size: 7.6px; fill: #ffffff; font-weight: 700; }
+    .new { fill: #2a78d6; }
+    .old { fill: #ffffff; stroke: #5b5850; stroke-width: 1.2; }
+  </style>
+  <rect class="frame" x="1" y="1" width="598" height="166" rx="5"/>
+  <text class="h" x="14" y="20">Lumen-V 2 · short-term interest · day 9 of 14</text>
+  <text class="s" x="14" y="32">One thread instead of repeated items: each dot is an event, with the items that cover it</text>
+  <rect class="btn" x="452" y="10" width="136" height="17" rx="3"/>
+  <text class="bt" x="460" y="21.5">Follow until: coverage fades ▾</text>
+
+  <line class="axis" x1="30" y1="92" x2="570" y2="92"/>
+  <g>
+    <line class="tick" x1="30" y1="88" x2="30" y2="96"/><text class="s" x="30" y="106" text-anchor="middle">day 1</text>
+    <line class="tick" x1="217" y1="88" x2="217" y2="96"/><text class="s" x="217" y="106" text-anchor="middle">day 5</text>
+    <line class="tick" x1="403" y1="88" x2="403" y2="96"/><text class="s" x="403" y="106" text-anchor="middle">day 9 (today)</text>
+    <line class="tick" x1="570" y1="88" x2="570" y2="96"/><text class="s" x="570" y="106" text-anchor="middle">day 14</text>
+  </g>
+  <circle class="old" cx="30" cy="92" r="4.5"/>
+  <text class="ev" x="36" y="56">Announcement</text><text class="evs" x="36" y="66">2 news items</text>
+  <line class="tick" x1="30" y1="70" x2="30" y2="86"/>
+  <circle class="old" cx="77" cy="92" r="4.5"/>
+  <text class="ev" x="83" y="120">Benchmarks paper</text><text class="evs" x="83" y="130">1 paper</text>
+  <circle class="old" cx="170" cy="92" r="4.5"/>
+  <text class="ev" x="176" y="56">Open replication</text><text class="evs" x="176" y="66">1 repository, 412 stars in 3 days</text>
+  <line class="tick" x1="170" y1="70" x2="170" y2="86"/>
+  <circle class="old" cx="263" cy="92" r="4.5"/>
+  <text class="ev" x="269" y="120">API pricing</text><text class="evs" x="269" y="130">1 news item</text>
+  <circle class="new" cx="403" cy="92" r="5.5"/>
+  <text class="ev" x="409" y="56" font-weight="700">Licensing dispute · new since your last brief</text>
+  <text class="evs" x="409" y="66">2 news items · cited in today's brief</text>
+  <line class="tick" x1="403" y1="70" x2="403" y2="85"/>
+
+  <text class="s" x="14" y="153">When the interest expires:</text>
+  <rect class="btnp" x="112" y="143" width="74" height="15" rx="3"/><text class="btw" x="149" y="153.5" text-anchor="middle">Keep following</text>
+  <rect class="btn" x="192" y="143" width="74" height="15" rx="3"/><text class="bt" x="229" y="153.5" text-anchor="middle">Make long-term</text>
+  <rect class="btn" x="272" y="143" width="40" height="15" rx="3"/><text class="bt" x="292" y="153.5" text-anchor="middle">Stop</text>
+</svg>
