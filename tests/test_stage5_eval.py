@@ -1,5 +1,5 @@
 """Stage 5 offline tests: the LLM judges, the calibration sheet, the memory scenario cases,
-the user-study summary and the snapshot guard.
+the user-study summary, the Idea 1 benchmark and the snapshot guard.
 
 Scripted model replies; no key, network or spending. Run: .venv/bin/python -m pytest
 """
@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT / "eval"))
 import calibration  # noqa: E402
 import judge_runs  # noqa: E402
 import run_memory_cases as memory_cases  # noqa: E402
+import run_setup_cases as setup_cases  # noqa: E402
 import study_summary  # noqa: E402
 
 TODAY = "2026-10-28"
@@ -419,3 +420,43 @@ def test_study_summary_counts_edits_and_fills_table_4(tmp_path):
     rows, problems = study_summary.summarize(tmp_path, sheet)
     assert study_summary.table(rows).splitlines()[2] == "| P1 | C→F | 6 | 4 | 6 / 0 | 1:20 / 0:20 | yes |"
     assert len(problems) == 2 and all(p.startswith("P2: no saved") for p in problems)
+
+
+# ---- Idea 1 benchmark ----
+
+def test_setup_scoring_matches_gold_by_terms():
+    typical = next(p for p in setup_cases.personas() if p["id"] == "typical")
+    built = [{"label": "AI agents", "facets": ["coding agents"], "type": "long_term"},
+             {"label": "Video generation", "facets": ["text-to-video models"], "type": "long_term"},
+             {"label": "Image generation", "facets": ["new image models"], "type": "long_term"},
+             {"label": "Sora 2", "facets": [], "type": "long_term"}]
+    s = setup_cases.score(built, typical["gold"])
+    assert (s["found"], s["missing"], s["extra"], s["type_errors"]) == \
+           (3, ["Video editing", "AI copyright policy"], ["Video generation"], ["Sora 2"])
+    assert s["facets_covered"] == 2 and s["edits"] == 2 + 1 + 1 + 3       # tool use and both video facets missed
+    assert setup_cases.term_hits("UI kits", ["ui"]) == ["ui"] and setup_cases.term_hits("build guides", ["ui"]) == []
+    robotics = next(p for p in setup_cases.personas() if p["id"] == "robotics")["gold"]
+    assert setup_cases.match({"label": "Robotics foundation models", "facets": []}, robotics) == 1
+
+
+def test_setup_runs_both_methods_with_a_simulated_user():
+    persona = next(p for p in setup_cases.personas() if p["id"] == "business")
+    clarification = {
+        "directions": [{"id": "d1", "label": "AI products", "question": "Which?", "options": ["launches", "pricing", "chips"]},
+                       {"id": "d2", "label": "AI research", "question": "Which?", "options": ["LLMs", "vision", "RL"]}],
+        "adjacent": [{"label": "AI policy", "why": "Nearby.", "related_to": "d1"}],
+        "short_term": [{"label": "Sora 2", "why": "Mentioned."}]}
+    bad = {"facets": {"d1": ["launch news"]}, "drop": [], "adjacent": [], "short_term": []}
+    good = {"facets": {"d1": ["launches", "pricing"]}, "drop": ["d2"], "adjacent": ["AI policy"], "short_term": ["Sora 2"]}
+    baseline = {"interests": [{"label": "AI products", "facets": []}, {"label": "Sora 2", "facets": []}]}
+    with offline_lab([reply(clarification), reply(bad), reply(good), reply(baseline)]) as lab:
+        records = setup_cases.run_cases(lab, [persona])
+        repair = lab.client.requests[2]["messages"][-1]["content"]
+    assert "exact option texts" in repair
+    clar, free = records
+    assert clar["status"] == free["status"] == "ok"
+    assert [i["label"] for i in clar["profile"]["interests"]] == ["AI products", "AI policy", "Sora 2"]
+    assert clar["score"]["type_errors"] == [] and free["score"]["type_errors"] == ["Sora 2"]
+    assert clar["score"]["found"] == 3 and free["score"]["found"] == 2
+    text = setup_cases.report(records, "test")
+    assert "| all | clarification | 1 | 0 |" in text and "AI policy [whole field] long_term 0.5 -> AI policy (match)" in text
