@@ -2,6 +2,11 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (No budget in the report)
+
+### Removed
+- The report no longer mentions the $1 lab budget or the project's total spend ($0.34 over 759 requests), in the English tab and the Chinese copy. Per-digest costs stay in Table 2, since they are part of the team-versus-single comparison. The PDF is still 6 + 4 pages.
+
 ## 2026-11-01 (A Chinese reading copy of the report)
 
 ### Added
