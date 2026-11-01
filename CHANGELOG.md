@@ -2,6 +2,11 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (Report wording on reference labels)
+
+### Changed
+- §6.1 no longer names Claude: the reference labels are described as drafted by fresh LLM agents from another model family and endorsed by the author (both tabs of the doc). The persona benchmark in §6.4 still says Claude wrote the personas. The PDF is still 6 + 4 pages.
+
 ## 2026-11-01 (Report title block)
 
 ### Removed
