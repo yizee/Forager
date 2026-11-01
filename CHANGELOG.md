@@ -5,6 +5,7 @@ All notable changes to this project are recorded here, newest first.
 ## 2026-11-01 (Report title block)
 
 ### Removed
+- The Limitations paragraph at the end of the results section, at the author's request, in both tabs of the doc. The synthetic setup of Idea 1 and the Claude-drafted reference labels are still stated in §6.1 and §6.4. The PDF is still 6 + 4 pages.
 - The line under the report's title with the repository link and the demo-video note, at the author's request, in both tabs of the doc. `report/build.py` now builds the title block with or without that line. The PDF is still 6 + 4 pages.
 
 ## 2026-11-01 (Pre-submission fixes to the report)
