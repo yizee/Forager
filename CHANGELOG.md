@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (Pre-submission fixes to the report)
+
+### Fixed
+- After an independent check of the report against the results, the code and the course brief: the test count now reads 136; the §7 sentence on why breadth exceeds the slider is rewritten ("items beyond an interest's cap are likely refiled as breadth"); §1 says the Critic's 45 of 48 are on constructed digests and that the real digest also passes every rule; §8 gives the team's cost and time ratios as in §6.2 and calls the reference labels author-reviewed; Table A2 is now cited (§6.3).
+
+### Changed
+- Clearer wording in §3, §4, §5, §6.1 and §6.4 ("edits to gold" defined); the demo video is "submitted separately" instead of a local file name; the sentence in §2 that repeated Figure 1's caption is gone. Both tabs of the doc; the PDF is still 6 + 4 pages.
+
 ## 2026-11-01 (Idea 1 evaluated on synthetic personas)
 
 ### Added
