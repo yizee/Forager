@@ -2,6 +2,14 @@
 
 All notable changes to this project are recorded here, newest first.
 
+## 2026-11-01 (A Chinese reading copy of the report)
+
+### Added
+- A second tab in the report's Claude Doc, "中文版", holds a Chinese translation of the English text as it stood on 1 Nov, for the author to check the content. It is not exported or built and does not follow later edits to the English tab; `report/report.md` still comes from the English tab only, and an export of that tab after the new tab was added matches `report.md` byte for byte.
+
+### Fixed
+- The docstring of `report/build.py` gave the body type as 11pt; `report.css` sets 9.5pt.
+
 ## 2026-11-01 (The report as a Claude Doc; the PDF is built from its export)
 
 ### Added

@@ -2,7 +2,7 @@
 
 The report is written in a Claude Doc ("Forager: CS 619 project report"); report.md is its markdown export.
 The doc's own PDF export uses large type, so this script typesets the same text with report.css (A4, Times
-11pt): it converts report.md to report.html with pandoc, puts the figures back (the export replaces each
+9.5pt): it converts report.md to report.html with pandoc, puts the figures back (the export replaces each
 picture with a placeholder) and prints report.html to forager-report.pdf with headless Google Chrome.
 
 The main body (everything before the appendix) must fit in six A4 pages; the appendix holds figures and
